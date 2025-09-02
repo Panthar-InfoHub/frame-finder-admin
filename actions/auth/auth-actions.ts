@@ -1,8 +1,8 @@
 "use server";
 
-import { ADMIN_API_URL } from "@/lib/api";
-import { cookies } from "next/headers";
+import { ADMIN_API_URL } from "@/utils/helpers";
 import { redirect } from "next/navigation";
+import { createSession, destroySession } from "./session";
 
 export async function loginAction(formData: FormData) {
   const email = formData.get("email") as string;
@@ -27,12 +27,7 @@ export async function loginAction(formData: FormData) {
 
     // store accessToken in cookie if backend doesn’t
     if (data.data?.accessToken) {
-      (await cookies()).set("accessToken", data.data.accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        path: "/",
-      });
+      await createSession(data.data.accessToken);
     }
     return { success: true, message: data.message || "Login successful" };
   } catch (err) {
@@ -43,8 +38,7 @@ export async function loginAction(formData: FormData) {
   }
 }
 
-export async function logoutAction() {
-  const cookieStore = await cookies();
-  cookieStore.delete("accessToken");
+export async function Logout() {
+  await destroySession();
   redirect("/login");
 }

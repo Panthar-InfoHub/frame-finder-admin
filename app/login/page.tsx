@@ -1,5 +1,5 @@
 "use client"
-import { loginAction } from "@/actions/auth-actions"
+import { loginAction } from "@/actions/auth/auth-actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -17,10 +17,8 @@ export default function LoginPage() {
         const formData = new FormData(e.currentTarget);
         const res = await loginAction(formData);
 
-        console.log("Login response", res);
 
         if (!res.success) {
-            console.log("Login failed", res.message);
             setLoading(false);
             return;
         }
