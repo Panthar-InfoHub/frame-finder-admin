@@ -76,7 +76,7 @@ export default function SearchForm({ search }: { search: string }) {
       {search && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>Searching for: </span>
-          <span className="font-medium text-foreground">"{search}"</span>
+          <span className="font-medium text-foreground">{search}</span>
           <Button
             variant="ghost"
             size="sm"
