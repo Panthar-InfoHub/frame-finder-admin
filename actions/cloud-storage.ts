@@ -17,7 +17,7 @@ interface BaseOptions {
 
 interface VendorOptions extends BaseOptions {
   rootFolder: "vendor";
-  folderName: "frames" | "sunglasses" | "lens-pacakages";
+  folderName: "frames" | "sunglasses" | "lens-packages";
 }
 interface UserOptions extends BaseOptions {
   rootFolder: "user";

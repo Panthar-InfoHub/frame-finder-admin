@@ -70,7 +70,7 @@ export default function AddFrameForm() {
         return;
       }
       toast.success("Product created successfully");
-      router.push("/dashboard/products");
+      router.push("/dashboard/products/frames");
     });
   };
 

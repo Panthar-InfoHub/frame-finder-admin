@@ -72,7 +72,7 @@ export default function AddSunglassesForm() {
         return;
       }
       toast.success("Product created successfully");
-      router.push("/dashboard/products");
+      router.push("/dashboard/products/sunglasses");
     });
   };
 

@@ -19,12 +19,11 @@ import { ImageSection } from "../ui/custom/ImageSection";
 import { getSignedViewUrl } from "@/actions/cloud-storage";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
-import AddValueDialog from "./addValueDialog";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
     files,
-    folder: { rootFolder: "vendor", folderName: "lens-pacakages" },
+    folder: { rootFolder: "vendor", folderName: "lens-packages" },
   });
   toast(`Uploaded ${success.length} images successfully, Failed - ${failed.length}`);
   return success.map((item) => item.path);
