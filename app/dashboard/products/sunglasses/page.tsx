@@ -1,4 +1,4 @@
-import { getAllFrames } from "@/actions/vendors/products";
+import { getAllSunglasses } from "@/actions/vendors/products";
 import ProductsTable from "@/components/products/productsTable";
 import SectionFilterSort from "@/components/products/SectionFilterSort";
 import SectionHeader from "@/components/products/SectionHeader";
@@ -7,18 +7,18 @@ import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
 import React, { Suspense } from "react";
 
-const FramesTable = async () => {
-  const resp = await getAllFrames();
-  return <ProductsTable products={resp?.data?.products} />;
+const SunglassesTable = async () => {
+  const resp = await getAllSunglasses();
+  return <ProductsTable products={resp?.data?.sunglass} type="sunglasses" />;
 };
 
 const page = () => {
   return (
     <div className="flex flex-col gap-6">
-      <SectionHeader title="Frames" link={`add?type=frames`} />
+      <SectionHeader title="Sunglasses" link={`add?type=sunglasses`} />
       <SectionFilterSort />
       <Suspense fallback={<DashboardSkeleton />}>
-        <FramesTable />
+        <SunglassesTable />
       </Suspense>
     </div>
   );

@@ -7,7 +7,7 @@ import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 import React, { Suspense } from "react";
 
 const ContactLensTable = async () => {
-  return <ProductsTable products={[]} />;
+  return <ProductsTable products={[]} type="contact-lens" />;
 };
 
 const page = () => {
