@@ -8,7 +8,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -62,7 +67,7 @@ export function PackagesTable({ products }: { products: any[] }) {
           <TableHead>Price</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Code</TableHead>
-          <TableHead>Edit</TableHead>
+          <TableHead>Options</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -78,10 +83,19 @@ export function PackagesTable({ products }: { products: any[] }) {
             </TableCell>
             <TableCell className="font-mono text-xs">{pkg.packageCode}</TableCell>
             <TableCell className="font-semibold">
-                <Button variant={"outline"} size={"sm"} asChild>
-                  <Link href={`/dashboard/lens-packages/edit-lens-package?id=${pkg._id}&type=frame`}>Edit</Link>
-                </Button>
-              </TableCell>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size={"icon"}>
+                    &#x22EE;
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem asChild>
+                    <Link href="#">View Details</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

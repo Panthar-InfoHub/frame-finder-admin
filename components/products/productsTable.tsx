@@ -10,14 +10,18 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 function ProductsTable({ products }: { products: any[] }) {
-
-  console.log("---------------------- products data-----------",products)
+  console.log("---------------------- products data-----------", products);
   if (!products || products.length === 0) {
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
-
 
   return (
     <Table>
@@ -29,7 +33,7 @@ function ProductsTable({ products }: { products: any[] }) {
           <TableHead>Code</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Price</TableHead>
-          <TableHead>Edit</TableHead>
+          <TableHead>Options</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -81,9 +85,23 @@ function ProductsTable({ products }: { products: any[] }) {
                 </Badge>
               </TableCell>
               <TableCell className="font-semibold">
-                <Button variant={"outline"} size={"sm"} asChild>
-                  <Link href={`/dashboard/products/edit-product?id=${product._id}&type=frames`}>Edit</Link>
-                </Button>
+                {/* <Button variant={"outline"} size={"sm"} asChild>
+                  <Link href={`/dashboard/products/edit-product?id=${product._id}&type=frames`}>
+                    Edit
+                  </Link>
+                </Button> */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size={"icon"}>
+                      &#x22EE;
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem asChild>
+                      <Link href="#">View Details</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           );

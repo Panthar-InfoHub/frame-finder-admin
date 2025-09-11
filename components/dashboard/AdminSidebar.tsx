@@ -36,7 +36,7 @@ export type NavItem =
       badge?: string;
       url?: never;
     };
-
+    
 const BaseLinks: NavItem[] = [
   {
     title: "Dashboard",
