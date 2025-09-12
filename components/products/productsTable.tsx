@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 function ProductsTable({ products }: { products: any[] }) {
+
+  console.log("---------------------- products data-----------",products)
   if (!products || products.length === 0) {
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
@@ -80,7 +82,7 @@ function ProductsTable({ products }: { products: any[] }) {
               </TableCell>
               <TableCell className="font-semibold">
                 <Button variant={"outline"} size={"sm"} asChild>
-                  <Link href={`/dashboard/products/edit-product/${product._id}?type=frames`}>Edit</Link>
+                  <Link href={`/dashboard/products/edit-product?id=${product._id}&type=frames`}>Edit</Link>
                 </Button>
               </TableCell>
             </TableRow>

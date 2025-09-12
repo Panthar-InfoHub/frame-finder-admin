@@ -14,7 +14,7 @@ const getFormByType = (type: string) => {
   }
 };
 
-const page = async ({ searchParams }: { searchParams: Promise<{ type?: string }> }) => {
+const page = async ({ searchParams }: { searchParams: Promise<{ type?: string ,id?:string}> }) => {
   const allowedTypes = ["frame", "sunglass"];
 
   const { type } = await searchParams;
