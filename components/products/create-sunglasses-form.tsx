@@ -12,8 +12,6 @@ import {
   MultiSelectValue,
 } from "@/components/ui/custom/multi-select";
 import { createSunglassAction } from "@/actions/vendors/products";
-
-import { z } from "zod";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { ImageSection } from "@/components/ui/custom/ImageSection";
@@ -27,30 +25,7 @@ import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { useRouter } from "next/navigation";
-
-const SunglassSchema = z.object({
-  brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
-  frame_color: z.array(z.string()).min(1, "Add at least one frame color"),
-  temple_color: z.array(z.string()).min(1, "Add at least one temple color"),
-  lens_color: z.array(z.string()).min(1, "Add at least one lens color"),
-  quantity: z.coerce.number().positive("Quantity must be positive"),
-  min_quantity: z.coerce.number().optional(),
-  max_quantity: z.coerce.number().optional(),
-  is_power: z.boolean("Les Power must be boolean"),
-  gender: z.array(z.string()).min(1, "Select at least one gender"),
-  style: z.array(z.string()).min(1, "Select at least one style"),
-  material: z.array(z.string()).min(1, "Select at least one material"),
-  shape: z.array(z.string()).min(1, "Select at least one shape"),
-  sizes: z.array(z.string()).min(1, "Select at least one size"),
-  hsn_code: z.string().min(1, "HSN/SAC code is required"),
-  mrp: z.coerce.number().positive("MRP must be positive"),
-  base_price: z.coerce.number().positive("Base price must be positive"),
-  shipping_price: z.coerce.number().min(0, "Shipping price cannot be negative"),
-  price: z.coerce.number().positive("Total price must be positive"),
-  images: z.array(z.object({ url: z.string().url() })).min(1, "Upload at least one image"),
-});
-export type SunglassFormData = z.infer<typeof SunglassSchema>;
+import { SunglassSchema } from "@/lib/validations";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -83,7 +58,6 @@ export default function AddSunglassesForm() {
     const formdata = new FormData(e.currentTarget);
     const imagesData = images.map((url) => ({ url }));
     formdata.append("images", JSON.stringify(imagesData));
-
 
     const result = SunglassSchema.safeParse(normalizeObject(formdata, ["hsn_code"]));
     if (!result.success) {
@@ -262,7 +236,7 @@ export default function AddSunglassesForm() {
                     </MultiSelectItem>
                   ))}
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="material" onValueAdded={fetchOptions}/>
+                  <AddValueDialog type="material" onValueAdded={fetchOptions} />
                 </div>
               </MultiSelectContent>
             </MultiSelect>

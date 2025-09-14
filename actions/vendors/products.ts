@@ -1,11 +1,10 @@
 "use server";
 
 import { getAccessToken, getSession } from "@/actions/session";
-import { FrameFormData } from "@/components/products/create-frame-form";
-import { SunglassFormData } from "@/components/products/create-sunglasses-form";
+import { FrameFormDataType, SunglassFormDataType } from "@/lib/validations";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";
 
-export const createFrameAction = async (data: FrameFormData) => {
+export const createFrameAction = async (data: FrameFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
@@ -61,7 +60,7 @@ export const getAllFrames = async () => {
   }
 };
 
-export const createSunglassAction = async (data: SunglassFormData) => {
+export const createSunglassAction = async (data: SunglassFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
