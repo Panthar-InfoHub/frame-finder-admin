@@ -1,6 +1,6 @@
 "use server";
 
-import { getAccessToken, getSession } from "@/actions/auth/session";
+import { getAccessToken, getSession } from "@/actions/session";
 import { FrameFormData } from "@/components/products/create-frame-form";
 import { SunglassFormData } from "@/components/products/create-sunglasses-form";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";

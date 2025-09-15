@@ -2,7 +2,7 @@
 
 import { API_URL } from "@/utils/helpers";
 import { redirect } from "next/navigation";
-import { createSession, destroySession } from "./session";
+import { createSession, destroySession } from "@/actions/session";
 
 export async function loginAction(formData: FormData) {
   const email = formData.get("email") as string;

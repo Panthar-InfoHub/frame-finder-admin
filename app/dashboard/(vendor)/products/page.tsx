@@ -1,4 +1,4 @@
-import { getSession } from "@/actions/auth/session";
+import { getSession } from "@/actions/session";
 
 import AddProductDialog from "@/components/products/addProductDialog";
 

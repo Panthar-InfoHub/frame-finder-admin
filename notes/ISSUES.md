@@ -1,4 +1,3 @@
-- when addind value in misc value in vendor it is not returning the valuein formdata field
-- refactor and reorganise the actions and loading folders
 - get all frames - endpoint must be renamed from backend
-- some of the api endpoint are returning the html from backend
+
+Error: getaddrinfo ENOTFOUND frame-finder-backend-890181406313.europe-west1.run.app

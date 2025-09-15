@@ -1,7 +1,7 @@
 // utils/uploadToCloud.ts
 "use client";
 
-import { CloudfoldersType, getSignedUploadUrl } from "@/actions/cloud/storage"; // adjust path
+import { CloudfoldersType, getSignedUploadUrl } from "@/actions/cloud-storage"; // adjust path
 
 export async function uploadFilesToCloud({
   files,

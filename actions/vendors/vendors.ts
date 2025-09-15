@@ -1,6 +1,6 @@
 "use server";
 
-import { createSession, getAccessToken } from "@/actions/auth/session";
+import { createSession, getAccessToken } from "@/actions/session";
 
 import { VendorRegisterData } from "@/types";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";

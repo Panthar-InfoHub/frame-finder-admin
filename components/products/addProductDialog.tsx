@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { Glasses, Sun, Eye } from "lucide-react";
-import { keyof } from "zod";
 
 const Products = [
   { name: "Frames", icon: Glasses, type: "frames" },

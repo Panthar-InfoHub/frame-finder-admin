@@ -1,5 +1,5 @@
 "use client";
-import { loginAction } from "@/actions/auth/auth-actions";
+import { loginAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

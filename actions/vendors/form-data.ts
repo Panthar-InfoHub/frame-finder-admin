@@ -1,8 +1,7 @@
 "use server";
 
 import { API_URL, getAuthHeaders } from "@/utils/helpers";
-import { getAccessToken } from "./auth/session";
-
+import { getAccessToken } from "../session";
 
 export const getFrameFormData = async () => {
   try {
@@ -16,7 +15,7 @@ export const getFrameFormData = async () => {
     const data = await response.json();
 
     console.log("Frame Form Data:", data);
-    
+
     if (!response.ok || !data?.success) {
       throw new Error("Failed to fetch frame form data");
     }

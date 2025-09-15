@@ -1,4 +1,4 @@
-import { getSession } from "@/actions/auth/session";
+import { getSession } from "@/actions/session";
 import LogoutButton from "@/components/dashboard/LogoutButton";
 import Link from "next/link";
 import React, { Suspense } from "react";
@@ -28,7 +28,7 @@ const page = () => {
 
 const AuthBtns = async () => {
   const { user } = await getSession();
-  console.log(user)
+  console.log(user);
   if (user) {
     return (
       <LogoutButton className="bg-red-500 hover:bg-red-700 h-10 text-white font-bold py-2 px-4 rounded" />

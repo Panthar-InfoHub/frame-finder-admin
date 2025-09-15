@@ -1,6 +1,6 @@
 "use client";
 import React, { useTransition } from "react";
-import { Logout } from "@/actions/auth/auth-actions";
+import { Logout } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 
 const LogoutButton = ({ className }: { className?: string }) => {

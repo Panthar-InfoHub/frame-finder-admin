@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
-import { addVendorMiscValues } from "@/actions/Vendor Misc/addVendorMiscValues";
+import { addVendorMiscValues } from "@/actions/vendors/vendor-misc";
 import { toast } from "sonner";
 
 const AddValueDialog = ({

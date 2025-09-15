@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSession, MyJwtPayload } from "@/actions/auth/session";
+import { getSession, MyJwtPayload } from "@/actions/session";
 
 export function useSession() {
   const [session, setSession] = useState<{ user: MyJwtPayload | null }>({ user: null });

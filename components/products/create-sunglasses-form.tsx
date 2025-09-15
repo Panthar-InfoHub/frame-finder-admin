@@ -18,13 +18,13 @@ import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { ImageSection } from "@/components/ui/custom/ImageSection";
 import { ImageUploader } from "@/components/ui/custom/ImageUploader";
-import { getSignedViewUrl } from "@/actions/cloud/storage";
+import { getSignedViewUrl } from "@/actions/cloud-storage";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { InputTags } from "@/components/ui/custom/InputTags";
 import { Textarea } from "@/components/ui/textarea";
 import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
-import { getFrameFormData } from "@/actions/form-data";
+import { getFrameFormData } from "@/actions/vendors/form-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const SunglassSchema = z.object({
