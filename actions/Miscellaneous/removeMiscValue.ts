@@ -8,19 +8,7 @@ export interface RemoveMiscValueRequest {
   value: string;
 }
 
-export interface MiscResponse {
-  success: boolean;
-  message: string;
-  data: {
-    _id: string;
-    type: string;
-    values: string[];
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
-export async function removeMiscValue(request: RemoveMiscValueRequest): Promise<MiscResponse> {
+export async function removeMiscValue(request: RemoveMiscValueRequest) {
   try {
     const accessToken = await getAccessToken();
     const headers = getAuthHeaders(accessToken);
@@ -34,17 +22,10 @@ export async function removeMiscValue(request: RemoveMiscValueRequest): Promise<
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error removing misc value:", error);
+   
     return {
       success: false,
       message: "Failed to remove misc value",
-      data: {
-        _id: "",
-        type: request.type,
-        values: [],
-        createdAt: "",
-        updatedAt: "",
-      },
     };
   }
 }

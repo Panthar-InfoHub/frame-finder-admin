@@ -1,24 +1,24 @@
 "use server";
 
-import { ADMIN_API_URL } from "@/utils/helpers";
+import { API_URL } from "@/utils/helpers";
 import { redirect } from "next/navigation";
 import { createSession, destroySession } from "./session";
 
 export async function loginAction(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const type = formData.get("type") as string;
 
   try {
-    const response = await fetch(`${ADMIN_API_URL}/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, type }),
     });
 
     const data = await response.json();
 
     if (!response.ok || !data?.success) {
-      console.log("Login failed", data?.message || "Invalid credentials");
       return {
         success: false,
         message: data?.message || "Invalid credentials",

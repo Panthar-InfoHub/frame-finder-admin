@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table'
 import SearchForm from '@/components/vendors/searchBoxVendors'
 import { Vendor } from '@/types/vendor'
-import { getAllVendors } from '@/actions/vendors/getAllVendors'
+import { getAllVendors } from '@/actions/vendors/vendors'
 import { VendorTableActions } from '@/components/vendors/VendorTableActions'
 import { Plus, Store, Users, Star, MapPin, Mail, Phone } from 'lucide-react'
 
@@ -49,12 +49,12 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
                         Manage and monitor all registered vendors
                     </p>
                 </div>
-                <Button asChild>
+                {/* <Button asChild>
                     <Link href="/register-vendor">
                         <Plus className="h-4 w-4 mr-2" />
                         Add Vendor
                     </Link>
-                </Button>
+                </Button> */}
             </div>
 
             {/* Stats Cards */}
@@ -107,7 +107,7 @@ export default async function VendorsPage({ searchParams }: VendorsPageProps) {
             </div>
 
             {/* Search Bar */}
-            <SearchForm search={search} />
+            {/* <SearchForm search={search} /> */}
             {/* Vendors Table */}
             <Card>
                 <CardHeader>

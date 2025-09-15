@@ -3,18 +3,7 @@
 import { API_URL, getAuthHeaders } from "@/utils/helpers";
 import { getAccessToken } from "../auth/session";
 
-export interface MiscValuesByTypeResponse {
-  success: boolean;
-  data: {
-    _id: string;
-    type: string;
-    values: string[];
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
-export async function getMiscValuesByType(type: string): Promise<MiscValuesByTypeResponse> {
+export async function getMiscValuesByType(type: string) {
   try {
     const accessToken = await getAccessToken();
     const headers = getAuthHeaders(accessToken);
@@ -27,16 +16,11 @@ export async function getMiscValuesByType(type: string): Promise<MiscValuesByTyp
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching misc values by type:", error);
+   
     return {
       success: false,
-      data: {
-        _id: "",
-        type,
-        values: [],
-        createdAt: "",
-        updatedAt: "",
-      },
+      message: "Failed to fetch misc values",
+      data: null,
     };
   }
 }

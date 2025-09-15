@@ -1,35 +1,21 @@
 "use server";
 
 import { API_URL, getAuthHeaders } from "@/utils/helpers";
-import { getAccessToken } from "../auth/session";
+import { getAccessToken, getSession } from "../auth/session";
 
 export interface RemoveVendorMiscValueRequest {
   type: string;
   value: string;
 }
 
-export interface VendorMiscResponse {
-  success: boolean;
-  message: string;
-  data: {
-    _id: string;
-    vendorId: string;
-    type: string;
-    values: string[];
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
-export async function removeVendorMiscValue(
-  vendorId: string,
-  request: RemoveVendorMiscValueRequest
-): Promise<VendorMiscResponse> {
+export async function removeVendorMiscValue(request: RemoveVendorMiscValueRequest) {
   try {
     const accessToken = await getAccessToken();
+    const { user } = await getSession();
+
     const headers = getAuthHeaders(accessToken);
 
-    const response = await fetch(`${API_URL}/vendor-misc/${vendorId}`, {
+    const response = await fetch(`${API_URL}/vendor-misc/${user?.id}`, {
       method: "PUT",
       headers,
       body: JSON.stringify(request),
@@ -38,18 +24,9 @@ export async function removeVendorMiscValue(
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error removing vendor misc value:", error);
     return {
       success: false,
       message: "Failed to remove vendor misc value",
-      data: {
-        _id: "",
-        vendorId,
-        type: request.type,
-        values: [],
-        createdAt: "",
-        updatedAt: "",
-      },
     };
   }
 }

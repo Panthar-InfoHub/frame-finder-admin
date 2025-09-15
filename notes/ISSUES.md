@@ -1,0 +1,4 @@
+- when addind value in misc value in vendor it is not returning the valuein formdata field
+- refactor and reorganise the actions and loading folders
+- get all frames - endpoint must be renamed from backend
+- some of the api endpoint are returning the html from backend

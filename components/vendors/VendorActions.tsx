@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Vendor } from '@/types/vendor'
-import { deleteVendor } from '@/actions/vendors/deleteVendor'
+import { deleteVendor } from '@/actions/vendors/vendors'
 import { Edit, Trash2, Loader2 } from 'lucide-react'
 
 interface VendorActionsProps {

@@ -1,1 +1,0 @@
-make the auth check and role check in the api calls as well 

@@ -1,37 +1,30 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { 
-  Store, 
-  Users, 
-  TrendingUp, 
-  Star, 
-  Plus, 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import {
+  Store,
+  Users,
+  TrendingUp,
+  Star,
+  Plus,
   Eye,
   Calendar,
   DollarSign,
-  Activity
-} from 'lucide-react'
+  Activity,
+} from "lucide-react";
 
 export default function AdminDashboard() {
+  // TODO:  SHOW DASHBOARD based on role - for admin and vendor separately
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome to Frame Finder Admin Panel
-          </p>
+          <p className="text-muted-foreground">Welcome to Frame Finder Admin Panel</p>
         </div>
         <div className="flex gap-2">
-          <Button asChild>
-            <Link href="/register-vendor">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Vendor
-            </Link>
-          </Button>
           <Button variant="outline" asChild>
             <Link href="/admin/vendors">
               <Eye className="h-4 w-4 mr-2" />
@@ -50,12 +43,10 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">₹45,231</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
+            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Vendors</CardTitle>
@@ -63,12 +54,10 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">142</div>
-            <p className="text-xs text-muted-foreground">
-              +12 new this month
-            </p>
+            <p className="text-xs text-muted-foreground">+12 new this month</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
@@ -76,12 +65,10 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">2,350</div>
-            <p className="text-xs text-muted-foreground">
-              +180 new users
-            </p>
+            <p className="text-xs text-muted-foreground">+180 new users</p>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Avg. Rating</CardTitle>
@@ -89,9 +76,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">4.7</div>
-            <p className="text-xs text-muted-foreground">
-              +0.3 from last month
-            </p>
+            <p className="text-xs text-muted-foreground">+0.3 from last month</p>
           </CardContent>
         </Card>
       </div>
@@ -112,49 +97,55 @@ export default function AdminDashboard() {
                   vendor: "Tech Solutions Ltd",
                   action: "Profile Updated",
                   time: "2 hours ago",
-                  status: "success"
+                  status: "success",
                 },
                 {
                   vendor: "Creative Designs",
                   action: "New Registration",
                   time: "4 hours ago",
-                  status: "new"
+                  status: "new",
                 },
                 {
                   vendor: "Digital Services",
                   action: "Payment Received",
                   time: "6 hours ago",
-                  status: "success"
+                  status: "success",
                 },
                 {
                   vendor: "Print Solutions",
                   action: "Document Verification",
                   time: "1 day ago",
-                  status: "pending"
+                  status: "pending",
                 },
                 {
                   vendor: "Frame Crafters",
                   action: "Rating Updated",
                   time: "2 days ago",
-                  status: "info"
-                }
+                  status: "info",
+                },
               ].map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 rounded-lg border"
+                >
                   <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${
-                      activity.status === 'success' ? 'bg-green-500' :
-                      activity.status === 'new' ? 'bg-blue-500' :
-                      activity.status === 'pending' ? 'bg-yellow-500' :
-                      'bg-gray-500'
-                    }`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        activity.status === "success"
+                          ? "bg-green-500"
+                          : activity.status === "new"
+                          ? "bg-blue-500"
+                          : activity.status === "pending"
+                          ? "bg-yellow-500"
+                          : "bg-gray-500"
+                      }`}
+                    />
                     <div>
                       <p className="text-sm font-medium">{activity.vendor}</p>
                       <p className="text-xs text-muted-foreground">{activity.action}</p>
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {activity.time}
-                  </div>
+                  <div className="text-xs text-muted-foreground">{activity.time}</div>
                 </div>
               ))}
             </div>
@@ -201,46 +192,6 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Quick Actions
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Button asChild className="h-20 flex-col gap-2">
-              <Link href="/register-vendor">
-                <Plus className="h-6 w-6" />
-                <span>Add New Vendor</span>
-              </Link>
-            </Button>
-            
-            <Button asChild variant="outline" className="h-20 flex-col gap-2">
-              <Link href="/admin/vendors">
-                <Store className="h-6 w-6" />
-                <span>View All Vendors</span>
-              </Link>
-            </Button>
-            
-            <Button asChild variant="outline" className="h-20 flex-col gap-2">
-              <Link href="/admin/analytics">
-                <TrendingUp className="h-6 w-6" />
-                <span>View Analytics</span>
-              </Link>
-            </Button>
-            
-            <Button asChild variant="outline" className="h-20 flex-col gap-2">
-              <Link href="/admin/settings">
-                <Users className="h-6 w-6" />
-                <span>Manage Users</span>
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
-  )
+  );
 }
