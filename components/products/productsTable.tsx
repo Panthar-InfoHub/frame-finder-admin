@@ -80,7 +80,7 @@ function ProductsTable({ products }: { products: any[] }) {
               </TableCell>
               <TableCell className="font-semibold">
                 <Button variant={"outline"} size={"sm"} asChild>
-                  <Link href={`/dashboard/products/edit-product/${product._id}`}>Edit</Link>
+                  <Link href={`/dashboard/products/edit-product/${product._id}?type=frames`}>Edit</Link>
                 </Button>
               </TableCell>
             </TableRow>

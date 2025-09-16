@@ -9,6 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 const data = [
   {
@@ -60,6 +62,7 @@ export function PackagesTable({ products }: { products: any[] }) {
           <TableHead>Price</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Code</TableHead>
+          <TableHead>Edit</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -74,6 +77,11 @@ export function PackagesTable({ products }: { products: any[] }) {
               {pkg.stock.current} / {pkg.stock.maximum}
             </TableCell>
             <TableCell className="font-mono text-xs">{pkg.packageCode}</TableCell>
+            <TableCell className="font-semibold">
+                <Button variant={"outline"} size={"sm"} asChild>
+                  <Link href={`/dashboard/lens-packages/edit-lens-package/${pkg._id}?type=frame`}>Edit</Link>
+                </Button>
+              </TableCell>
           </TableRow>
         ))}
       </TableBody>

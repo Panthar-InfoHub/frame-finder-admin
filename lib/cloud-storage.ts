@@ -29,10 +29,13 @@ export async function uploadFilesToCloud({
     })
   );
 
+  console.log(signedUrls);
+
   // Step 2: upload files directly to signed URLs
   const uploadResults = await Promise.allSettled(
     signedUrls.map(async (item) => {
       if ("error" in item) {
+        console.log(item.error);
         throw new Error(item.error); // skip if failed to get signed url
       }
 
@@ -42,6 +45,7 @@ export async function uploadFilesToCloud({
         headers: { "Content-Type": file.type },
         body: file,
       });
+      console.log(res);
 
       if (!res.ok) {
         throw new Error(`Upload failed for ${file.name}`);

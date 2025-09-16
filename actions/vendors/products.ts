@@ -49,7 +49,6 @@ export const getAllFrames = async () => {
     });
 
     const data = await resp.json();
-
     if (!resp.ok || !data.success) {
       throw new Error(data.message || "Failed to fetch frames");
     }
