@@ -49,7 +49,6 @@ const FrameLensPackageForm = () => {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const data = normalizeObject(Object.fromEntries(formData.entries()));
-    console.log(data);
   };
 
   return (

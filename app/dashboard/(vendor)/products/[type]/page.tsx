@@ -102,7 +102,6 @@ const SunglassesTab = async () => {
 
 const FramesTab = async () => {
   const resp = await getAllFrames();
-  console.log(resp)
   return <ProductsTable products={resp?.data?.products} />;
 };
 

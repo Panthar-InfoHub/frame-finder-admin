@@ -25,7 +25,6 @@ export const createFrameAction = async (data: FrameFormData) => {
       headers: getAuthHeaders(token),
       body: JSON.stringify(finalData),
     });
-    console.log("Final Data to be sent:", finalData);
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);

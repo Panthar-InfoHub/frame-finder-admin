@@ -114,14 +114,12 @@ const LensPackagePage = async () => {
 
 const SunglassesTab = async () => {
   const resp = await getAllSunglassLensPackages();
-  console.log(resp);
   return <PackagesTable products={resp?.data?.lensPackage} />;
 };
 
 // Frames tab server component
 const FramesTab = async () => {
   const resp = await getAllFrameLensPackages();
-  console.log(resp);
   return <PackagesTable products={resp?.data?.lensPackage} />;
 };
 
