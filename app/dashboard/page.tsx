@@ -13,6 +13,10 @@ import {
   DollarSign,
   Activity,
 } from "lucide-react";
+import { ChartAreaInteractive } from "@/components/dashboard/chart-area";
+import { ChartRadarDots } from "@/components/dashboard/chart-radar";
+import { ChartBarDefault } from "@/components/dashboard/chart-bar";
+import { ChartPieSeparatorNone } from "@/components/dashboard/chart-pie";
 
 export default function AdminDashboard() {
   // TODO:  SHOW DASHBOARD based on role - for admin and vendor separately
@@ -21,7 +25,9 @@ export default function AdminDashboard() {
       {/* Page Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <div className="bg-green-600 px-3 py-2 flex justify-center rounded">
+            <span className="text-white font-bold text-lg">FrameFinder</span>
+          </div>
           <p className="text-muted-foreground">Welcome to Frame Finder Admin Panel</p>
         </div>
         <div className="flex gap-2">
@@ -81,6 +87,14 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
+      <div>
+        <ChartAreaInteractive/>
+      </div>
+      <div className="flex justify-around">
+        <ChartRadarDots/>
+        <ChartPieSeparatorNone/>
+        <ChartBarDefault/>
+      </div>
       {/* Recent Activity */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
