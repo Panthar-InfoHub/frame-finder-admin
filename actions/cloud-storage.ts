@@ -38,18 +38,14 @@ export async function getSignedUploadUrl({
   const file = bucket.file(`${rootFolder}/${folderName}/${Date.now()}-${filename}`);
   console.log(bucket, file.name);
 
-  try {
-    const [url] = await file.getSignedUrl({
-      version: "v4",
-      action: "write",
-      expires: Date.now() + 5 * 60 * 1000, // valid 5 min
-      contentType,
-    });
-    return { url, path: file.name }; // return signed URL + final file path
-  } catch (error) {
-    console.log("error in getting signed url ------------------", error);
-    return { url: "", path: "" };
-  }
+  const [url] = await file.getSignedUrl({
+    version: "v4",
+    action: "write",
+    expires: Date.now() + 5 * 60 * 1000, // valid 5 min
+    contentType,
+  });
+  
+  return { url, path: file.name }; // return signed URL + final file path
 }
 
 export async function getSignedViewUrl(url: string) {
