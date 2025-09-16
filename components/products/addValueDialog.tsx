@@ -1,3 +1,4 @@
+"use client";
 import React, { useTransition } from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -17,11 +18,13 @@ const AddValueDialog = ({
   btnText = "Add Value",
   btnClassName,
   children,
+  onValueAdded,
 }: {
   type: string;
   btnText?: string;
   btnClassName?: string;
   children?: React.ReactNode;
+  onValueAdded?: () => void;
 }) => {
   const [isPending, startTransition] = useTransition();
 
@@ -34,14 +37,13 @@ const AddValueDialog = ({
     const formData = new FormData(form);
     const value = formData.get(`${type}-value`) as string;
 
-
     startTransition(async () => {
       const resp = await addVendorMiscValues({ type, values: [value] });
       if (!resp.success) {
         toast.error(`Failed to add value: ${resp.message}`);
         return;
       }
-      console.log("Add value response:", resp);
+      await onValueAdded?.();
       toast.success("Value added successfully");
       setIsOpen(false);
     });

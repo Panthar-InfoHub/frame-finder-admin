@@ -288,6 +288,7 @@ export function MultiSelectContent({
 export function MultiSelectItem({
   value,
   children,
+  className,
   badgeLabel,
   onSelect,
   ...props
@@ -305,6 +306,7 @@ export function MultiSelectItem({
   return (
     <CommandItem
       {...props}
+      className={cn("cursor-pointer select-none capitalize", className)}
       onSelect={() => {
         toggleValue(value);
         onSelect?.(value);

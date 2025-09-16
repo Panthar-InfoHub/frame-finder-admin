@@ -26,6 +26,7 @@ import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useRouter } from "next/navigation";
 
 const SunglassSchema = z.object({
   brand_name: z.string().min(1, "Brand name is required"),
@@ -64,10 +65,11 @@ const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
 };
 
 export default function AddSunglassesForm() {
-  const genders = ["Male", "Female", "Kids", "unisex"];
+  const genders = ["male", "female", "kids", "unisex"];
   const sizes = ["S", "M", "L", "XL"];
 
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const [options, setOptions] = useState<Record<string, string[]>>({});
   const [images, setImages] = useState<string[]>([]);
@@ -91,14 +93,15 @@ export default function AddSunglassesForm() {
     }
 
     console.log("Final form data:", result.data);
-    // startTransition(async () => {
-    //   const resp = await createSunglassAction(result.data);
-    //   if (!resp.success) {
-    //     toast.success(resp.message || "Failed to create product");
-    //     return;
-    //   }
-    //   toast.success("Product created successfully");
-    // });
+    startTransition(async () => {
+      const resp = await createSunglassAction(result.data);
+      if (!resp.success) {
+        toast.success(resp.message || "Failed to create product");
+        return;
+      }
+      toast.success("Product created successfully");
+      router.push("/dashboard/products");
+    });
   };
 
   async function fetchOptions() {
@@ -262,7 +265,7 @@ export default function AddSunglassesForm() {
                     </MultiSelectItem>
                   ))}
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="material" />
+                  <AddValueDialog type="material" onValueAdded={fetchOptions}/>
                 </div>
               </MultiSelectContent>
             </MultiSelect>
@@ -281,9 +284,8 @@ export default function AddSunglassesForm() {
                     </MultiSelectItem>
                   ))}
 
-                <p>{JSON.stringify(options?.shape)}</p>
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="shape" />
+                  <AddValueDialog type="shape" onValueAdded={fetchOptions} />
                 </div>
               </MultiSelectContent>
             </MultiSelect>
@@ -301,7 +303,7 @@ export default function AddSunglassesForm() {
                   </MultiSelectItem>
                 ))}
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="style" />
+                  <AddValueDialog type="style" onValueAdded={fetchOptions} />
                 </div>
               </MultiSelectContent>
             </MultiSelect>

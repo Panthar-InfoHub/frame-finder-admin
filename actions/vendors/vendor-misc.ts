@@ -27,6 +27,7 @@ export async function addVendorMiscValues(request: AddVendorMiscRequest) {
       throw new Error(data.message || "Failed to add vendor misc values");
     }
     revalidatePath("/dashboard/products/add-product");
+    
     return { success: true, message: "Vendor misc values added successfully" };
   } catch (error) {
     return {

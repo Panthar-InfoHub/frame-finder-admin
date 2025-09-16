@@ -235,7 +235,7 @@ export default function AddFrameForm() {
                     </MultiSelectItem>
                   ))}
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="material" />
+                  <AddValueDialog type="material" onValueAdded={fetchOptions} />
                 </div>
               </MultiSelectContent>
             </MultiSelect>
@@ -253,9 +253,8 @@ export default function AddFrameForm() {
                       {shape}
                     </MultiSelectItem>
                   ))}
-                <MultiSelectItem value="dummy">Dummy</MultiSelectItem>
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="shape" />
+                  <AddValueDialog type="shape" onValueAdded={fetchOptions} />
                 </div>
               </MultiSelectContent>
             </MultiSelect>
@@ -272,9 +271,8 @@ export default function AddFrameForm() {
                     {style}
                   </MultiSelectItem>
                 ))}
-                <MultiSelectItem value="dummy">Dummy</MultiSelectItem>
                 <div className="p-2 border-t ">
-                  <AddValueDialog type="style" />
+                  <AddValueDialog type="style" onValueAdded={fetchOptions} />
                 </div>
               </MultiSelectContent>
             </MultiSelect>
@@ -287,7 +285,7 @@ export default function AddFrameForm() {
               </MultiSelectTrigger>
               <MultiSelectContent search={false}>
                 {sizes.map((size) => (
-                  <MultiSelectItem key={size} value={size}>
+                  <MultiSelectItem key={size} value={size} className="capitalize">
                     {size}
                   </MultiSelectItem>
                 ))}

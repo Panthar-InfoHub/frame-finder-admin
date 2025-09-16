@@ -1,5 +1,5 @@
 "use client";
-import { Home, Store, Settings, Package, User } from "lucide-react";
+import { Home, Store, Settings, Package, User, PackagePlus, Glasses, Eye, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,19 +12,30 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  SidebarMenuSub,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useSession } from "@/hooks/use-session";
 import { Role } from "@/utils/permissions";
 import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 
-interface NavItem {
-  title: string;
-  url: string;
-  icon: React.ElementType;
-  badge?: string;
-}
+export type NavItem =
+  | {
+      title: string;
+      icon: React.ElementType;
+      url: string; // required for leaf items
+      badge?: string;
+      children?: never; // explicitly disallow children
+    }
+  | {
+      title: string;
+      icon: React.ElementType;
+      children: NavItem[]; // required for groups
+      badge?: string;
+      url?: never; // explicitly disallow url
+    };
 
 const BaseLinks: NavItem[] = [
   {
@@ -51,9 +62,30 @@ const VendorLinks: NavItem[] = [
   ...BaseLinks,
   {
     title: "Products",
-    url: "/dashboard/products",
+    // url: "/dashboard/products",
     icon: Package,
-    badge: "New",
+    children: [
+      {
+        title: "Frames",
+        url: "/dashboard/products/frames",
+        icon: Glasses,
+      },
+      {
+        title: "Sunglasses",
+        url: "/dashboard/products/sunglasses",
+        icon: Sun,
+      },
+      {
+        title: "Contact Lens",
+        url: "/dashboard/products/contact-lens",
+        icon: Eye,
+      },
+    ],
+  },
+  {
+    title: "Lens Packages",
+    url: "/dashboard/lens-packages",
+    icon: PackagePlus,
   },
   ...CommonLinks,
 ];
@@ -107,27 +139,84 @@ export function AppSidebar() {
 
       <SidebarContent className="px-4 py-4">
         <SidebarMenu className="space-y-1">
-          {navItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                className={cn(
-                  "w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                  pathname === item.url && "bg-primary/10 text-accent-foreground"
-                )}
-              >
-                <Link href={item.url}>
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.title}</span>
-                  {item?.badge && (
-                    <Badge variant="default" className="ml-auto h-5 text-xs">
-                      {item?.badge}
-                    </Badge>
+          {navItems.map((item) =>
+            item.children ? (
+              <Collapsible key={item.title} defaultOpen className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton className="w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                      {item?.badge && (
+                        <Badge variant="default" className="ml-auto h-5 text-xs">
+                          {item?.badge}
+                        </Badge>
+                      )}
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {item.children.map((sub) => (
+                        <SidebarMenuItem key={sub.title}>
+                          <Link
+                            href={sub.url || "#"}
+                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                          >
+                            <sub.icon className="h-4 w-4" />
+                            <span>{sub.title}</span>
+                          </Link>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+            ) : (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  className={cn(
+                    "w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                    pathname === item.url && "bg-primary/10 text-accent-foreground"
                   )}
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                >
+                  <Link href={item.url}>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.title}</span>
+                    {item?.badge && (
+                      <Badge variant="default" className="ml-auto h-5 text-xs">
+                        {item?.badge}
+                      </Badge>
+                    )}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )
+          )}
+
+          {/* <SidebarMenu>
+            <Collapsible defaultOpen className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton className="w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+                    <Package className="h-4 w-4" />
+                    <span>Products</span>
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuItem>
+                      <Link href={"#"} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+                        <Glasses className="h-4 w-4" />
+                        <span>Frames</span>
+                        
+                      </Link>
+                    </SidebarMenuItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          </SidebarMenu> */}
         </SidebarMenu>
       </SidebarContent>
 
