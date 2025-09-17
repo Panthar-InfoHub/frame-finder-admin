@@ -87,7 +87,7 @@ const page = () => {
                     Multivendor Eyewear Platform
                   </Badge>
                   <h1 className="text-3xl text-black font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Revolutionizing India's <span className="text-green-600">Eyewear Business</span>
+                    Revolutionizing India&apos;s <span className="text-green-600">Eyewear Business</span>
                   </h1>
                   <p className="text-lg text-green-600 font-semibold italic">An eyewear hub</p>
                   <p className="max-w-[600px] text-gray-600 md:text-xl">
@@ -189,7 +189,7 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600 leading-relaxed">
-                      To revolutionize India's eyewear industry by creating a comprehensive digital ecosystem that
+                      To revolutionize India&apos;s eyewear industry by creating a comprehensive digital ecosystem that
                       empowers optical vendors to expand their reach nationwide. We aim to make quality eyewear accessible
                       to every Indian while supporting local businesses in their digital transformation journey.
                     </p>
@@ -204,7 +204,7 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600 leading-relaxed">
-                      To become India's most trusted and comprehensive eyewear marketplace, where every optical vendor,
+                      To become India&apos;s most trusted and comprehensive eyewear marketplace, where every optical vendor,
                       regardless of size or location, can thrive in the digital age. We envision a future where quality
                       eyewear is just a click away for every Indian, supported by a network of empowered local businesses.
                     </p>
@@ -340,7 +340,7 @@ const page = () => {
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">How FrameFinder Works</h2>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Simple steps to join India's largest eyewear marketplace
+                    Simple steps to join India&apos;s largest eyewear marketplace
                   </p>
                 </div>
               </div>
@@ -441,13 +441,13 @@ const page = () => {
           </div>
         </section>
 
-        {/*Vendor FAQ's Section */}
+        {/*Vendor FAQ&apos;s Section */}
         <section id="features" className="  w-full py-12 md:py-24 lg:py-32">
           <div className=" flex items-center justify-center">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Vendor's FAQ</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Vendor&apos;s FAQ</h2>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Here are answers to the most comman questions we recieved from vendors 
                   </p>
@@ -463,7 +463,7 @@ const page = () => {
         <AccordionTrigger> Q1. Is there a fee to join FrameFinder?</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
           <p>
-            No! We're currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders.
+            No! We&apos;re currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders.
           </p>
         </AccordionContent>
       </AccordionItem>
@@ -487,7 +487,7 @@ const page = () => {
         <AccordionTrigger>Q4. Who handles shipping and returns?</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
           <p>
-            We've partnered with courier services for delivery. You pack the product — we handle pickup and return logistics.
+            We&apos;ve partnered with courier services for delivery. You pack the product — we handle pickup and return logistics.
           </p>
         </AccordionContent>
       </AccordionItem>
@@ -503,7 +503,7 @@ const page = () => {
         <AccordionTrigger>Q6. How do I receive payments?</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
           <p>
-            You'll receive direct bank transfers on a weekly cycle, minus the platform commission.
+            You&apos;ll receive direct bank transfers on a weekly cycle, minus the platform commission.
           </p>
         </AccordionContent>
       </AccordionItem>
@@ -689,7 +689,7 @@ const page = () => {
     {
       id: 1,
       title: "Is there a fee to join FrameFinder?",
-      content : "No! We're currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders."
+      content : "No! We&apos;re currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders."
     },
     {
       id: 2,
@@ -714,7 +714,7 @@ const page = () => {
     {
       id: 6,
       title: "How do I receive payments?",
-      content : "You'll receive direct bank transfers on a weekly cycle, minus the platform commission."
+      content : "You&apos;ll receive direct bank transfers on a weekly cycle, minus the platform commission."
     },
     {
       id: 7,
