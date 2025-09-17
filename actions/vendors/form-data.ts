@@ -14,8 +14,6 @@ export const getFrameFormData = async () => {
 
     const data = await response.json();
 
-    console.log("Frame Form Data:", data);
-
     if (!response.ok || !data?.success) {
       throw new Error("Failed to fetch frame form data");
     }

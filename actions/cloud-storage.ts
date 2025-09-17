@@ -44,7 +44,7 @@ export async function getSignedUploadUrl({
     expires: Date.now() + 5 * 60 * 1000, // valid 5 min
     contentType,
   });
-
+  
   return { url, path: file.name }; // return signed URL + final file path
 }
 

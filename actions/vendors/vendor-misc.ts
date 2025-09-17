@@ -22,7 +22,6 @@ export async function addVendorMiscValues(request: AddVendorMiscRequest) {
     });
 
     const data = await response.json();
-    console.log(data);
     if (!response.ok || !data.success) {
       throw new Error(data.message || "Failed to add vendor misc values");
     }
@@ -73,7 +72,6 @@ export async function getVendorMiscById(vendorId: string, type: string) {
     });
 
     const data = await response.json();
-    console.log("data", data);
     return data;
   } catch (error) {
     return {

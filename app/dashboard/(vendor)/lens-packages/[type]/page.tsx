@@ -1,4 +1,9 @@
+import {
+  getAllFrameLensPackages,
+  getAllSunglassLensPackages,
+} from "@/actions/vendors/lens-package";
 import { getAllFrames, getAllSunglasses } from "@/actions/vendors/products";
+import { PackagesTable } from "@/components/products/lensPackageTable";
 import ProductsTable from "@/components/products/productsTable";
 import { Button } from "@/components/ui/button";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
@@ -15,15 +20,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
 
-const getProductComponent = (type: string) => {
+const getPackageComponent = (type: string) => {
   switch (type) {
-    case "sunglasses":
+    case "sunglass":
       return (
         <Suspense fallback={<DashboardSkeleton />}>
           <SunglassesTab />
         </Suspense>
       );
-    case "frames":
+    case "frame":
       return (
         <Suspense fallback={<DashboardSkeleton />}>
           <FramesTab />
@@ -40,20 +45,20 @@ const getProductComponent = (type: string) => {
 
 const page = async ({ params }: { params: Promise<{ type?: string }> }) => {
   const { type } = await params;
-  const allowedTypes = ["sunglasses", "frames", "contact-lens"];
+  const allowedTypes = ["sunglass", "frame"];
 
   if (!type || !allowedTypes.includes(type)) {
     return redirect("/dashboard");
   }
 
-  const ProductComponent = getProductComponent(type);
+  const PackageComponent = getPackageComponent(type);
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold capitalize">{type}</h1>
+        <h1 className="text-2xl font-bold capitalize">{type} Lens Packages</h1>
         <Button>
-          <Link href={`/dashboard/products/add-product?type=${type}`}>Add New</Link>
+          <Link href={`/dashboard/lens-packages/add-lens-package?type=${type}`}>Add New</Link>
         </Button>
       </div>
       <div className="flex items-center justify-between gap-4 w-full">
@@ -90,19 +95,20 @@ const page = async ({ params }: { params: Promise<{ type?: string }> }) => {
           </Button>
         </div>
       </div>
-      {ProductComponent}
+      {PackageComponent}
     </div>
   );
 };
 
 const SunglassesTab = async () => {
-  const resp = await getAllSunglasses();
-  return <ProductsTable products={resp?.data?.sunglass} />;
+  const resp = await getAllSunglassLensPackages();
+  return <PackagesTable products={resp?.data?.lensPackage} />;
 };
 
+// Frames tab server component
 const FramesTab = async () => {
-  const resp = await getAllFrames();
-  return <ProductsTable products={resp?.data?.products} />;
+  const resp = await getAllFrameLensPackages();
+  return <PackagesTable products={resp?.data?.lensPackage} />;
 };
 
 export default page;

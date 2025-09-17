@@ -79,7 +79,7 @@ export function PackagesTable({ products }: { products: any[] }) {
             <TableCell className="font-mono text-xs">{pkg.packageCode}</TableCell>
             <TableCell className="font-semibold">
                 <Button variant={"outline"} size={"sm"} asChild>
-                  <Link href={`/dashboard/lens-packages/edit-lens-package/${pkg._id}?type=frame`}>Edit</Link>
+                  <Link href={`/dashboard/lens-packages/edit-lens-package?id=${pkg._id}&type=frame`}>Edit</Link>
                 </Button>
               </TableCell>
           </TableRow>

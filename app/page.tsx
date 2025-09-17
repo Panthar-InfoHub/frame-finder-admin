@@ -728,7 +728,6 @@ const page = () => {
 
 const AuthBtns = async () => {
   const { user } = await getSession();
-  console.log(user);
   if (user) {
     return (
       <LogoutButton className="bg-red-500 hover:bg-red-700 h-10 text-white font-bold py-2 px-4 rounded" />

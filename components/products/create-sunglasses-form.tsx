@@ -84,7 +84,6 @@ export default function AddSunglassesForm() {
     const imagesData = images.map((url) => ({ url }));
     formdata.append("images", JSON.stringify(imagesData));
 
-    console.log(normalizeObject(formdata, ["hsn_code"]));
 
     const result = SunglassSchema.safeParse(normalizeObject(formdata, ["hsn_code"]));
     if (!result.success) {
@@ -92,7 +91,6 @@ export default function AddSunglassesForm() {
       return;
     }
 
-    console.log("Final form data:", result.data);
     startTransition(async () => {
       const resp = await createSunglassAction(result.data);
       if (!resp.success) {
@@ -111,7 +109,6 @@ export default function AddSunglassesForm() {
       resp.data.forEach((item: { type: string; values: string[] }) => {
         formatted[item.type] = item.values;
       });
-      console.log(formatted);
 
       setOptions(formatted);
     } catch (err) {

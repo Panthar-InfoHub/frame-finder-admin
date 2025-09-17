@@ -102,7 +102,6 @@ export default function AddFrameForm() {
         formatted[item.type] = item.values;
       });
 
-      console.log(formatted);
 
       setOptions(formatted);
     } catch (err) {

@@ -1,5 +1,5 @@
 "use client";
-import { Home, Store, Settings, Package, User, PackagePlus, Glasses, Eye, Sun } from "lucide-react";
+import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -24,17 +24,17 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/colla
 export type NavItem =
   | {
       title: string;
-      icon: React.ElementType;
-      url: string; // required for leaf items
+      icon?: React.ElementType;
+      url: string;
       badge?: string;
-      children?: never; // explicitly disallow children
+      children?: never;
     }
   | {
       title: string;
-      icon: React.ElementType;
-      children: NavItem[]; // required for groups
+      icon?: React.ElementType;
+      children: NavItem[];
       badge?: string;
-      url?: never; // explicitly disallow url
+      url?: never;
     };
 
 const BaseLinks: NavItem[] = [
@@ -42,19 +42,6 @@ const BaseLinks: NavItem[] = [
     title: "Dashboard",
     url: "/dashboard",
     icon: Home,
-  },
-];
-
-const CommonLinks: NavItem[] = [
-  {
-    title: "Profile",
-    url: "/dashboard/profile",
-    icon: User,
-  },
-  {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: Settings,
   },
 ];
 
@@ -68,26 +55,31 @@ const VendorLinks: NavItem[] = [
       {
         title: "Frames",
         url: "/dashboard/products/frames",
-        icon: Glasses,
       },
       {
         title: "Sunglasses",
         url: "/dashboard/products/sunglasses",
-        icon: Sun,
       },
       {
         title: "Contact Lens",
         url: "/dashboard/products/contact-lens",
-        icon: Eye,
       },
     ],
   },
   {
     title: "Lens Packages",
-    url: "/dashboard/lens-packages",
     icon: PackagePlus,
+    children: [
+      {
+        title: "Frames",
+        url: "/dashboard/lens-packages/frame",
+      },
+      {
+        title: "Sunglasses",
+        url: "/dashboard/lens-packages/sunglass",
+      },
+    ],
   },
-  ...CommonLinks,
 ];
 const AdminLinks: NavItem[] = [
   ...BaseLinks,
@@ -97,7 +89,6 @@ const AdminLinks: NavItem[] = [
     icon: Store,
     badge: "5",
   },
-  ...CommonLinks,
 ];
 
 function getSidebarLinks(userRole: Role): NavItem[] {
@@ -108,11 +99,21 @@ function getSidebarLinks(userRole: Role): NavItem[] {
     case "VENDOR":
       return VendorLinks;
     case "USER":
-      return [...BaseLinks, ...CommonLinks];
+      return BaseLinks;
     default:
       return [];
   }
 }
+
+const isActive = (item: NavItem, pathname: string): boolean => {
+  if ("url" in item && item.url) {
+    return pathname === item.url;
+  }
+  if ("children" in item && item.children) {
+    return item.children.some((child) => isActive(child, pathname));
+  }
+  return false;
+};
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -144,8 +145,13 @@ export function AppSidebar() {
               <Collapsible key={item.title} defaultOpen className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className="w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-                      <item.icon className="h-4 w-4" />
+                    <SidebarMenuButton
+                      className={cn(
+                        "w-full justify-start gap-3 rounded-lg hover:text-primary-foreground! px-3 py-2 text-sm font-medium hover:bg-primary/10 "
+                        // isActive(item, pathname) && "bg-primary/10 text-primary-foreground"
+                      )}
+                    >
+                      {item.icon && <item.icon className="h-4 w-4" />}
                       <span>{item.title}</span>
                       {item?.badge && (
                         <Badge variant="default" className="ml-auto h-5 text-xs">
@@ -160,9 +166,12 @@ export function AppSidebar() {
                         <SidebarMenuItem key={sub.title}>
                           <Link
                             href={sub.url || "#"}
-                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                            className={cn(
+                              "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
+                              pathname === sub.url && "bg-primary/10 text-primary-foreground"
+                            )}
                           >
-                            <sub.icon className="h-4 w-4" />
+                            {sub.icon && <sub.icon className="h-4 w-4" />}
                             <span>{sub.title}</span>
                           </Link>
                         </SidebarMenuItem>
@@ -176,12 +185,12 @@ export function AppSidebar() {
                 <SidebarMenuButton
                   asChild
                   className={cn(
-                    "w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-                    pathname === item.url && "bg-primary/10 text-accent-foreground"
+                    "w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
+                    pathname === item.url && "bg-primary/10 text-primary-foreground"
                   )}
                 >
                   <Link href={item.url}>
-                    <item.icon className="h-4 w-4" />
+                    {item.icon && <item.icon className="h-4 w-4" />}
                     <span>{item.title}</span>
                     {item?.badge && (
                       <Badge variant="default" className="ml-auto h-5 text-xs">
@@ -193,30 +202,6 @@ export function AppSidebar() {
               </SidebarMenuItem>
             )
           )}
-
-          {/* <SidebarMenu>
-            <Collapsible defaultOpen className="group/collapsible">
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton className="w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-                    <Package className="h-4 w-4" />
-                    <span>Products</span>
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    <SidebarMenuItem>
-                      <Link href={"#"} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-                        <Glasses className="h-4 w-4" />
-                        <span>Frames</span>
-                        
-                      </Link>
-                    </SidebarMenuItem>
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-          </SidebarMenu> */}
         </SidebarMenu>
       </SidebarContent>
 
