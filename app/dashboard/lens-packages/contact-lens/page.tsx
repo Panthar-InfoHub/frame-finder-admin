@@ -1,4 +1,3 @@
-import { getAllFrameLensPackages } from "@/actions/vendors/lens-package";
 import { PackagesTable } from "@/components/products/lensPackageTable";
 import SectionFilterSort from "@/components/products/SectionFilterSort";
 import SectionHeader from "@/components/products/SectionHeader";
@@ -8,7 +7,7 @@ import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 import React, { Suspense } from "react";
 
 const ContactLensTable = async () => {
-  return <PackagesTable products={[]} />;
+  return <PackagesTable products={[]} type="contact-lens" />;
 };
 
 const page = () => {

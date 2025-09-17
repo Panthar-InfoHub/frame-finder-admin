@@ -9,7 +9,7 @@ import React, { Suspense } from "react";
 
 const SunglassesTable = async () => {
   const resp = await getAllSunglassLensPackages();
-  return <PackagesTable products={resp?.data?.lensPackage} />;
+  return <PackagesTable products={resp?.data?.lensPackage} type="sunglasses" />;
 };
 
 const page = () => {

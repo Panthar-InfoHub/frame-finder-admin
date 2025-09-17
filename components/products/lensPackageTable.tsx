@@ -16,6 +16,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { ProductType } from "@/types";
 
 const data = [
   {
@@ -50,7 +51,7 @@ const data = [
   },
 ];
 
-export function PackagesTable({ products }: { products: any[] }) {
+export function PackagesTable({ products, type }: { products: any[]; type: ProductType }) {
   if (!products || products.length === 0) {
     // return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
     products = data; // Use sample data if no products are provided
@@ -91,7 +92,7 @@ export function PackagesTable({ products }: { products: any[] }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem asChild>
-                    <Link href="#">View Details</Link>
+                    <Link href={`${type}/${pkg._id}`}>View Details</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
