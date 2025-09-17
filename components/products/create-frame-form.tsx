@@ -109,9 +109,9 @@ export default function AddFrameForm() {
     }
   }
 
-  useEffect(() => {
-    fetchOptions();
-  }, []);
+    useEffect(() => {
+      fetchOptions();
+    }, []);
 
   return (
     <div className="space-y-6">
