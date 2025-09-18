@@ -11,7 +11,6 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 const SunglassDetails = async ({ id }: { id: string }) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   return <div>SunglassDetails {id}</div>;
 };
 

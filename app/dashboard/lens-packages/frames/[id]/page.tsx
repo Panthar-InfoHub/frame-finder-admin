@@ -11,7 +11,6 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 const FrameDetails = async ({ id }: { id: string }) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   return <div>FrameDetails {id}</div>;
 };
 

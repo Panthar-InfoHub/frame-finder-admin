@@ -9,7 +9,11 @@ import React, { Suspense } from "react";
 
 const FramesTable = async () => {
   const resp = await getAllFrameLensPackages();
-  return <PackagesTable products={resp?.data?.lensPackage} type="frames" />;
+  if (!resp?.success) {
+    return <div className="text-center text-red-500 text-sm mt-6">{resp?.message}</div>;
+  }
+  const data = resp?.data?.lensPackages || [];
+  return <PackagesTable products={data} type="frames" />;
 };
 
 const page = () => {

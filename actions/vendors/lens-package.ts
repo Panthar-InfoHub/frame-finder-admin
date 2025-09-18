@@ -62,6 +62,41 @@ export const getAllFrameLensPackages = async () => {
   }
 };
 
+
+export const createSunglassLensPackage = async (data: FrameLensPackageType) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+    const { quantity, min_quantity, max_quantity, ...restData } = data;
+    const finalData = {
+      ...restData,
+      stock: {
+        current: quantity || 0,
+        minimum: min_quantity || 0,
+        maximum: max_quantity || 100,
+      },
+    };
+
+    const resp = await fetch(`${API_URL}/sun-lens-package`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(finalData),
+    });
+    const respData = await resp.json();
+
+    if (!resp.ok || !respData.success) {
+      throw new Error(respData.message || "Failed to create lens package");
+    }
+    return respData;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to create lens package";
+    return {
+      success: false,
+      message,
+    };
+  }
+};
+
 export const getAllSunglassLensPackages = async () => {
   try {
     const token = await getAccessToken();
