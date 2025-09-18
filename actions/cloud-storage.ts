@@ -36,7 +36,6 @@ export async function getSignedUploadUrl({
 }: SignedUrlOptions) {
   const bucket = storage.bucket(process.env.BUCKET_NAME!);
   const file = bucket.file(`${rootFolder}/${folderName}/${Date.now()}-${filename}`);
-  console.log(bucket, file.name);
 
   const [url] = await file.getSignedUrl({
     version: "v4",

@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  MultiSelect,
-  MultiSelectContent,
-  MultiSelectItem,
-  MultiSelectTrigger,
-  MultiSelectValue,
-} from "@/components/ui/custom/multi-select";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { normalizeObject } from "@/utils/helpers";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -19,13 +19,21 @@ import { ImageSection } from "../ui/custom/ImageSection";
 import { getSignedViewUrl } from "@/actions/cloud-storage";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
+import { SunglassLensPackageSchema } from "@/lib/validations";
+import { useRouter } from "next/navigation";
+import { createSunglassLensPackage } from "@/actions/vendors/lens-package";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
     files,
     folder: { rootFolder: "vendor", folderName: "lens-packages" },
   });
-  toast(`Uploaded ${success.length} images successfully, Failed - ${failed.length}`);
+  if (failed.length > 0) {
+    toast.error(`${failed.length} file(s) failed to upload.`);
+  } else {
+    toast.success(`${success.length} file(s) uploaded successfully.`);
+  }
+
   return success.map((item) => item.path);
 };
 
@@ -35,6 +43,8 @@ const SunglassLensPackageForm = () => {
   const lensDesigns = ["single vision", "bifocal", "progressive"];
 
   const [images, setImages] = useState<string[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +52,24 @@ const SunglassLensPackageForm = () => {
 
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
+      const imagesData = images.map((url) => ({ url }));
+    formData.append("images", JSON.stringify(imagesData));
     const data = normalizeObject(Object.fromEntries(formData.entries()));
+
+    const result = SunglassLensPackageSchema.safeParse(data);
+    if (!result.success) {
+      toast.error(result.error.issues[0].message || "Invalid form data");
+      return;
+    }
+    startTransition(async () => {
+      const resp = await createSunglassLensPackage(result.data);
+      if (!resp.success) {
+        toast.error(resp.message || "Failed to create product");
+        return;
+      }
+      toast.success("Product created successfully");
+      router.push("/dashboard/lens-packages/sunglasses");
+    });
   };
 
   return (
@@ -78,49 +105,43 @@ const SunglassLensPackageForm = () => {
         2 gap-4"
         >
           <div className="">
-            <Label htmlFor="brandName">Company</Label>
-            <Input id="brandName" required name="brand_name" placeholder="Enter brand name" />
+            <Label htmlFor="company">Company</Label>
+            <Input id="company" required name="company" placeholder="Enter company name" />
           </div>
           <div>
-            <Label htmlFor="quantity">Index</Label>
-            <Input
-              id="quantity"
-              type="number"
-              name="quantity"
-              required
-              placeholder="Enter quantity"
-            />
+            <Label htmlFor="index">Index</Label>
+            <Input id="index" type="number" name="index" required placeholder="Enter index value" />
           </div>
 
           <div>
-            <Label htmlFor="design">Design</Label>
-            <MultiSelect name="design">
-              <MultiSelectTrigger className="w-full">
-                <MultiSelectValue placeholder="Select Design" />
-              </MultiSelectTrigger>
-              <MultiSelectContent search={false}>
+            <Label htmlFor="package_design">Design</Label>
+            <Select name="package_design">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Design" />
+              </SelectTrigger>
+              <SelectContent>
                 {lensDesigns.map((design: any) => (
-                  <MultiSelectItem key={design} value={design}>
+                  <SelectItem key={design} value={design}>
                     {design}
-                  </MultiSelectItem>
+                  </SelectItem>
                 ))}
-              </MultiSelectContent>
-            </MultiSelect>
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <Label htmlFor="gender">Lens Type</Label>
-            <MultiSelect name="lensType">
-              <MultiSelectTrigger className="w-full">
-                <MultiSelectValue placeholder="Select Type" />
-              </MultiSelectTrigger>
-              <MultiSelectContent search={false}>
+            <Label htmlFor="lens_color">Lens Color</Label>
+            <Select name="lens_color">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Color" />
+              </SelectTrigger>
+              <SelectContent>
                 {colors.map((color: any) => (
-                  <MultiSelectItem key={color} value={color}>
+                  <SelectItem key={color} value={color}>
                     {color}
-                  </MultiSelectItem>
+                  </SelectItem>
                 ))}
-              </MultiSelectContent>
-            </MultiSelect>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label htmlFor="quantity">Quantity</Label>
@@ -133,18 +154,38 @@ const SunglassLensPackageForm = () => {
             />
           </div>
           <div>
-            <Label htmlFor="basePrice">Basic Price</Label>
+            <Label htmlFor="min_quantity">Min Quantity</Label>
             <Input
-              id="basePrice"
+              id="min_quantity"
               type="number"
-              name="base_price"
+              name="min_quantity"
               required
-              placeholder="Enter basic price"
+              placeholder="Enter min quantity"
+            />
+          </div>
+          <div>
+            <Label htmlFor="max_quantity">Max Quantity</Label>
+            <Input
+              id="max_quantity"
+              type="number"
+              name="max_quantity"
+              required
+              placeholder="Enter max quantity"
+            />
+          </div>
+          <div>
+            <Label htmlFor="price">Price</Label>
+            <Input
+              id="price"
+              type="number"
+              name="price"
+              required
+              placeholder="Enter Package price"
             />
           </div>
         </div>
         <div className="flex justify-end mt-6">
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isPending}>{isPending ? "Submitting..." : "Submit"}</Button>
         </div>
       </form>
     </div>

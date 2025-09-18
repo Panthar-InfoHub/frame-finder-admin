@@ -2,7 +2,7 @@
 
 import { API_URL, getAuthHeaders } from "@/utils/helpers";
 import { getAccessToken } from "../session";
-import { FrameLensPackageType } from "@/lib/validations";
+import { FrameLensPackageType, SunglassLensPackageType } from "@/lib/validations";
 
 export const createFrameLensPackage = async (data: FrameLensPackageType) => {
   try {
@@ -63,11 +63,11 @@ export const getAllFrameLensPackages = async () => {
 };
 
 
-export const createSunglassLensPackage = async (data: FrameLensPackageType) => {
+export const createSunglassLensPackage = async (data: SunglassLensPackageType) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const { quantity, min_quantity, max_quantity, ...restData } = data;
+    const { quantity, min_quantity, max_quantity,images,price,lens_color, ...restData } = data;
     const finalData = {
       ...restData,
       stock: {
@@ -75,6 +75,13 @@ export const createSunglassLensPackage = async (data: FrameLensPackageType) => {
         minimum: min_quantity || 0,
         maximum: max_quantity || 100,
       },
+      variants:[
+        {
+          lens_color,
+          price,
+          images
+        }
+      ]
     };
 
     const resp = await fetch(`${API_URL}/sun-lens-package`, {

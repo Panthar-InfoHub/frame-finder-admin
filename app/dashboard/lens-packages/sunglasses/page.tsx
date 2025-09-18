@@ -20,7 +20,7 @@ const SunglassesTable = async () => {
 const page = () => {
   return (
     <div className="flex flex-col gap-6">
-      <SectionHeader title="Frames Lens Package" link={`add?type=frames`} />
+      <SectionHeader title="Sunglass Lens Package" link={`add?type=sunglasses`} />
       <SectionFilterSort />
       <Suspense fallback={<DashboardSkeleton />}>
         <SunglassesTable />

@@ -58,3 +58,15 @@ export const FrameLensPackageSchema = z.object({
   package_design: z.string().min(1, "Design is required"),
   packageImage: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
 });
+export type SunglassLensPackageType = z.infer<typeof SunglassLensPackageSchema>;
+export const SunglassLensPackageSchema = z.object({
+  company: z.string().min(1, "Company is required"),
+  index: z.coerce.number().positive("Index must be positive"),
+  quantity: z.coerce.number().positive("Quantity must be positive"),
+  min_quantity: z.coerce.number().optional(),
+  max_quantity: z.coerce.number().optional(),
+  price: z.coerce.number().positive("Price must be positive"),
+  package_design: z.string().min(1, "Design is required"),
+  lens_color: z.string().min(1, "Color is required"),
+  images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
+});
