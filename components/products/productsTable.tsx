@@ -10,14 +10,18 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { ProductType } from "@/types";
 
-function ProductsTable({ products }: { products: any[] }) {
-
-  console.log("---------------------- products data-----------",products)
+function ProductsTable({ products, type }: { products: any[]; type: ProductType }) {
   if (!products || products.length === 0) {
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
-
 
   return (
     <Table>
@@ -29,7 +33,7 @@ function ProductsTable({ products }: { products: any[] }) {
           <TableHead>Code</TableHead>
           <TableHead>Stock</TableHead>
           <TableHead>Price</TableHead>
-          <TableHead>Edit</TableHead>
+          <TableHead>Options</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -43,19 +47,6 @@ function ProductsTable({ products }: { products: any[] }) {
 
           return (
             <TableRow key={product._id}>
-              {/* <TableCell>
-                {product.images?.length > 0 ? (
-                  <img
-                    src={product.images[0].url}
-                    alt={product.brand_name}
-                    width={40}
-                    height={40}
-                    className="rounded-md object-cover bg-muted overflow-hidden flex items-center justify-center"
-                  />
-                ) : (
-                  <span className="text-gray-400 text-xs">No Image</span>
-                )}
-              </TableCell> */}
               <TableCell className="font-medium">{product.brand_name}</TableCell>
               <TableCell className="max-w-xs truncate text-sm text-gray-600">
                 {product.desc}
@@ -81,9 +72,18 @@ function ProductsTable({ products }: { products: any[] }) {
                 </Badge>
               </TableCell>
               <TableCell className="font-semibold">
-                <Button variant={"outline"} size={"sm"} asChild>
-                  <Link href={`/dashboard/products/edit-product?id=${product._id}&type=frames`}>Edit</Link>
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size={"icon"}>
+                      &#x22EE;
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem asChild>
+                      <Link href={`${type}/${product._id}`}>View Details</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           );

@@ -5,9 +5,9 @@ import React from "react";
 
 const getFormByType = (type: string) => {
   switch (type) {
-    case "frame":
+    case "frames":
       return <FrameLensPackageForm />;
-    case "sunglass":
+    case "sunglasses":
       return <SunglassLensPackageForm />;
     default:
       return <div>Unknown Lens Package Type</div>;
@@ -15,7 +15,7 @@ const getFormByType = (type: string) => {
 };
 
 const page = async ({ searchParams }: { searchParams: Promise<{ type?: string }> }) => {
-  const allowedTypes = ["frame", "sunglass"];
+  const allowedTypes = ["frames", "sunglasses"];
 
   const { type } = await searchParams;
   if (!type || !allowedTypes.includes(type)) redirect("/dashboard/lens-packages");

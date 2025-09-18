@@ -37,7 +37,7 @@ export type NavItem =
       badge?: string;
       url?: never;
     };
-
+    
 const BaseLinks: NavItem[] = [
   {
     title: "Dashboard",
@@ -73,11 +73,11 @@ const VendorLinks: NavItem[] = [
     children: [
       {
         title: "Frames",
-        url: "/dashboard/lens-packages/frame",
+        url: "/dashboard/lens-packages/frames",
       },
       {
         title: "Sunglasses",
-        url: "/dashboard/lens-packages/sunglass",
+        url: "/dashboard/lens-packages/sunglasses",
       },
     ],
   },

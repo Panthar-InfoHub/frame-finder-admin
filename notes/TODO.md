@@ -1,19 +1,14 @@
 # todo
 
-
-- dashboard - show vendor details , graphs 
-- home page copy paste from current - and add login as vendor link
-- password - make a show password eye
-- add settings in sidebar footer with sign out and change password , add modal in change password
-- in product tables - make separate page for the product, 
+- display details of particular page of products- using api 
+- add options - (stocks, edit other data ,delete ) in the particular products page 
 - search and filter
-- add edit options in the particular products page 
+- create update form for all products and lens pakages
 - remove quantity fields while editing product
-- refactor the zod schema in difrent folder 
 
-
-
-# done
-
-- make the vendor misc options reload after adding new one
-- need to fix the vendor id - from static to dynamic in server actions (done)
+# others
+- login page - add option for phone no along with email - only for vendor login
+- revamp register page into multi step form - basic, address, bank details , choose selling products
+- add option of phone otp in the registration
+- create variants groups - frame color , stock , temple color , prices , images
+- add inventory page - along with filter like low stock , etc
