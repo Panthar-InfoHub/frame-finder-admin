@@ -8,16 +8,33 @@ export const createFrameAction = async (data: FrameFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
-    const { quantity, min_quantity, max_quantity, ...restData } = data;
+
+    // Transform the data to match the expected API structure
     const finalData = {
-      ...restData,
-      stock: {
-        current: quantity || 0,
-        minimum: min_quantity || 0,
-        maximum: max_quantity || 100,
-      },
+      brand_name: data.brand_name,
+      desc: data.desc,
+      material: data.material,
+      shape: data.shape,
+      style: data.style,
+      hsn_code: data.hsn_code,
+      sizes: data.sizes,
+      gender: data.gender,
+      stock: data.stock,
       vendorId: user?.id,
+      rating: data.rating || 4.5,
+      status: data.status || "active",
+      variants: data.variants.map((variant) => ({
+        frame_color: variant.frame_color,
+        temple_color: variant.temple_color,
+        price: {
+          mrp: variant.price,
+          base_price: variant.price,
+        },
+        images: variant.images,
+      })),
     };
+
+    console.log("Final Data:", finalData);
 
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
@@ -26,6 +43,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
     });
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
+      console.log("Error Response:", result);
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Product created successfully" };
@@ -64,15 +82,35 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
+
+    // Transform the data to match the expected API structure
     const finalData = {
-      ...data,
-      stock: {
-        current: data.quantity || 0,
-        minimum: data.min_quantity || 0,
-        maximum: data.max_quantity || 100,
-      },
+      brand_name: data.brand_name,
+      desc: data.desc,
+      material: data.material,
+      shape: data.shape,
+      style: data.style,
+      hsn_code: data.hsn_code,
+      sizes: data.sizes,
+      gender: data.gender,
+      stock: data.stock,
+      is_power: data.is_power,
       vendorId: user?.id,
+      rating: data.rating || 4.5,
+      status: data.status || "active",
+      variants: data.variants.map((variant) => ({
+        frame_color: variant.frame_color,
+        temple_color: variant.temple_color,
+        lens_color: variant.lens_color,
+        price: {
+          mrp: variant.price,
+          base_price: variant.price,
+        },
+        images: variant.images,
+      })),
     };
+
+    console.log("Final Sunglass Data:", JSON.stringify(finalData, null, 2));
 
     const resp = await fetch(`${API_URL}/sunglass`, {
       method: "POST",
@@ -83,12 +121,16 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result.message || "Failed to create sunglass product");
+      console.log("Error Response:", result);
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Product created successfully" };
   } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Failed to create product");
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to create product",
+    };
   }
 };
 
