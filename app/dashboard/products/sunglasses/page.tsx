@@ -1,7 +1,7 @@
 import { getAllSunglasses } from "@/actions/vendors/products";
 import ProductsTable from "@/components/products/productsTable";
 import SectionFilterSort from "@/components/products/SectionFilterSort";
-import SectionHeader from "@/components/products/SectionHeader";
+import SectionHeader from "@/components/dashboard/SectionHeader";
 
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 

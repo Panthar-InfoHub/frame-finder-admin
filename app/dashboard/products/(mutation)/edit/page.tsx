@@ -1,5 +1,5 @@
-import AddFrameForm from "@/components/products/create-frame-form";
-import AddSunglassesForm from "@/components/products/create-sunglasses-form";
+import AddFrameForm from "@/components/products/frames/create-frame-form";
+import AddSunglassesForm from "@/components/products/sunglasses/create-sunglasses-form";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -16,7 +16,7 @@ const getFormByType = (type: string) => {
   }
 };
 
-const page = async ({ searchParams }: { searchParams: Promise<{ type?: string,id:string }> }) => {
+const page = async ({ searchParams }: { searchParams: Promise<{ type?: string; id: string }> }) => {
   const allowedTypes = ["frames", "sunglasses", "contact-lens"];
 
   const { type } = await searchParams;

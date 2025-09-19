@@ -1,5 +1,5 @@
-import FrameLensPackageForm from "@/components/products/frame-lens-package-form";
-import SunglassLensPackageForm from "@/components/products/sunglass-lens-package-form";
+import FrameLensPackageForm from "@/components/lens-package/frame-lens-package-form";
+import SunglassLensPackageForm from "@/components/lens-package/sunglass-lens-package-form";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -14,7 +14,11 @@ const getFormByType = (type: string) => {
   }
 };
 
-const page = async ({ searchParams }: { searchParams: Promise<{ type?: string ,id?:string}> }) => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string; id?: string }>;
+}) => {
   const allowedTypes = ["frame", "sunglass"];
 
   const { type } = await searchParams;
