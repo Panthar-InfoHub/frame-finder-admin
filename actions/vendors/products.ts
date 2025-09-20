@@ -3,7 +3,6 @@
 import { getAccessToken, getSession } from "@/actions/session";
 import { FrameFormDataType, SunglassFormDataType } from "@/lib/validations";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";
-import { success } from "zod";
 
 export const createFrameAction = async (data: FrameFormDataType) => {
   try {
@@ -35,7 +34,6 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       })),
     };
 
-    console.log("Final Data:", finalData);
 
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
@@ -44,7 +42,6 @@ export const createFrameAction = async (data: FrameFormDataType) => {
     });
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      console.log("Error Response:", result);
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Product created successfully" };
@@ -72,6 +69,30 @@ export const getAllFrames = async () => {
     return data;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to Fetch Frames";
+    return {
+      success: false,
+      message,
+    };
+  }
+};
+
+export const getFrameById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+    const resp = await fetch(`${API_URL}/products/${id}`, {
+      method: "GET",
+      headers,
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok || !data.success) {
+      throw new Error(data.message || "Failed to fetch your frame details");
+    }
+    return data;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to get the frame";
     return {
       success: false,
       message,
@@ -111,8 +132,6 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
       })),
     };
 
-    console.log("Final Sunglass Data:", JSON.stringify(finalData, null, 2));
-
     const resp = await fetch(`${API_URL}/sunglass`, {
       method: "POST",
       headers: getAuthHeaders(token),
@@ -122,7 +141,6 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      console.log("Error Response:", result);
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
@@ -158,50 +176,26 @@ export const getAllSunglasses = async () => {
     };
   }
 };
-export const getSunglassById = async (id : string) => {
+export const getSunglassById = async (id: string) => {
   try {
     const token = await getAccessToken();
-  const headers = getAuthHeaders(token);
-  const resp = await fetch(`${API_URL}/sunglass/${id}`,{
-    method : "GET",
-    headers,
-  });
-
-  const data = await resp.json();
-
-  if(!resp.ok || !data.success){
-    throw new Error(data.message || "Failed to fetch your sunglass");
-  }
-  return data;
-  } catch (error){
-    const message = error instanceof Error ? error.message : "Failed to get sunglasd details";
-    return {
-      success : false ,
-      message,
-    }
-  }  
-}
-
-export const getFrameById = async (id: string) => {
-  try {
-    const token = await getAccessToken();
-    const headers = getAuthHeaders(token); 
-    const resp = await fetch(`${API_URL}/products/${id}`,{
-      method : "GET",
+    const headers = getAuthHeaders(token);
+    const resp = await fetch(`${API_URL}/sunglass/${id}`, {
+      method: "GET",
       headers,
     });
 
     const data = await resp.json();
-      
-    if(!resp.ok || !data.success){
-      throw new Error(data.message || "Failed to fetch your frame details");
+
+    if (!resp.ok || !data.success) {
+      throw new Error(data.message || "Failed to fetch your sunglass");
     }
     return data;
-  } catch (error){
-    const message = error instanceof Error ? error.message : "Failed to get the frame"
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to get sunglasd details";
     return {
-      success : false ,    
-      message
-    }
+      success: false,
+      message,
+    };
   }
-}
+};

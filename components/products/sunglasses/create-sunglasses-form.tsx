@@ -82,7 +82,6 @@ export default function AddSunglassesForm() {
       variants: variants,
     };
 
-    console.log("Final form data before validation:", JSON.stringify(completeData, null, 2));
 
     const result = SunglassSchema.safeParse(completeData);
     if (!result.success) {
@@ -96,8 +95,6 @@ export default function AddSunglassesForm() {
       toast.error(`Validation failed:\n${errorMessages}`);
       return;
     }
-
-    console.log("Validated data being sent to server:", JSON.stringify(result.data, null, 2));
 
     startTransition(async () => {
       const resp = await createSunglassAction(result.data);

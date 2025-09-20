@@ -1,9 +1,9 @@
 import { getFrameById } from "@/actions/vendors/products";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 import React, { Suspense } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge" 
-import { Package, Users, Calendar, Hash } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Package, Users, Calendar, Hash } from "lucide-react";
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -14,81 +14,31 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   );
 };
 
-interface SunglassImage {
-  url: string
-  _id: string
-}
-
-interface Vendor {
-  _id: string
-  business_name: string
-  email: string
-  phone: string
-}
-
-interface Stock {
-  current: number
-  minimum: number
-  maximum: number
-}
-
-interface Sunglassresp {
-  success: boolean
-  message: string
-  resp: {
-    stock: Stock
-    _id: string
-    brand_name: string
-    desc: string
-    images: SunglassImage[]
-    frame_color: string[]
-    temple_color: string[]
-    material: string[]
-    shape: string[]
-    style: string[]
-    hsn_code: string
-    price: number
-    sizes: string[]
-    gender: string[]
-    vendorId: Vendor
-    rating: number
-    status: string
-    productCode: string
-    createdAt: string
-    updatedAt: string
-    __v: number
-    variants: any[]
-  }
-}
-
-interface SunglassDisplayProps {
-  sunglassresp: Sunglassresp
-}
-
 const FrameDetails = async ({ id }: { id: string }) => {
-  const resp = await getFrameById(id);
-  if (!resp.success){
-    return <div>unable to fetch the Frame detail</div>
+  let resp = await getFrameById(id);
+  if (!resp.success) {
+    return <div>unable to fetch the Frame detail</div>;
   }
 
-  console.log(resp)
+  resp = resp?.data;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-    }).format(price)
-  }
+    }).format(price);
+  };
 
-  const getStockStatus = (stock: Stock) => {
-    if (stock?.current <= stock?.minimum) return { status: "Low Stock", color: "bg-red-500" }
-    if (stock?.current >= stock?.maximum * 0.8) return { status: "In Stock", color: "bg-green-500" }
-    return { status: "Available", color: "bg-yellow-500" }
-  }
+  const getStockStatus = (stock) => {
+    if (stock?.current <= stock?.minimum) return { status: "Low Stock", color: "bg-red-500" };
+    if (stock?.current >= stock?.maximum * 0.8)
+      return { status: "In Stock", color: "bg-green-500" };
+    return { status: "Available", color: "bg-yellow-500" };
+  };
 
-  const stockInfo = getStockStatus(resp.stock)
+  const stockInfo = getStockStatus(resp.stock);
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4">
+    <div className=" space-y-4">
       {/* Header Section */}
       <Card>
         <CardHeader>
@@ -115,7 +65,9 @@ const FrameDetails = async ({ id }: { id: string }) => {
             <div className="aspect-square bg-muted rounded-lg overflow-hidden">
               <img
                 src={
-                  resp.images?.[0]?.url || "/placeholder.svg?height=300&width=300&query=sunglasses" || "/placeholder.svg"
+                  resp.images?.[0]?.url ||
+                  "/placeholder.svg?height=300&width=300&query=sunglasses" ||
+                  "/placeholder.svg"
                 }
                 alt={`${resp.brand_name} - Main view`}
                 className="w-full h-full object-cover"
