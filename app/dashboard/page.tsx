@@ -17,29 +17,31 @@ import { ChartAreaInteractive } from "@/components/dashboard/chart-area";
 import { ChartRadarDots } from "@/components/dashboard/chart-radar";
 import { ChartBarDefault } from "@/components/dashboard/chart-bar";
 import { ChartPieSeparatorNone } from "@/components/dashboard/chart-pie";
+import Image from "next/image";
+import { getVendorById } from "@/actions/vendors/vendors";
+import { getSession } from "@/actions/session";
+import { BusinessHeader } from "@/components/dashboard/dashboad-header";
 
-export default function AdminDashboard() {
+
+export  default async function AdminDashboard() {
   // TODO:  SHOW DASHBOARD based on role - for admin and vendor separately
+
+  //api calling :
+const {user} = await getSession();
+const data = await getVendorById(user?.id);
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <div className="bg-green-600 px-3 py-2 flex justify-center rounded">
-            <span className="text-white font-bold text-lg">FrameFinder</span>
-          </div>
-          <p className="text-muted-foreground">Welcome to Frame Finder Admin Panel</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/admin/vendors">
-              <Eye className="h-4 w-4 mr-2" />
-              View All
-            </Link>
-          </Button>
-        </div>
+      <div className="flex flex-col  w-full gap-4 md:flex-row md:items-center md:justify-between">
+        <BusinessHeader businessData={{
+          businessName: data.businessName,
+          businessOwner: data.businessOwner,
+          gstNumber: data.gstNumber,
+          logoUrl: data.logoUrl,
+          bannerUrl: data.bannerUrl,
+        }}
+        />
       </div>
-
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -86,7 +88,6 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-
       <div>
         <ChartAreaInteractive/>
       </div>

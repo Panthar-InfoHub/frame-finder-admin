@@ -20,6 +20,7 @@ import { useSession } from "@/hooks/use-session";
 import { Role } from "@/utils/permissions";
 import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { NavUser } from "./sidebarfooter";
 
 export type NavItem =
   | {
@@ -123,6 +124,11 @@ export function AppSidebar() {
   if (loading) {
     return <SidebarSkeleton />;
   }
+  const userDetail = {
+    name: user?.name || "",
+    email: user?.email || "",
+    avatar: user?.image || ""
+  }
 
   return (
     <Sidebar className="border-r">
@@ -206,16 +212,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t p-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.image || "/placeholders/avatar.svg"} alt={user?.name} />
-            <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col min-w-0">
-            <span className="text-sm font-medium truncate">{user?.name}</span>
-            <span className="text-sm text-muted-foreground truncate">{user?.email}</span>
-          </div>
-        </div>
+        <NavUser user = {userDetail}/>
       </SidebarFooter>
     </Sidebar>
   );

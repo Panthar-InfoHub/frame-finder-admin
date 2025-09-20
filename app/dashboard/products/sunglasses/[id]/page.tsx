@@ -1,5 +1,7 @@
+import { getSunglassLensPackageById } from "@/actions/vendors/lens-package";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 import React, { Suspense } from "react";
+import { getSunglassById } from "@/actions/vendors/products";
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -11,8 +13,11 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 const SunglassesDetails = async ({ id }: { id: string }) => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return <div>SunglassesDetails {id}</div>;
+  const resp = await getSunglassById(id);
+  if (!resp.success){
+    return <div>Unable to fetch the details</div>
+  }
+  return <div>SunglassesDetails {JSON.stringify(resp, null, 2)}</div>;
 };
 
 export default page;

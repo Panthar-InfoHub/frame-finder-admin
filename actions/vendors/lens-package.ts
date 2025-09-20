@@ -127,3 +127,50 @@ export const getAllSunglassLensPackages = async () => {
     };
   }
 };
+
+export const getSunglassLensPackageById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+    const resp = await fetch(`${API_URL}/sun-lens-package/${id}`,{
+      method : "GET",
+      headers,
+    });
+    const data = await resp.json();
+
+    if(!resp.ok || !data.success){
+      throw new Error(data.message || "Failed to fetch your Sunglass Lens Package");
+    }
+    return data;
+  }catch(error){
+    const message = error instanceof Error ? error.message : "Failed to get the sunglass lens package"
+    return {
+      success : false , 
+      message
+    }
+  }
+}
+
+export const getFrameLensPackageById = async (id:string) => {
+  try{
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+    const resp = await fetch(`${API_URL}/lens-package/${id}`,{
+      method : "GET",
+      headers,
+    });
+    const data = await resp.json();
+
+    if (!resp.ok || !data.success){
+      throw new Error(data.message || "Failed to fetch your Frame Lens Package")
+    }
+
+    return data;
+  }catch(error) {
+    const message = error instanceof Error ? error.message : "failed to get the frame"
+    return {
+      success : false, 
+      message
+    }
+  }
+}

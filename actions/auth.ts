@@ -13,7 +13,7 @@ export async function loginAction(formData: FormData) {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, type }),
+      body: JSON.stringify({ loginId:email, password, type }),
     });
 
     const data = await response.json();
