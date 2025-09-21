@@ -20,27 +20,19 @@ import { ChartPieSeparatorNone } from "@/components/dashboard/chart-pie";
 import Image from "next/image";
 import { getVendorById } from "@/actions/vendors/vendors";
 import { getSession } from "@/actions/session";
-import { BusinessHeader } from "@/components/dashboard/dashboad-header";
-
-
+import BusinessHeader from "@/components/dashboard/dashboad-header";
 export  default async function AdminDashboard() {
   // TODO:  SHOW DASHBOARD based on role - for admin and vendor separately
 
   //api calling :
 const {user} = await getSession();
-const data = await getVendorById(user?.id);
+let resp = await getVendorById(user?.id);
+resp = resp?.data
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col  w-full gap-4 md:flex-row md:items-center md:justify-between">
-        <BusinessHeader businessData={{
-          businessName: data.businessName,
-          businessOwner: data.businessOwner,
-          gstNumber: data.gstNumber,
-          logoUrl: data.logoUrl,
-          bannerUrl: data.bannerUrl,
-        }}
-        />
+      <div className="h-full bg-background">
+        <BusinessHeader resp={resp} />
       </div>
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
