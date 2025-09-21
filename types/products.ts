@@ -1,1 +1,1 @@
-export type ProductType = "frames" | "sunglasses" | "contact-lens";
+export type ProductType = "frames" | "sunglasses" | "accessories" | "contact-lens";

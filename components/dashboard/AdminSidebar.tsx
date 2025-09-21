@@ -62,6 +62,10 @@ const VendorLinks: NavItem[] = [
         url: "/dashboard/products/sunglasses",
       },
       {
+        title: "Accessories",
+        url: "/dashboard/products/accessories",
+      },
+      {
         title: "Contact Lens",
         url: "/dashboard/products/contact-lens",
       },

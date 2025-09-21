@@ -9,6 +9,8 @@ const getFormByType = (type: string) => {
       return <AddFrameForm />;
     case "sunglasses":
       return <AddSunglassesForm />;
+    case "accessories":
+      return <div>Add Accessories Form later</div>;
     case "contact-lens":
       return <div>Add Contact Lens Form later</div>;
     default:
