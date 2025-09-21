@@ -17,7 +17,7 @@ const SunglassesDetails = async ({ id }: { id: string }) => {
   if (!resp.success){
     return <div>Unable to fetch the details</div>
   }
-  return <div>SunglassesDetails {JSON.stringify(resp, null, 2)}</div>;
+  return <pre lang="json">{JSON.stringify(resp, null, 2)}</pre>;
 };
 
 export default page;
