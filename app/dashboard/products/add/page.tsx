@@ -19,10 +19,9 @@ const getFormByType = (type: string) => {
 };
 
 const page = async ({ searchParams }: { searchParams: Promise<{ type?: string }> }) => {
-  const allowedTypes = ["frames", "sunglasses", "contact-lens"];
 
   const { type } = await searchParams;
-  if (!type || !allowedTypes.includes(type)) redirect("/dashboard/products");
+  if (!type) redirect("/dashboard/products");
 
   const FormComponent = getFormByType(type);
   return FormComponent;

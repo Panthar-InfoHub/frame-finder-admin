@@ -1,38 +1,36 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import {
-  Store,
-  Users,
-  TrendingUp,
-  Star,
-  Plus,
-  Eye,
-  Calendar,
-  DollarSign,
-  Activity,
-} from "lucide-react";
+import { getSession } from "@/actions/session";
+import { getVendorById, getVendorProductCount } from "@/actions/vendors/vendors";
 import { ChartAreaInteractive } from "@/components/dashboard/chart-area";
-import { ChartRadarDots } from "@/components/dashboard/chart-radar";
 import { ChartBarDefault } from "@/components/dashboard/chart-bar";
 import { ChartPieSeparatorNone } from "@/components/dashboard/chart-pie";
-import Image from "next/image";
-import { getVendorById } from "@/actions/vendors/vendors";
-import { getSession } from "@/actions/session";
+import { ChartRadarDots } from "@/components/dashboard/chart-radar";
 import BusinessHeader from "@/components/dashboard/dashboad-header";
-export  default async function AdminDashboard() {
-  // TODO:  SHOW DASHBOARD based on role - for admin and vendor separately
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Activity,
+  DollarSign,
+  Star,
+  Store,
+  TrendingUp,
+  Users
+} from "lucide-react";
+import Link from "next/link";
+export default async function AdminDashboard() {
 
-  //api calling :
-const {user} = await getSession();
-let resp = await getVendorById(user?.id);
-resp = resp?.data
+  const { user } = await getSession();
+  let resp = await getVendorById(user?.id);
+
+  const [productCount] = await Promise.all([getVendorProductCount()])
+
+  console.log("Product count ==> ", productCount)
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="h-full bg-background">
-        <BusinessHeader resp={resp} />
+        <BusinessHeader resp={resp?.data} />
       </div>
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -81,12 +79,12 @@ resp = resp?.data
         </Card>
       </div>
       <div>
-        <ChartAreaInteractive/>
+        <ChartAreaInteractive />
       </div>
-      <div className="flex justify-around">
-        <ChartRadarDots/>
-        <ChartPieSeparatorNone/>
-        <ChartBarDefault/>
+      <div className="flex justify-between w-full gap-4">
+        <ChartRadarDots />
+        {/* <ChartPieSeparatorNone /> */}
+        <ChartBarDefault data={productCount?.data} />
       </div>
       {/* Recent Activity */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
@@ -137,15 +135,14 @@ resp = resp?.data
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-2 h-2 rounded-full ${
-                        activity.status === "success"
-                          ? "bg-green-500"
-                          : activity.status === "new"
+                      className={`w-2 h-2 rounded-full ${activity.status === "success"
+                        ? "bg-green-500"
+                        : activity.status === "new"
                           ? "bg-blue-500"
                           : activity.status === "pending"
-                          ? "bg-yellow-500"
-                          : "bg-gray-500"
-                      }`}
+                            ? "bg-yellow-500"
+                            : "bg-gray-500"
+                        }`}
                     />
                     <div>
                       <p className="text-sm font-medium">{activity.vendor}</p>
