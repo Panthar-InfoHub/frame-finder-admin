@@ -69,6 +69,10 @@ const VendorLinks: NavItem[] = [
         title: "Contact Lens",
         url: "/dashboard/products/contact-lens",
       },
+      {
+        title:"Contact Lens Colors",
+        url:"/dashboard/products/contact-lens-colors"
+      }
     ],
   },
   {

@@ -16,7 +16,7 @@ const SunglassDetails = async ({ id }: { id: string }) => {
   if (!resp.success){
     return <div>Unable to get the details of your lens package</div>
   }
-  return <div>SunglassDetails {JSON.stringify(resp, null , 2)}</div>;
+  return <pre lang="json">SunglassDetails {JSON.stringify(resp, null , 2)}</pre>;
 };
 
 export default page;

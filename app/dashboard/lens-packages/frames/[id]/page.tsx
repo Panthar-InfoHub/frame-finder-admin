@@ -16,7 +16,7 @@ const FrameDetails = async ({ id }: { id: string }) => {
   if (!resp.success){
     return <div>Unable to fetch the details</div>
   }
-  return <div>FrameDetails {JSON.stringify(resp, null , 2)}</div>;
+  return <pre lang="json">FrameDetails {JSON.stringify(resp, null , 2)}</pre>;
 };
 
 export default page;

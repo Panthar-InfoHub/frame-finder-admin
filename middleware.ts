@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
-const AdminRoutes = ["/admin"];
+const AdminRoutes = ["/dashboard"];
 const AuthRoutes = ["/login", "/register", "/login-vendor", "/register-vendor"];
 
 export function middleware(request: NextRequest) {
@@ -9,9 +9,9 @@ export function middleware(request: NextRequest) {
   const isAuthRoute = AuthRoutes.includes(request.nextUrl.pathname);
   const isAdminRoute = AdminRoutes.includes(request.nextUrl.pathname);
 
-  // if (isAuthRoute && isLoggedIn) {
-  //   return NextResponse.redirect(new URL("/", request.url));
-  // }
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   if (isAdminRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", request.url));
