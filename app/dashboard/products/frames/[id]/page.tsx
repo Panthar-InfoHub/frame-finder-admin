@@ -21,10 +21,7 @@ const page = async ({
   )
 }
 
-const FrameDetails = async ({
-  id,
-  searchParams,
-}: {
+const FrameDetails = async ({ id, searchParams }: {
   id: string
   searchParams: { variant?: string }
 }) => {
@@ -35,7 +32,7 @@ const FrameDetails = async ({
 
   resp = resp?.data
 
-  const selectedVariantId = searchParams?.variant
+  const selectedVariantId = (await searchParams)?.variant
   const selectedVariant = selectedVariantId
     ? resp?.variants?.find((variant: any) => variant._id === selectedVariantId) || resp?.variants?.[0]
     : resp?.variants?.[0]
@@ -71,27 +68,27 @@ const FrameDetails = async ({
             <CardTitle>Specifications</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
+            <div className="bg-muted rounded-xl p-4 border" >
               <h4 className="font-medium text-sm text-muted-foreground">Material</h4>
               <p>{resp?.material?.join(", ")}</p>
             </div>
-            <div>
+            <div className="bg-muted rounded-xl p-4 border" >
               <h4 className="font-medium text-sm text-muted-foreground">Shape</h4>
               <p>{resp?.shape?.join(", ")}</p>
             </div>
-            <div>
+            <div className="bg-muted rounded-xl p-4 border" >
               <h4 className="font-medium text-sm text-muted-foreground">Style</h4>
               <p>{resp?.style?.join(", ")}</p>
             </div>
-            <div>
+            <div className="bg-muted rounded-xl p-4 border" >
               <h4 className="font-medium text-sm text-muted-foreground">Gender</h4>
               <p>{resp?.gender?.join(", ")}</p>
             </div>
-            <div>
+            <div className="bg-muted rounded-xl p-4 border" >
               <h4 className="font-medium text-sm text-muted-foreground">Size</h4>
               <p>{resp?.sizes?.join(", ")}</p>
             </div>
-            <div>
+            <div className="bg-muted rounded-xl p-4 border" >
               <h4 className="font-medium text-sm text-muted-foreground">HSN Code</h4>
               <p>{resp?.hsn_code}</p>
             </div>

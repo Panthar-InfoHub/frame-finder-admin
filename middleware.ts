@@ -9,9 +9,9 @@ export function middleware(request: NextRequest) {
   const isAuthRoute = AuthRoutes.includes(request.nextUrl.pathname);
   const isAdminRoute = AdminRoutes.includes(request.nextUrl.pathname);
 
-  // if (isAuthRoute && isLoggedIn) {
-  //   return NextResponse.redirect(new URL("/", request.url));
-  // }
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   if (isAdminRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", request.url));

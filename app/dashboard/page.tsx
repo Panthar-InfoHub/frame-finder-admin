@@ -1,8 +1,8 @@
 import { getSession } from "@/actions/session";
-import { getVendorById, getVendorProductCount } from "@/actions/vendors/vendors";
+import { getVendorProductCount, getVendorSaleCount } from "@/actions/vendors/analytics";
+import { getVendorById } from "@/actions/vendors/vendors";
 import { ChartAreaInteractive } from "@/components/dashboard/chart-area";
 import { ChartBarDefault } from "@/components/dashboard/chart-bar";
-import { ChartPieSeparatorNone } from "@/components/dashboard/chart-pie";
 import { ChartRadarDots } from "@/components/dashboard/chart-radar";
 import BusinessHeader from "@/components/dashboard/dashboad-header";
 import { Badge } from "@/components/ui/badge";
@@ -22,9 +22,9 @@ export default async function AdminDashboard() {
   const { user } = await getSession();
   let resp = await getVendorById(user?.id);
 
-  const [productCount] = await Promise.all([getVendorProductCount()])
+  const [productCount, salesCount] = await Promise.all([getVendorProductCount(), getVendorSaleCount()])
 
-  console.log("Product count ==> ", productCount)
+  console.log("Sales count ==> ", salesCount)
 
   return (
     <div className="space-y-6">
@@ -79,7 +79,7 @@ export default async function AdminDashboard() {
         </Card>
       </div>
       <div>
-        <ChartAreaInteractive />
+        <ChartAreaInteractive salesCount={salesCount?.data} />
       </div>
       <div className="flex justify-between w-full gap-4">
         <ChartRadarDots />

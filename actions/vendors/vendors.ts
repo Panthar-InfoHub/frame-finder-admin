@@ -140,27 +140,6 @@ export async function getAllVendors(params: VendorQueryParams = {}) {
   }
 }
 
-export async function getVendorProductCount() {
-  try {
-    const accessToken = await getAccessToken();
-    const headers = getAuthHeaders(accessToken);
-    const response = await fetch(`${API_URL}/vendor-analytics/product-count`, {
-      method: "GET",
-      headers,
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error while fetching product analytics ==> ", error);
-    return {
-      success: false,
-      message: "Failed to fetch vendors",
-      data: [],
-    };
-  }
-}
-
 export async function getVendorById(id: string) {
   try {
     const accessToken = await getAccessToken();

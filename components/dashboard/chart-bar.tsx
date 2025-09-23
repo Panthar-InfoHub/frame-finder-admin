@@ -33,8 +33,6 @@ export function ChartBarDefault({ data }) {
     { name: key, count: value }
   ))
 
-  console.debug("Formateed data ===> ", formattedData)
-
   return (
     <Card className="w-1/2" >
       <CardHeader>
