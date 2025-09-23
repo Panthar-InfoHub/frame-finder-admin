@@ -473,18 +473,11 @@ export const createContactLensAction = async (
 };
 
 // 2. Get All Contact Lenses
-export const getAllContactLenses = async (
-  type: "contact_lens" | "contact_lens_color",
-  page = 1,
-  limit = 100,
-  search = ""
-) => {
+export const getAllContactLenses = async (type: "contact_lens" | "contact_lens_color") => {
   try {
     const token = await getAccessToken();
-    const params = new URLSearchParams({ page: String(page), limit: String(limit) });
-    if (search) params.append("search", search);
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}?${params.toString()}`, {
+    const resp = await fetch(`${API_URL}/contact-lens/${type}`, {
       method: "GET",
       headers: getAuthHeaders(token),
     });

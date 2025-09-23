@@ -13,6 +13,8 @@ const getFormByType = (type: string) => {
       return <div>Add Accessories Form later</div>;
     case "contact-lens":
       return <div>Add Contact Lens Form later</div>;
+    case "contact-lens-color":
+      return <div>Add Contact Lens Color Form later</div>;
     default:
       return <div>Unknown Product Type</div>;
   }
