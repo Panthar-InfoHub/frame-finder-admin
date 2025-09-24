@@ -1,6 +1,6 @@
 "use server";
 
-import { API_URL } from "@/utils/helpers";
+import { API_URL, getAuthHeaders } from "@/utils/helpers";
 import { redirect } from "next/navigation";
 import { createSession, destroySession } from "@/actions/session";
 
@@ -13,7 +13,7 @@ export async function loginAction(formData: FormData) {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loginId:email, password, type }),
+      body: JSON.stringify({ loginId: email, password, type }),
     });
 
     const data = await response.json();
@@ -34,6 +34,30 @@ export async function loginAction(formData: FormData) {
     return {
       success: false,
       message: "Something went wrong. Please try again.",
+    };
+  }
+}
+
+export async function IsUserNumberVerified(phone: string) {
+  try {
+    const response = await fetch(`${API_URL}/auth/verify-user`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ phone }),
+    });
+
+    
+    if (!response.ok) {
+      throw new Error("Failed to verify phone number");
+    }
+    
+    const data = await response.json();
+    console.log("isUserAlreadyVerified", data);
+    return data;
+  } catch (err) {
+    return {
+      success: false,
+      message: err instanceof Error ? err.message : "Something went wrong. Please try again.",
     };
   }
 }
