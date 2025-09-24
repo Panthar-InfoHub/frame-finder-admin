@@ -184,7 +184,7 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
   useEffect(() => {
     fetchOptions();
     fetchSunglassData();
-  }, [sunglassId,fetchSunglassData]);
+  }, [sunglassId]);
 
   if (isLoading) {
     return (
