@@ -1,260 +1,230 @@
-import { getFrameById } from "@/actions/vendors/products";
-import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
-import React, { Suspense } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Package, Users, Calendar, Hash } from "lucide-react";
+import { getFrameById } from "@/actions/vendors/products"
+import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading"
+import { Suspense } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Star } from "lucide-react"
 
-const page = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = await params;
+const page = async ({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: { variant?: string }
+}) => {
+  const { id } = await params
   return (
     <Suspense fallback={<DashboardSkeleton />}>
-      <FrameDetails id={id} />
+      <FrameDetails id={id} searchParams={searchParams} />
     </Suspense>
-  );
-};
+  )
+}
 
-const FrameDetails = async ({ id }: { id: string }) => {
-  let resp = await getFrameById(id);
+const FrameDetails = async ({ id, searchParams }: {
+  id: string
+  searchParams: { variant?: string }
+}) => {
+  let resp = await getFrameById(id)
   if (!resp.success) {
-    return <div>unable to fetch the Frame detail</div>;
+    return <div>unable to fetch the Frame detail</div>
   }
 
-  resp = resp?.data;
+  resp = resp?.data
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(price);
-  };
+  const selectedVariantId = (await searchParams)?.variant
+  const selectedVariant = selectedVariantId
+    ? resp?.variants?.find((variant: any) => variant._id === selectedVariantId) || resp?.variants?.[0]
+    : resp?.variants?.[0]
 
-  const getStockStatus = (stock) => {
-    if (stock?.current <= stock?.minimum) return { status: "Low Stock", color: "bg-red-500" };
-    if (stock?.current >= stock?.maximum * 0.8)
-      return { status: "In Stock", color: "bg-green-500" };
-    return { status: "Available", color: "bg-yellow-500" };
-  };
+  if (!resp) {
+    return <div className="p-4">No product data available</div>
+  }
 
-  const stockInfo = getStockStatus(resp.stock);
   return (
-    <div className=" space-y-4">
-      {/* Header Section */}
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle className="text-2xl">{resp.brand_name}</CardTitle>
-              <p className="text-muted-foreground mt-1">{resp.desc}</p>
-            </div>
-            <div className="flex gap-2">
-              <Badge className={`${stockInfo.color} text-white`}>{stockInfo.status}</Badge>
-              <Badge variant="outline">{resp.status}</Badge>
-            </div>
+    <section className="min-h-screen bg-background w-full">
+      <div className="p-6 space-y-6">
+        {/* Product Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold">{resp?.brand_name}</h1>
+            <Badge variant="secondary">{resp?.productCode}</Badge>
           </div>
-        </CardHeader>
-      </Card>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {/* Image Section */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center">
+              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              <span className="ml-1 font-medium">{resp?.rating}</span>
+            </div>
+            <Badge variant={resp?.status === "active" ? "default" : "secondary"}>{resp?.status}</Badge>
+          </div>
+
+          <p className="text-muted-foreground">{resp?.desc}</p>
+        </div>
+
+        {/* Product Specifications */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Product Images</CardTitle>
+            <CardTitle>Specifications</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="aspect-square bg-muted rounded-lg overflow-hidden">
-              <img
-                src={
-                  resp.images?.[0]?.url ||
-                  "/placeholder.svg?height=300&width=300&query=sunglasses" ||
-                  "/placeholder.svg"
-                }
-                alt={`${resp.brand_name} - Main view`}
-                className="w-full h-full object-cover"
-              />
+          <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-muted rounded-xl p-4 border" >
+              <h4 className="font-medium text-sm text-muted-foreground">Material</h4>
+              <p>{resp?.material?.join(", ")}</p>
+            </div>
+            <div className="bg-muted rounded-xl p-4 border" >
+              <h4 className="font-medium text-sm text-muted-foreground">Shape</h4>
+              <p>{resp?.shape?.join(", ")}</p>
+            </div>
+            <div className="bg-muted rounded-xl p-4 border" >
+              <h4 className="font-medium text-sm text-muted-foreground">Style</h4>
+              <p>{resp?.style?.join(", ")}</p>
+            </div>
+            <div className="bg-muted rounded-xl p-4 border" >
+              <h4 className="font-medium text-sm text-muted-foreground">Gender</h4>
+              <p>{resp?.gender?.join(", ")}</p>
+            </div>
+            <div className="bg-muted rounded-xl p-4 border" >
+              <h4 className="font-medium text-sm text-muted-foreground">Size</h4>
+              <p>{resp?.sizes?.join(", ")}</p>
+            </div>
+            <div className="bg-muted rounded-xl p-4 border" >
+              <h4 className="font-medium text-sm text-muted-foreground">HSN Code</h4>
+              <p>{resp?.hsn_code}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Variants Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Available Variants</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {resp?.variants?.map((variant: any, index: number) => (
+                <form key={variant._id} method="GET">
+                  <input type="hidden" name="variant" value={variant._id} />
+                  <Button
+                    type="submit"
+                    variant={selectedVariant?._id === variant._id ? "default" : "outline"}
+                    className="flex flex-col items-center p-4 h-auto"
+                  >
+                    <span className="text-xs text-muted-foreground">Variant {index + 1}</span>
+                    <span className="font-medium">{variant?.frame_color?.join("/")} Frame</span>
+                    <span className="text-sm">₹{variant?.price?.base_price}</span>
+                  </Button>
+                </form>
+              ))}
             </div>
 
-            {resp.images?.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {resp.images.map((image, index) => (
-                  <div key={image._id} className="aspect-square rounded border overflow-hidden">
-                    <img
-                      src={image.url || "/placeholder.svg"}
-                      alt={`View ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
+            {/* Selected Variant Details */}
+            {selectedVariant && (
+              <div className="border rounded-lg p-6 space-y-4">
+                <h3 className="text-xl font-semibold">Selected Variant Details</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Variant Image */}
+                  <div>
+                    {selectedVariant?.images?.[0]?.url && (
+                      <img
+                        src={selectedVariant.images[0].url || "/placeholder.svg"}
+                        alt={`${resp?.brand_name} variant`}
+                        className="w-full h-64 object-cover rounded-lg"
+                      />
+                    )}
                   </div>
-                ))}
+
+                  {/* Variant Info */}
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground">Base Price</h4>
+                        <p className="text-2xl font-bold">₹{selectedVariant?.price?.base_price}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground">MRP</h4>
+                        <p className="text-xl">₹{selectedVariant?.price?.mrp}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground">Frame Color</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedVariant?.frame_color?.map((color: string) => (
+                            <Badge key={color} variant="outline">
+                              {color}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-sm text-muted-foreground">Temple Color</h4>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedVariant?.temple_color?.map((color: string) => (
+                            <Badge key={color} variant="outline">
+                              {color}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Product Details */}
-        <div className="space-y-4">
-          {/* Basic Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Hash className="w-4 h-4" />
-                Product Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Price:</span>
-                  <div className="text-lg font-bold">{formatPrice(resp.price)}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Product Code:</span>
-                  <div className="font-mono">{resp.productCode}</div>
-                </div>
-                <div>
-                  <span className="font-medium">HSN Code:</span>
-                  <div>{resp.hsn_code}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Rating:</span>
-                  <div>{resp.rating}/5</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Stock Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Package className="w-4 h-4" />
-                Stock Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Current:</span>
-                  <div className="text-lg font-bold">{resp.stock?.current}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Minimum:</span>
-                  <div>{resp.stock?.minimum}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Maximum:</span>
-                  <div>{resp.stock?.maximum}</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Product Specifications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Specifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Frame Colors:</span>
-                  <div className="flex gap-1 mt-1">
-                    {resp.frame_color?.map((color) => (
-                      <Badge key={color} variant="secondary" className="text-xs">
-                        {color}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <span className="font-medium">Temple Colors:</span>
-                  <div className="flex gap-1 mt-1">
-                    {resp.temple_color?.map((color) => (
-                      <Badge key={color} variant="secondary" className="text-xs">
-                        {color}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <span className="font-medium">Material:</span>
-                  <div>{resp.material?.join(", ")}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Shape:</span>
-                  <div>{resp.shape?.join(", ")}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Style:</span>
-                  <div>{resp.style?.join(", ")}</div>
-                </div>
-                <div>
-                  <span className="font-medium">Gender:</span>
-                  <div>{resp.gender?.join(", ")}</div>
-                </div>
+        {/* Stock Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Stock Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground">Current Stock</h4>
+                <p className="text-2xl font-bold text-green-600">{resp?.stock?.current}</p>
               </div>
               <div>
-                <span className="font-medium">Available Sizes:</span>
-                <div className="flex gap-1 mt-1">
-                  {resp.sizes?.map((size) => (
-                    <Badge key={size} variant="outline" className="text-xs">
-                      {size}
-                    </Badge>
-                  ))}
-                </div>
+                <h4 className="font-medium text-sm text-muted-foreground">Minimum Stock</h4>
+                <p className="text-lg">{resp?.stock?.minimum}</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground">Maximum Stock</h4>
+                <p className="text-lg">{resp?.stock?.maximum}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Vendor Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Vendor Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground">Business Name</h4>
+                <p>{resp?.vendorId?.business_name}</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground">Email</h4>
+                <p>{resp?.vendorId?.email}</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground">Phone</h4>
+                <p>{resp?.vendorId?.phone}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+    </section>
+  )
+}
 
-      {/* Vendor Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Vendor Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="font-medium">Business Name:</span>
-              <div>{resp.vendorId?.business_name}</div>
-            </div>
-            <div>
-              <span className="font-medium">Email:</span>
-              <div>{resp.vendorId?.email}</div>
-            </div>
-            <div>
-              <span className="font-medium">Phone:</span>
-              <div>{resp.vendorId?.phone}</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Timeline
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="font-medium">Created:</span>
-              <div>{new Date(resp.createdAt).toLocaleString()}</div>
-            </div>
-            <div>
-              <span className="font-medium">Last Updated:</span>
-              <div>{new Date(resp.updatedAt).toLocaleString()}</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default page;
+export default page

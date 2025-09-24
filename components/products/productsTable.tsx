@@ -23,6 +23,7 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
 
+
   return (
     <Table>
       <TableHeader>
@@ -31,8 +32,8 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
           <TableHead>Brand</TableHead>
           <TableHead>Description</TableHead>
           <TableHead>Code</TableHead>
+          <TableHead>Variants</TableHead>
           <TableHead>Stock</TableHead>
-          <TableHead>Price</TableHead>
           <TableHead>Options</TableHead>
         </TableRow>
       </TableHeader>
@@ -42,8 +43,8 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
             product.stock?.current > product.stock?.minimum
               ? "In Stock"
               : product.stock?.current <= product.stock?.minimum
-              ? "Low Stock"
-              : "Out of Stock";
+                ? "Low Stock"
+                : "Out of Stock";
 
           return (
             <TableRow key={product._id}>
@@ -51,21 +52,22 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
               <TableCell className="max-w-xs truncate text-sm text-gray-600">
                 {product.desc}
               </TableCell>
-              <TableCell
-                className="text-xs text-gray-500 overflow-hidden truncate max-w-xs
-              "
-              >
-                {product.productCode}
+              <TableCell>
+                <Badge variant="outline">
+                  {product.productCode}
+                </Badge>
               </TableCell>
-              <TableCell className="font-semibold">₹{product.price}</TableCell>
+              <TableCell>
+                {product?.variants?.length || 0} variant
+              </TableCell>
               <TableCell>
                 <Badge
                   variant={
                     stockStatus === "In Stock"
                       ? "default"
                       : stockStatus === "Low Stock"
-                      ? "secondary"
-                      : "destructive"
+                        ? "secondary"
+                        : "destructive"
                   }
                 >
                   {stockStatus}
@@ -89,7 +91,7 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
           );
         })}
       </TableBody>
-    </Table>
+    </Table >
   );
 }
 

@@ -5,9 +5,11 @@ import SectionHeader from "@/components/dashboard/SectionHeader";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
 import React, { Suspense } from "react";
+import { getAllContactLenses } from "@/actions/vendors/products";
 
 const ContactLensTable = async () => {
-  return <ProductsTable products={[]} type="contact-lens" />;
+  const resp = await getAllContactLenses("contact_lens")
+  return <ProductsTable products={resp?.data?.products || []} type="contact-lens" />;
 };
 
 const page = () => {

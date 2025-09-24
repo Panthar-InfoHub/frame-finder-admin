@@ -9,7 +9,8 @@ import React, { Suspense } from "react";
 
 const AccessoriesTable = async () => {
   const resp = await getAllAccessories();
-  return <ProductsTable products={resp?.data?.products} type="accessories" />;
+  console.debug("Accessories response ==> ", resp.data)
+  return <ProductsTable products={resp?.data?.accessories} type="accessories" />;
 };
 
 const page = () => {

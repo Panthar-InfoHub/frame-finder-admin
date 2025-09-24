@@ -13,16 +13,17 @@ const getFormByType = (type: string) => {
       return <div>Add Accessories Form later</div>;
     case "contact-lens":
       return <div>Add Contact Lens Form later</div>;
+    case "contact-lens-color":
+      return <div>Add Contact Lens Color Form later</div>;
     default:
       return <div>Unknown Product Type</div>;
   }
 };
 
 const page = async ({ searchParams }: { searchParams: Promise<{ type?: string }> }) => {
-  const allowedTypes = ["frames", "sunglasses", "contact-lens"];
 
   const { type } = await searchParams;
-  if (!type || !allowedTypes.includes(type)) redirect("/dashboard/products");
+  if (!type) redirect("/dashboard/products");
 
   const FormComponent = getFormByType(type);
   return FormComponent;

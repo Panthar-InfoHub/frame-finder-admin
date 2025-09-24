@@ -9,6 +9,8 @@ import React, { Suspense } from "react";
 
 const FramesTable = async () => {
   const resp = await getAllFrames();
+
+  console.debug("Response ===> ", resp.data.products)
   return <ProductsTable products={resp?.data?.products} type="frames" />;
 };
 
