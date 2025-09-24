@@ -46,11 +46,10 @@ export async function IsUserNumberVerified(phone: string) {
       body: JSON.stringify({ phone }),
     });
 
-    
     if (!response.ok) {
       throw new Error("Failed to verify phone number");
     }
-    
+
     const data = await response.json();
     console.log("isUserAlreadyVerified", data);
     return data;
@@ -58,6 +57,29 @@ export async function IsUserNumberVerified(phone: string) {
     return {
       success: false,
       message: err instanceof Error ? err.message : "Something went wrong. Please try again.",
+    };
+  }
+}
+
+export async function VerifyOTP(phone: string) {
+  try {
+    const response = await fetch(`${API_URL}/auth/verify-otp`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ phone }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to verify OTP");
+    }
+
+    const data = await response.json();
+    console.log("OTP verification result:", data);
+    return data;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong. Please try again.",
     };
   }
 }
