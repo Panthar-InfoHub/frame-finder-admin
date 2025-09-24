@@ -38,6 +38,9 @@ const page = async ({
 }) => {
   const searchP = await searchParams;
 
+  // Create a unique key based on search parameters to trigger Suspense fallback
+  const suspenseKey = `${searchP.code || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
+
   return (
     <div className="flex flex-col gap-6">
       <SectionHeader title="Frames Lens Package" link={`add?type=frames`} />
@@ -46,7 +49,7 @@ const page = async ({
         placeholder="Search by lens package code..."
         searchParamName="code"
       />
-      <Suspense fallback={<DashboardSkeleton />}>
+      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
         <FramesLensPackageTable searchParams={searchP} />
       </Suspense>
     </div>

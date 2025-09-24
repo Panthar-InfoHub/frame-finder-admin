@@ -21,7 +21,7 @@ const SearchAndFilter = ({
   const searchParams = useSearchParams();
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Handle search term changes
   useEffect(() => {

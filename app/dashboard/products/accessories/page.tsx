@@ -22,7 +22,6 @@ const AccessoriesTable = async ({ searchParams }: AccessoriesTableProps) => {
     search: searchParams.search || "",
   });
 
-  console.debug("Accessories response ==> ", resp.data?.accessories);
   return <ProductsTable products={resp?.data?.accessories || []} type="accessories" />;
 };
 
@@ -33,6 +32,9 @@ const page = async ({
 }) => {
   const searchP = await searchParams;
 
+  // Create a unique key based on search parameters to trigger Suspense fallback
+  const suspenseKey = `${searchP.search || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
+
   return (
     <div className="flex flex-col gap-6">
       <SectionHeader title="Accessories" link={`add?type=accessories`} />
@@ -40,7 +42,7 @@ const page = async ({
         initialSearchTerm={searchP.search || ""}
         placeholder="Search accessories..."
       />
-      <Suspense fallback={<DashboardSkeleton />}>
+      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
         <AccessoriesTable searchParams={searchP} />
       </Suspense>
     </div>

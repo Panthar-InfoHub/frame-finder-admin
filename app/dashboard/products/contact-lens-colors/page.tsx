@@ -34,6 +34,9 @@ const page = async ({
 }) => {
   const searchP = await searchParams;
 
+  // Create a unique key based on search parameters to trigger Suspense fallback
+  const suspenseKey = `${searchP.search || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
+
   return (
     <div className="flex flex-col gap-6">
       <SectionHeader title="Contact Lens Colors" link={`add?type=contact-lens-color`} />
@@ -41,7 +44,7 @@ const page = async ({
         initialSearchTerm={searchP.search || ""}
         placeholder="Search contact lens colors..."
       />
-      <Suspense fallback={<DashboardSkeleton />}>
+      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
         <ContactLensColorsTable searchParams={searchP} />
       </Suspense>
     </div>
