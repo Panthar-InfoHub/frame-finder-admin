@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import { SunglassSchema, SunglassVariantType } from "@/lib/validations";
-import SunglassVariantManager from "@/components/products/sunglasses/SunglassVariantManager";
+import SunglassVariantManager from "./SunglassVarientManager";
+
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -183,7 +184,7 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
   useEffect(() => {
     fetchOptions();
     fetchSunglassData();
-  }, [sunglassId]);
+  }, [sunglassId,fetchSunglassData]);
 
   if (isLoading) {
     return (

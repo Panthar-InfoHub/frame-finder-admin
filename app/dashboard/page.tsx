@@ -20,7 +20,7 @@ import Link from "next/link";
 export default async function AdminDashboard() {
 
   const { user } = await getSession();
-  let resp = await getVendorById(user?.id);
+  const resp = await getVendorById(user?.id);
 
   const [productCount, salesCount] = await Promise.all([getVendorProductCount(), getVendorSaleCount()])
 

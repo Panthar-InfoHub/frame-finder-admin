@@ -22,7 +22,8 @@ import { getFrameFormData } from "@/actions/vendors/form-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { useRouter } from "next/navigation";
 import { SunglassSchema, SunglassVariantType } from "@/lib/validations";
-import SunglassVariantManager from "@/components/products/sunglasses/SunglassVariantManager";
+import SunglassVariantManager from "./SunglassVarientManager";
+
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({

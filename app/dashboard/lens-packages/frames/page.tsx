@@ -1,28 +1,56 @@
 import { getAllFrameLensPackages } from "@/actions/vendors/lens-package";
 import { PackagesTable } from "@/components/lens-package/lensPackageTable";
-import SectionFilterSort from "@/components/products/SectionFilterSort";
+import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
 
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
 import React, { Suspense } from "react";
 
-const FramesTable = async () => {
-  const resp = await getAllFrameLensPackages();
+interface FramesLensPackageTableProps {
+  searchParams: {
+    page?: string;
+    limit?: string;
+    code?: string;
+  };
+}
+
+const FramesLensPackageTable = async ({ searchParams }: FramesLensPackageTableProps) => {
+  const resp = await getAllFrameLensPackages({
+    page: parseInt(searchParams.page || "1"),
+    limit: parseInt(searchParams.limit || "10"),
+    code: searchParams.code || "",
+  });
+
   if (!resp?.success) {
     return <div className="text-center text-red-500 text-sm mt-6">{resp?.message}</div>;
   }
+
+  console.debug("Frames Lens Package response ==> ", resp.data?.lensPackages);
   const data = resp?.data?.lensPackages || [];
   return <PackagesTable products={data} type="frames" />;
 };
 
-const page = () => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<FramesLensPackageTableProps["searchParams"]>;
+}) => {
+  const searchP = await searchParams;
+
+  // Create a unique key based on search parameters to trigger Suspense fallback
+  const suspenseKey = `${searchP.code || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
+
   return (
     <div className="flex flex-col gap-6">
       <SectionHeader title="Frames Lens Package" link={`add?type=frames`} />
-      <SectionFilterSort />
-      <Suspense fallback={<DashboardSkeleton />}>
-        <FramesTable />
+      <SearchAndFilter
+        initialSearchTerm={searchP.code || ""}
+        placeholder="Search by lens package code..."
+        searchParamName="code"
+      />
+      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
+        <FramesLensPackageTable searchParams={searchP} />
       </Suspense>
     </div>
   );

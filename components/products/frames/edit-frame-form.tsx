@@ -172,7 +172,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   useEffect(() => {
     fetchOptions();
     fetchFrameData();
-  }, [frameId]);
+  }, [frameId,fetchFrameData]);
 
   if (isLoading) {
     return (
