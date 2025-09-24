@@ -140,11 +140,28 @@ export const updateFrameStockAction = async (
   }
 };
 
-export const getAllFrames = async () => {
+export const getAllFrames = async ({
+  page = 1,
+  limit = 100,
+  search,
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+} = {}) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const resp = await fetch(`${API_URL}/products`, {
+
+    // Build query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (search) params.set("search", search);
+
+    const resp = await fetch(`${API_URL}/products?${params.toString()}`, {
       method: "GET",
       headers,
     });
@@ -359,11 +376,28 @@ export const updateSunglassStockAction = async (
   }
 };
 
-export const getAllSunglasses = async () => {
+export const getAllSunglasses = async ({
+  page = 1,
+  limit = 100,
+  search,
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+} = {}) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const resp = await fetch(`${API_URL}/sunglass`, {
+
+    // Build query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (search) params.set("search", search);
+
+    const resp = await fetch(`${API_URL}/sunglass?${params.toString()}`, {
       method: "GET",
       headers,
     });
@@ -375,7 +409,7 @@ export const getAllSunglasses = async () => {
     }
     return data;
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to Fetch Frames";
+    const message = error instanceof Error ? error.message : "Failed to Fetch Sunglasses";
     return {
       success: false,
       message,
@@ -473,11 +507,29 @@ export const createContactLensAction = async (
 };
 
 // 2. Get All Contact Lenses
-export const getAllContactLenses = async (type: "contact_lens" | "contact_lens_color") => {
+export const getAllContactLenses = async ({
+  type = "contact_lens",
+  page = 1,
+  limit = 100,
+  search,
+}: {
+  type?: "contact_lens" | "contact_lens_color";
+  page?: number;
+  limit?: number;
+  search?: string;
+} = {}) => {
   try {
     const token = await getAccessToken();
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}`, {
+    // Build query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (search) params.set("search", search);
+
+    const resp = await fetch(`${API_URL}/contact-lens/${type}?${params.toString()}`, {
       method: "GET",
       headers: getAuthHeaders(token),
     });
@@ -724,18 +776,25 @@ export const updateAccessoryStock = async (
   }
 };
 
-export const getAllAccessories = async (
-  query: { page?: number; limit?: number; vendorId?: string; search?: string } = {}
-) => {
+export const getAllAccessories = async ({
+  page = 1,
+  limit = 100,
+  search,
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+} = {}) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
 
-    const params = new URLSearchParams();
-    if (query.page) params.append("page", query.page.toString());
-    if (query.limit) params.append("limit", query.limit.toString());
-    if (query.vendorId) params.append("vendorId", query.vendorId);
-    if (query.search) params.append("search", query.search);
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (search) params.set("search", search);
 
     const resp = await fetch(`${API_URL}/accessories?${params.toString()}`, {
       method: "GET",

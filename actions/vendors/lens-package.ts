@@ -38,11 +38,28 @@ export const createFrameLensPackage = async (data: FrameLensPackageType) => {
   }
 };
 
-export const getAllFrameLensPackages = async () => {
+export const getAllFrameLensPackages = async ({
+  page = 1,
+  limit = 100,
+  code,
+}: {
+  page?: number;
+  limit?: number;
+  code?: string;
+} = {}) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const resp = await fetch(`${API_URL}/lens-package`, {
+
+    // Build query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (code) params.set("code", code);
+
+    const resp = await fetch(`${API_URL}/lens-package?${params.toString()}`, {
       method: "GET",
       headers,
     });
@@ -127,11 +144,28 @@ export const createSunglassLensPackage = async (data: SunglassLensPackageType) =
   }
 };
 
-export const getAllSunglassLensPackages = async () => {
+export const getAllSunglassLensPackages = async ({
+  page = 1,
+  limit = 100,
+  code,
+}: {
+  page?: number;
+  limit?: number;
+  code?: string;
+} = {}) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const resp = await fetch(`${API_URL}/sun-lens-package`, {
+
+    // Build query parameters
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+    });
+
+    if (code) params.set("code", code);
+
+    const resp = await fetch(`${API_URL}/sun-lens-package?${params.toString()}`, {
       method: "GET",
       headers,
     });

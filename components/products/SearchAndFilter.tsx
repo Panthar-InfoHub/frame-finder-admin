@@ -6,17 +6,17 @@ import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface SectionFilterSortProps {
+interface SearchAndFilterProps {
   initialSearchTerm?: string;
-  placeholder?: string;
+  placeholder: string;
   searchParamName?: string; // Either "search" or "code"
 }
 
-const SectionFilterSort = ({
+const SearchAndFilter = ({
   initialSearchTerm = "",
-  placeholder = "Search...",
+  placeholder,
   searchParamName = "search",
-}: SectionFilterSortProps) => {
+}: SearchAndFilterProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -54,5 +54,4 @@ const SectionFilterSort = ({
   );
 };
 
-export default SectionFilterSort;
-
+export default SearchAndFilter;
