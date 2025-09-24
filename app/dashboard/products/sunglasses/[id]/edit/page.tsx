@@ -1,4 +1,4 @@
-import EditSunglassForm from "@/components/products/sunglasses/edit-sunglass-form";
+import EditSunglassForm from "@/components/products/sunglasses/edit-sunglasses-form";
 import React from "react";
 
 interface PageProps {
