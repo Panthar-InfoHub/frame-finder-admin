@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
   const isAdminRoute = AdminRoutes.includes(request.nextUrl.pathname);
 
   if (isAuthRoute && isLoggedIn) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   if (isAdminRoute && !isLoggedIn) {
