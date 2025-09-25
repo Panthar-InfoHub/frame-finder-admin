@@ -34,7 +34,7 @@ export function ChartBarDefault({ data }) {
   ))
 
   return (
-    <Card className="w-1/2" >
+    <Card className=" w-full md:w-1/2" >
       <CardHeader>
         <CardTitle> Product Count </CardTitle>
       </CardHeader>

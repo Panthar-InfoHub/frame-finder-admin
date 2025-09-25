@@ -81,7 +81,7 @@ export default async function AdminDashboard() {
       <div>
         <ChartAreaInteractive salesCount={salesCount?.data} />
       </div>
-      <div className="flex justify-between w-full gap-4">
+      <div className="flex justify-between w-full gap-4 flex-col md:flex-row">
         <ChartRadarDots />
         {/* <ChartPieSeparatorNone /> */}
         <ChartBarDefault data={productCount?.data} />

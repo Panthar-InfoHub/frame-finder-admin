@@ -174,17 +174,6 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     fetchFrameData();
   }, [frameId]);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-2 text-sm text-gray-600">Loading frame data...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold">Edit Frame</h2>
@@ -235,8 +224,8 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select gender" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...genders, ...formData.gender].map((gender) => (
-                      <MultiSelectItem key={gender} value={gender}>
+                    {[...genders, ...formData.gender].map((gender, i) => (
+                      <MultiSelectItem key={`${gender}-${i}`} value={gender}>
                         {gender}
                       </MultiSelectItem>
                     ))}
@@ -252,8 +241,8 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.material?.length > 0 &&
-                      [...options.material, ...formData.material].map((material) => (
-                        <MultiSelectItem key={material} value={material}>
+                      [...(options?.material ?? []), ...formData?.material].map((material, i) => (
+                        <MultiSelectItem key={`${material}-${i}`} value={material}>
                           {material}
                         </MultiSelectItem>
                       ))}
@@ -272,8 +261,8 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      [...options.shape, ...formData.shape].map((shape) => (
-                        <MultiSelectItem key={shape} value={shape}>
+                      [...(options?.shape ?? []), ...formData.shape].map((shape, i) => (
+                        <MultiSelectItem key={`${shape}-${i}`} value={shape}>
                           {shape}
                         </MultiSelectItem>
                       ))}
@@ -291,8 +280,8 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select style" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...options?.style, ...formData?.style].map((style) => (
-                      <MultiSelectItem key={style} value={style}>
+                    {[...(options?.style ?? []), ...formData?.style].map((style, i) => (
+                      <MultiSelectItem key={`${style}-${i}`} value={style}>
                         {style}
                       </MultiSelectItem>
                     ))}
@@ -310,8 +299,8 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select size" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...sizes, ...formData.sizes].map((size) => (
-                      <MultiSelectItem key={size} value={size} className="capitalize">
+                    {[...sizes, ...formData.sizes].map((size, i) => (
+                      <MultiSelectItem key={`${size}-${i}`} value={size} className="capitalize">
                         {size}
                       </MultiSelectItem>
                     ))}

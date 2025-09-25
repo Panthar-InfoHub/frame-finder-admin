@@ -1,12 +1,12 @@
 import { getFrameById } from "@/actions/vendors/products"
-import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading"
-import { Suspense } from "react"
+import { FrameVariantStock } from "@/components/products/frames/FrameVariantStock"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading"
 import { Edit, Package, Star } from "lucide-react"
 import Link from "next/link"
-import { SunglassVariantStock } from "@/components/products/sunglasses/VariantStockDialog"
+import { Suspense } from "react"
 
 const page = async ({
   params,
@@ -23,10 +23,7 @@ const page = async ({
   )
 }
 
-const FrameDetails = async ({ id, searchParams }: {
-  id: string
-  searchParams: { variant?: string }
-}) => {
+const FrameDetails = async ({ id, searchParams }: { id: string, searchParams: { variant?: string } }) => {
   let resp = await getFrameById(id)
   if (!resp.success) {
     return <div>unable to fetch the Frame detail</div>
@@ -53,19 +50,19 @@ const FrameDetails = async ({ id, searchParams }: {
             <div className="flex space-x-2">
 
               <Badge variant="secondary">{resp?.productCode}</Badge>
-              <Link href={`/dashboard/products/sunglasses/${id}/edit`} >
+              <Link href={`/dashboard/products/frames/${id}/edit`} >
                 <Button>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit
                 </Button>
               </Link>
 
-              <SunglassVariantStock product={resp} >
+              <FrameVariantStock product={resp} >
                 <Button variant="outline">
                   <Package className="w-4 h-4 mr-2" />
                   Update Stock
                 </Button>
-              </SunglassVariantStock>
+              </FrameVariantStock>
             </div>
           </div>
 
@@ -128,9 +125,8 @@ const FrameDetails = async ({ id, searchParams }: {
                     variant={selectedVariant?._id === variant._id ? "default" : "outline"}
                     className="flex flex-col items-center p-4 h-auto"
                   >
-                    <span className="text-xs text-muted-foreground">Variant {index + 1}</span>
+                    <span className="text-xs  font-bold">Variant {index + 1}</span>
                     <span className="font-medium">{variant?.frame_color?.join("/")} Frame</span>
-                    <span className="text-sm">₹{variant?.price?.base_price}</span>
                   </Button>
                 </form>
               ))}
@@ -186,6 +182,22 @@ const FrameDetails = async ({ id, searchParams }: {
                             </Badge>
                           ))}
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-muted rounded-xl border">
+                      <h4 className="text-sm font-medium text-muted-foreground mb-2">Stock Status</h4>
+                      <div className="flex items-center gap-4">
+                        <span className="text-lg font-semibold">{selectedVariant?.stock?.current} units</span>
+                        <Badge
+                          variant={
+                            selectedVariant?.stock?.current > selectedVariant?.stock?.minimum
+                              ? "default"
+                              : "destructive"
+                          }
+                        >
+                          {selectedVariant?.stock?.current > selectedVariant?.stock?.minimum ? "In Stock" : "Low Stock"}
+                        </Badge>
                       </div>
                     </div>
                   </div>

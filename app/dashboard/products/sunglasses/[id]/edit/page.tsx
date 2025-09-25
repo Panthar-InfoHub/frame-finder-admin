@@ -1,5 +1,6 @@
 import EditSunglassForm from "@/components/products/sunglasses/edit-sunglasses-form";
-import React from "react";
+import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
+import React, { Suspense } from "react";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -10,7 +11,9 @@ const page = async ({ params }: PageProps) => {
 
   return (
     <div className="container mx-auto p-6">
-      <EditSunglassForm sunglassId={id} />
+      <Suspense fallback={<DashboardSkeleton />}>
+        <EditSunglassForm sunglassId={id} />
+      </Suspense>
     </div>
   );
 };
