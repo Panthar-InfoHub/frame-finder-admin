@@ -1,4 +1,4 @@
-import { VendorRegistrationForm } from "@/components/vendors/VendorRegisterForm";
+import VendorRegistrationWizard from "@/components/vendor-registration/VendorRegistrationWizard";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
         <h2 className="text-xl text-gray-600">Vendor Registration</h2>
         <p className="text-sm text-gray-500 mt-2">Join our platform and grow your business</p>
       </div>
-      <VendorRegistrationForm />
+      <VendorRegistrationWizard />
     </div>
   );
 }

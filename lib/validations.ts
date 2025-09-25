@@ -60,7 +60,6 @@ export const SunglassSchema = z.object({
   variants: z.array(SunglassVariantSchema).min(1, "At least one variant is required"),
 });
 
-
 // Variant schema for contact lens products
 export type ContactLensFormDataType = z.infer<typeof ContactLensFormSchema>;
 
@@ -93,7 +92,6 @@ export const ContactLensFormSchema = z.object({
   rating: z.number().min(0).max(5).default(0),
 });
 
-
 // Variant schema for accessory products
 export type AccessoryFormDataType = z.infer<typeof AccessorySchema>;
 
@@ -119,7 +117,6 @@ export const AccessorySchema = z.object({
   }),
   type: z.string().optional().default("Accessories"),
 });
-
 
 // Variant schema for lens packages
 export type FrameLensPackageType = z.infer<typeof FrameLensPackageSchema>;
@@ -148,3 +145,41 @@ export const SunglassLensPackageSchema = z.object({
   lens_color: z.string().min(1, "Color is required"),
   images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
 });
+
+// Vendor Registration Schema
+export type VendorPersonalDetailsType = z.infer<typeof VendorPersonalDetailsSchema>;
+export const VendorPersonalDetailsSchema = z.object({
+  phone: z.string().min(10, "Phone number is required"),
+  business_owner: z.string().min(1, "Business owner name is required"),
+  email: z.string().email("Valid email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export type VendorBusinessDetailsType = z.infer<typeof VendorBusinessDetailsSchema>;
+export const VendorBusinessDetailsSchema = z.object({
+  business_name: z.string().min(1, "Business name is required"),
+  gst_number: z.string().min(1, "GST number is required"),
+  address: z.object({
+    address_line_1: z.string().min(1, "Address is required"),
+    city: z.string().min(1, "City is required"),
+    state: z.string().min(1, "State is required"),
+    pincode: z.string().min(6, "Pincode is required"),
+  }),
+  categories: z.array(z.string()).optional().default([]),
+  logo: z.string().optional(),
+  banner: z.string().optional(),
+});
+
+export type VendorBankDetailsType = z.infer<typeof VendorBankDetailsSchema>;
+export const VendorBankDetailsSchema = z.object({
+  bank_details: z.object({
+    account_holder_name: z.string().min(1, "Account holder name is required"),
+    account_number: z.string().min(1, "Account number is required"),
+    ifsc_code: z.string().min(1, "IFSC code is required"),
+  }),
+});
+
+export type VendorCompleteRegistrationType = z.infer<typeof VendorCompleteRegistrationSchema>;
+export const VendorCompleteRegistrationSchema = VendorPersonalDetailsSchema.merge(
+  VendorBusinessDetailsSchema
+).merge(VendorBankDetailsSchema);
