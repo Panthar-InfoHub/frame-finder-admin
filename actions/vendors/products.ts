@@ -8,6 +8,7 @@ import {
   SunglassFormDataType,
 } from "@/lib/validations";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";
+import { revalidatePath } from "next/cache";
 
 // ------------------- Frames API Actions -------------------
 
@@ -108,8 +109,9 @@ export const updateFrameAction = async (id: string, data: Omit<FrameFormDataType
 
 export const updateFrameStockAction = async (
   id: string,
-  operation: "increase" | "decrease",
-  quantity: number
+  operation: string,
+  quantity: number,
+  variantId: string
 ) => {
   try {
     const token = await getAccessToken();
@@ -118,6 +120,7 @@ export const updateFrameStockAction = async (
     const body = {
       operation,
       quantity,
+      variantId
     };
 
     const resp = await fetch(`${API_URL}/products/${id}/stock`, {
@@ -340,8 +343,10 @@ export const updateSunglassAction = async (
 
 export const updateSunglassStockAction = async (
   id: string,
-  operation: "increase" | "decrease",
-  quantity: number
+  operation: string,
+  quantity: number,
+  variantId: string
+
 ) => {
   try {
     const token = await getAccessToken();
@@ -349,6 +354,7 @@ export const updateSunglassStockAction = async (
     const body = {
       operation,
       quantity,
+      variantId
     };
 
     const resp = await fetch(`${API_URL}/sunglass/${id}/stock`, {
@@ -362,6 +368,9 @@ export const updateSunglassStockAction = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
+
+    revalidatePath("/dashboard/sunglasses")
+    revalidatePath(`/dashboard/sunglasses/${id}/edit`)
 
     return {
       success: true,

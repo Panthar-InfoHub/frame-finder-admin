@@ -30,6 +30,7 @@ import {
 import { useRouter } from "next/navigation";
 import { SunglassSchema, SunglassVariantType } from "@/lib/validations";
 import SunglassVariantManager from "./SunglassVarientManager";
+import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
@@ -184,16 +185,11 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
   useEffect(() => {
     fetchOptions();
     fetchSunglassData();
-  }, [sunglassId,fetchSunglassData]);
+  }, [sunglassId]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-2 text-sm text-gray-600">Loading sunglass data...</p>
-        </div>
-      </div>
+      <DashboardSkeleton />
     );
   }
 

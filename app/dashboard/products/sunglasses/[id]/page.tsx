@@ -4,7 +4,9 @@ import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star } from "lucide-react"
+import { Edit, Package, Star } from "lucide-react"
+import Link from "next/link"
+import { SunglassVariantStock } from "@/components/products/sunglasses/VariantStockDialog"
 
 const page = async ({
   params,
@@ -35,23 +37,40 @@ const SunglassesDetails = async ({
 
   const data = resp?.data
 
-  const selectedVariantId = searchParams?.variant
+  const selectedVariantId = (await searchParams)?.variant
   const selectedVariant = selectedVariantId
     ? data?.variants?.find((variant: any) => variant._id === selectedVariantId) || data?.variants?.[0]
     : data?.variants?.[0]
+
 
   if (!data) {
     return <div className="p-4">No product data available</div>
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <section className="min-h-screen bg-background">
+      <div className="p-6 space-y-6">
         {/* Product Header */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold">{data?.brand_name}</h1>
-            <Badge variant="secondary">{data?.productCode}</Badge>
+
+            <div className="flex space-x-2">
+              <Badge variant="secondary">{data?.productCode}</Badge>
+              <Link href={`/dashboard/products/sunglasses/${id}/edit`} >
+                <Button>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              </Link>
+
+              <SunglassVariantStock product={data} >
+                <Button variant="outline">
+                  <Package className="w-4 h-4 mr-2" />
+                  Update Stock
+                </Button>
+              </SunglassVariantStock>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -239,7 +258,7 @@ const SunglassesDetails = async ({
           </CardContent>
         </Card>
       </div>
-    </main>
+    </section >
   )
 }
 

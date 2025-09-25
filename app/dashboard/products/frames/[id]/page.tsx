@@ -4,7 +4,9 @@ import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star } from "lucide-react"
+import { Edit, Package, Star } from "lucide-react"
+import Link from "next/link"
+import { SunglassVariantStock } from "@/components/products/sunglasses/VariantStockDialog"
 
 const page = async ({
   params,
@@ -48,7 +50,23 @@ const FrameDetails = async ({ id, searchParams }: {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold">{resp?.brand_name}</h1>
-            <Badge variant="secondary">{resp?.productCode}</Badge>
+            <div className="flex space-x-2">
+
+              <Badge variant="secondary">{resp?.productCode}</Badge>
+              <Link href={`/dashboard/products/sunglasses/${id}/edit`} >
+                <Button>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              </Link>
+
+              <SunglassVariantStock product={resp} >
+                <Button variant="outline">
+                  <Package className="w-4 h-4 mr-2" />
+                  Update Stock
+                </Button>
+              </SunglassVariantStock>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -174,29 +192,6 @@ const FrameDetails = async ({ id, searchParams }: {
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Stock Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Stock Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground">Current Stock</h4>
-                <p className="text-2xl font-bold text-green-600">{resp?.stock?.current}</p>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground">Minimum Stock</h4>
-                <p className="text-lg">{resp?.stock?.minimum}</p>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground">Maximum Stock</h4>
-                <p className="text-lg">{resp?.stock?.maximum}</p>
-              </div>
-            </div>
           </CardContent>
         </Card>
 

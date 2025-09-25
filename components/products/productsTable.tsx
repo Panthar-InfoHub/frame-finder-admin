@@ -33,18 +33,12 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
           <TableHead>Description</TableHead>
           <TableHead>Code</TableHead>
           <TableHead>Variants</TableHead>
-          <TableHead>Stock</TableHead>
+          <TableHead>Status</TableHead>
           <TableHead>Options</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {products.map((product) => {
-          const stockStatus =
-            product.stock?.current > product.stock?.minimum
-              ? "In Stock"
-              : product.stock?.current <= product.stock?.minimum
-                ? "Low Stock"
-                : "Out of Stock";
 
           return (
             <TableRow key={product._id}>
@@ -63,14 +57,12 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
               <TableCell>
                 <Badge
                   variant={
-                    stockStatus === "In Stock"
+                    product?.status === "active"
                       ? "default"
-                      : stockStatus === "Low Stock"
-                        ? "secondary"
-                        : "destructive"
+                        : "secondary"
                   }
                 >
-                  {stockStatus}
+                  {product?.status}
                 </Badge>
               </TableCell>
               <TableCell className="font-semibold">
