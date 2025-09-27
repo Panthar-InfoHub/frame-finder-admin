@@ -16,7 +16,7 @@ import { updateFrameAction, getFrameById } from "@/actions/vendors/products";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
@@ -49,7 +49,19 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     {
       frame_color: [],
       temple_color: [],
-      price: 0,
+      price: {
+        base_price: 0,
+        mrp: 0,
+        shipping_price: {
+          custom: false,
+          value: 100,
+        },
+        total_price: 100,
+      },
+      stock: {
+        current: 0,
+        minimum: 5,
+      },
       images: [],
     },
   ]);
@@ -57,7 +69,6 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   // Form state for pre-filled data
   const [formData, setFormData] = useState({
     brand_name: "",
-    desc: "",
     material: [] as string[],
     shape: [] as string[],
     style: [] as string[],
@@ -80,15 +91,13 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     // Get basic form data and normalize it properly
     const basicData = normalizeObject(formdata, ["hsn_code"]);
 
-    // Prepare the complete data structure (without stock for edit)
+    // Prepare the complete data structure
     const completeData = {
       ...basicData,
       variants: variants,
     };
 
-    // For edit, we can use a modified schema that doesn't require stock
-    const editSchema = FrameSchema.omit({ stock: true });
-    const result = editSchema.safeParse(completeData);
+    const result = FrameSchema.safeParse(completeData);
 
     if (!result.success) {
       const errorMessages = result.error.issues
@@ -141,7 +150,6 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
       // Set form data
       setFormData({
         brand_name: frameData.brand_name || "",
-        desc: frameData.desc || "",
         material: frameData.material || [],
         shape: frameData.shape || [],
         style: frameData.style || [],
@@ -155,7 +163,24 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
         const transformedVariants = frameData.variants.map((variant: any) => ({
           frame_color: variant.frame_color || [],
           temple_color: variant.temple_color || [],
-          price: variant.price?.mrp || variant.price?.base_price || 0,
+          price: {
+            base_price: variant.price?.base_price || 0,
+            mrp: variant.price?.mrp || 0,
+            shipping_price: {
+              custom: variant.price?.shipping_price?.custom || false,
+              value: variant.price?.shipping_price?.value || 100,
+            },
+            total_price:
+              variant.price?.total_price ||
+              (variant.price?.mrp || 0) +
+                (variant.price?.shipping_price?.custom
+                  ? variant.price?.shipping_price?.value || 0
+                  : 100),
+          },
+          stock: {
+            current: variant.stock?.current || 0,
+            minimum: variant.stock?.minimum || 5,
+          },
           images: variant.images || [],
         }));
         setVariants(transformedVariants);
@@ -172,7 +197,59 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   useEffect(() => {
     fetchOptions();
     fetchFrameData();
-  }, [frameId]);
+  }, [frameId]); // Add frameId dependency
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-7 w-32" />
+        </div>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <Skeleton className="h-4 w-20 mb-2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="h-4 w-16 mb-2" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-9 w-28" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -196,16 +273,6 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   defaultValue={formData.brand_name}
                 />
               </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  required
-                  name="desc"
-                  placeholder="Enter product description"
-                  defaultValue={formData.desc}
-                />
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -224,7 +291,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select gender" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...genders, ...formData.gender].map((gender, i) => (
+                    {Array.from(new Set([...genders, ...formData.gender])).map((gender, i) => (
                       <MultiSelectItem key={`${gender}-${i}`} value={gender}>
                         {gender}
                       </MultiSelectItem>
@@ -241,7 +308,9 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.material?.length > 0 &&
-                      [...(options?.material ?? []), ...formData?.material].map((material, i) => (
+                      Array.from(
+                        new Set([...(options?.material ?? []), ...formData?.material])
+                      ).map((material, i) => (
                         <MultiSelectItem key={`${material}-${i}`} value={material}>
                           {material}
                         </MultiSelectItem>
@@ -261,11 +330,13 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      [...(options?.shape ?? []), ...formData.shape].map((shape, i) => (
-                        <MultiSelectItem key={`${shape}-${i}`} value={shape}>
-                          {shape}
-                        </MultiSelectItem>
-                      ))}
+                      Array.from(new Set([...(options?.shape ?? []), ...formData.shape])).map(
+                        (shape, i) => (
+                          <MultiSelectItem key={`${shape}-${i}`} value={shape}>
+                            {shape}
+                          </MultiSelectItem>
+                        )
+                      )}
                     <div className="p-2 border-t">
                       <AddValueDialog type="shape" onValueAdded={fetchOptions} />
                     </div>
@@ -280,11 +351,13 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select style" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...(options?.style ?? []), ...formData?.style].map((style, i) => (
-                      <MultiSelectItem key={`${style}-${i}`} value={style}>
-                        {style}
-                      </MultiSelectItem>
-                    ))}
+                    {Array.from(new Set([...(options?.style ?? []), ...formData?.style])).map(
+                      (style, i) => (
+                        <MultiSelectItem key={`${style}-${i}`} value={style}>
+                          {style}
+                        </MultiSelectItem>
+                      )
+                    )}
                     <div className="p-2 border-t">
                       <AddValueDialog type="style" onValueAdded={fetchOptions} />
                     </div>
@@ -299,7 +372,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select size" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...sizes, ...formData.sizes].map((size, i) => (
+                    {Array.from(new Set([...sizes, ...formData.sizes])).map((size, i) => (
                       <MultiSelectItem key={`${size}-${i}`} value={size} className="capitalize">
                         {size}
                       </MultiSelectItem>

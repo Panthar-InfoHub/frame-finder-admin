@@ -17,7 +17,6 @@ import { z } from "zod";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
@@ -45,7 +44,19 @@ export default function AddFrameForm() {
     {
       frame_color: [],
       temple_color: [],
-      price: 0,
+      price: {
+        base_price: 0,
+        mrp: 0,
+        shipping_price: {
+          custom: false,
+          value: 100,
+        },
+        total_price: 100,
+      },
+      stock: {
+        current: 0,
+        minimum: 5,
+      },
       images: [],
     },
   ]);
@@ -64,17 +75,9 @@ export default function AddFrameForm() {
     // Get basic form data and normalize it properly
     const basicData = normalizeObject(formdata, ["hsn_code"]);
 
-    // Ensure stock object is properly formed
-    const stockData = {
-      current: parseInt(formdata.get("stock.current") as string) || 0,
-      minimum: parseInt(formdata.get("stock.minimum") as string) || 5,
-      maximum: parseInt(formdata.get("stock.maximum") as string) || 100,
-    };
-
     // Prepare the complete data structure
     const completeData = {
       ...basicData,
-      stock: stockData,
       variants: variants,
     };
 
@@ -135,15 +138,6 @@ export default function AddFrameForm() {
               <div className="md:col-span-2">
                 <Label htmlFor="brandName">Brand Name</Label>
                 <Input id="brandName" required name="brand_name" placeholder="Enter brand name" />
-              </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  required
-                  name="desc"
-                  placeholder="Enter product description"
-                />
               </div>
             </div>
           </CardContent>
@@ -249,50 +243,6 @@ export default function AddFrameForm() {
               <div>
                 <Label htmlFor="hsnSacCode">HSN/SAC Code</Label>
                 <Input id="hsnSacCode" name="hsn_code" required placeholder="Enter HSN/SAC code" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stock Management */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Stock Management</h3>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="current-stock">Current Stock</Label>
-                <Input
-                  id="current-stock"
-                  type="number"
-                  name="stock.current"
-                  required
-                  min="1"
-                  placeholder="Enter current stock"
-                />
-              </div>
-              <div>
-                <Label htmlFor="min-stock">Minimum Stock</Label>
-                <Input
-                  id="min-stock"
-                  type="number"
-                  name="stock.minimum"
-                  defaultValue={5}
-                  min="0"
-                  placeholder="Enter minimum stock"
-                />
-              </div>
-              <div>
-                <Label htmlFor="max-stock">Maximum Stock</Label>
-                <Input
-                  id="max-stock"
-                  type="number"
-                  name="stock.maximum"
-                  defaultValue={100}
-                  min="1"
-                  placeholder="Enter maximum stock"
-                />
               </div>
             </div>
           </CardContent>

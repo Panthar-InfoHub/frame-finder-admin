@@ -20,14 +20,12 @@ export const createFrameAction = async (data: FrameFormDataType) => {
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      desc: data.desc,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      stock: data.stock,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -35,12 +33,20 @@ export const createFrameAction = async (data: FrameFormDataType) => {
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         price: {
-          mrp: variant.price,
-          base_price: variant.price,
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
         },
         images: variant.images,
       })),
     };
+
+    // console.debug("Final data to be sent to API:", finalData);
 
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
@@ -48,6 +54,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       body: JSON.stringify(finalData),
     });
     const result = await parseApiResponse(resp);
+    console.log("API Response:", result);
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
@@ -60,7 +67,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
   }
 };
 
-export const updateFrameAction = async (id: string, data: Omit<FrameFormDataType, "stock">) => {
+export const updateFrameAction = async (id: string, data: FrameFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
@@ -68,7 +75,6 @@ export const updateFrameAction = async (id: string, data: Omit<FrameFormDataType
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      desc: data.desc,
       material: data.material,
       shape: data.shape,
       style: data.style,
@@ -82,8 +88,14 @@ export const updateFrameAction = async (id: string, data: Omit<FrameFormDataType
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         price: {
-          mrp: variant.price,
-          base_price: variant.price,
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
         },
         images: variant.images,
       })),
@@ -120,7 +132,7 @@ export const updateFrameStockAction = async (
     const body = {
       operation,
       quantity,
-      variantId
+      variantId,
     };
 
     const resp = await fetch(`${API_URL}/products/${id}/stock`, {
@@ -346,7 +358,6 @@ export const updateSunglassStockAction = async (
   operation: string,
   quantity: number,
   variantId: string
-
 ) => {
   try {
     const token = await getAccessToken();
@@ -354,7 +365,7 @@ export const updateSunglassStockAction = async (
     const body = {
       operation,
       quantity,
-      variantId
+      variantId,
     };
 
     const resp = await fetch(`${API_URL}/sunglass/${id}/stock`, {
@@ -369,8 +380,8 @@ export const updateSunglassStockAction = async (
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
-    revalidatePath("/dashboard/sunglasses")
-    revalidatePath(`/dashboard/sunglasses/${id}/edit`)
+    revalidatePath("/dashboard/sunglasses");
+    revalidatePath(`/dashboard/sunglasses/${id}/edit`);
 
     return {
       success: true,
