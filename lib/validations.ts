@@ -41,25 +41,31 @@ export const SunglassVariantSchema = z.object({
   frame_color: z.array(z.string()).min(1, "Add at least one frame color"),
   temple_color: z.array(z.string()).min(1, "Add at least one temple color"),
   lens_color: z.array(z.string()).min(1, "Add at least one lens color"),
-  price: z.coerce.number().positive("Price must be positive"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(100),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+  }),
   images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
 });
 
 export type SunglassFormDataType = z.infer<typeof SunglassSchema>;
 export const SunglassSchema = z.object({
   brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
   material: z.array(z.string()).min(1, "Select at least one material"),
   shape: z.array(z.string()).min(1, "Select at least one shape"),
   style: z.array(z.string()).min(1, "Select at least one style"),
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
-  stock: z.object({
-    current: z.coerce.number().positive("Current stock must be positive"),
-    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
-    maximum: z.coerce.number().positive("Maximum stock must be positive").optional().default(100),
-  }),
   is_power: z.boolean("Lens Power must be boolean"),
   rating: z.coerce.number().min(0).max(5).optional().default(0),
   status: z.enum(["active", "inactive"]).optional().default("active"),

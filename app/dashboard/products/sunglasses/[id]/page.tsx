@@ -1,55 +1,62 @@
-import { getSunglassById } from "@/actions/vendors/products"
-import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading"
-import { Suspense } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Edit, Package, Star } from "lucide-react"
-import Link from "next/link"
-import { SunglassVariantStock } from "@/components/products/sunglasses/VariantStockDialog"
+import { getSunglassById, deleteSunglassAction } from "@/actions/vendors/products";
+import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
+import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Edit, Package, Star } from "lucide-react";
+import Link from "next/link";
+import { SunglassVariantStock } from "@/components/products/sunglasses/VariantStockDialog";
+import { DeleteDialog } from "@/components/products/deleteDialog";
+import { BackButton } from "@/components/ui/back-button";
 
 const page = async ({
   params,
   searchParams,
 }: {
-  params: Promise<{ id: string }>
-  searchParams: { variant?: string }
+  params: Promise<{ id: string }>;
+  searchParams: { variant?: string };
 }) => {
-  const { id } = await params
+  const { id } = await params;
   return (
     <Suspense fallback={<DashboardSkeleton />}>
       <SunglassesDetails id={id} searchParams={searchParams} />
     </Suspense>
-  )
-}
+  );
+};
 
 const SunglassesDetails = async ({
   id,
   searchParams,
 }: {
-  id: string
-  searchParams: { variant?: string }
+  id: string;
+  searchParams: { variant?: string };
 }) => {
-  const resp = await getSunglassById(id)
+  const resp = await getSunglassById(id);
   if (!resp.success) {
-    return <div>Unable to fetch the details</div>
+    return <div>Unable to fetch the details</div>;
   }
 
-  const data = resp?.data
+  const data = resp?.data;
 
-  const selectedVariantId = (await searchParams)?.variant
+  const selectedVariantId = (await searchParams)?.variant;
   const selectedVariant = selectedVariantId
-    ? data?.variants?.find((variant: any) => variant._id === selectedVariantId) || data?.variants?.[0]
-    : data?.variants?.[0]
-
+    ? data?.variants?.find((variant: any) => variant._id === selectedVariantId) ||
+      data?.variants?.[0]
+    : data?.variants?.[0];
 
   if (!data) {
-    return <div className="p-4">No product data available</div>
+    return <div className="p-4">No product data available</div>;
   }
 
   return (
     <section className="min-h-screen bg-background">
       <div className="p-6 space-y-6">
+        {/* Back Button */}
+        <BackButton href="/dashboard/products/sunglasses" className="mb-4">
+          Back to Sunglasses
+        </BackButton>
+
         {/* Product Header */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -57,14 +64,20 @@ const SunglassesDetails = async ({
 
             <div className="flex space-x-2">
               <Badge variant="secondary">{data?.productCode}</Badge>
-              <Link href={`/dashboard/products/sunglasses/${id}/edit`} >
+              <Link href={`/dashboard/products/sunglasses/${id}/edit`}>
                 <Button>
                   <Edit className="w-4 h-4 mr-2" />
                   Edit
                 </Button>
               </Link>
 
-              <SunglassVariantStock product={data} >
+              <DeleteDialog
+                productId={id}
+                deleteProductFunc={deleteSunglassAction}
+                redirectUrl="/dashboard/products/sunglasses"
+              />
+
+              <SunglassVariantStock product={data}>
                 <Button variant="outline">
                   <Package className="w-4 h-4 mr-2" />
                   Update Stock
@@ -78,7 +91,9 @@ const SunglassesDetails = async ({
               <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
               <span className="ml-1 font-medium">{data?.rating}</span>
             </div>
-            <Badge variant={data?.status === "active" ? "default" : "secondary"}>{data?.status}</Badge>
+            <Badge variant={data?.status === "active" ? "default" : "secondary"}>
+              {data?.status}
+            </Badge>
             <Badge variant="outline">{data?.type}</Badge>
             {data?.is_Power && <Badge variant="destructive">Power Lens</Badge>}
           </div>
@@ -258,8 +273,8 @@ const SunglassesDetails = async ({
           </CardContent>
         </Card>
       </div>
-    </section >
-  )
-}
+    </section>
+  );
+};
 
-export default page
+export default page;

@@ -253,14 +253,12 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      desc: data.desc,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      stock: data.stock,
       is_power: data.is_power,
       vendorId: user?.id,
       rating: data.rating || 4.5,
@@ -269,10 +267,8 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         lens_color: variant.lens_color,
-        price: {
-          mrp: variant.price,
-          base_price: variant.price,
-        },
+        price: variant.price,
+        stock: variant.stock,
         images: variant.images,
       })),
     };
@@ -309,7 +305,6 @@ export const updateSunglassAction = async (
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      desc: data.desc,
       material: data.material,
       shape: data.shape,
       style: data.style,
@@ -324,10 +319,8 @@ export const updateSunglassAction = async (
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         lens_color: variant.lens_color,
-        price: {
-          mrp: variant.price,
-          base_price: variant.price,
-        },
+        price: variant.price,
+        stock: variant.stock,
         images: variant.images,
       })),
     };

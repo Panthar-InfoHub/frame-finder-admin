@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ import { updateSunglassAction, getSunglassById } from "@/actions/vendors/product
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
@@ -27,11 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { SunglassSchema, SunglassVariantType } from "@/lib/validations";
 import SunglassVariantManager from "./SunglassVarientManager";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
-
+import { BackButton } from "@/components/ui/back-button";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -59,22 +60,33 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
       frame_color: [],
       temple_color: [],
       lens_color: [],
-      price: 0,
+      price: {
+        base_price: 0,
+        mrp: 0,
+        shipping_price: {
+          custom: false,
+          value: 100,
+        },
+        total_price: 100,
+      },
+      stock: {
+        current: 0,
+        minimum: 5,
+      },
       images: [],
     },
   ]);
 
   // Form state for pre-filled data
+  const [isPowerEnabled, setIsPowerEnabled] = useState(false);
   const [formData, setFormData] = useState({
     brand_name: "",
-    desc: "",
     material: [] as string[],
     shape: [] as string[],
     style: [] as string[],
     hsn_code: "",
     sizes: [] as string[],
     gender: [] as string[],
-    is_power: false,
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,15 +103,14 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
     // Get basic form data and normalize it properly
     const basicData = normalizeObject(formdata, ["hsn_code"]);
 
-    // Prepare the complete data structure (without stock for edit)
+    // Prepare the complete data structure
     const completeData = {
       ...basicData,
+      is_power: isPowerEnabled,
       variants: variants,
     };
 
-    // For edit, we can use a modified schema that doesn't require stock
-    const editSchema = SunglassSchema.omit({ stock: true });
-    const result = editSchema.safeParse(completeData);
+    const result = SunglassSchema.safeParse(completeData);
 
     if (!result.success) {
       const errorMessages = result.error.issues
@@ -152,15 +163,16 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
       // Set form data
       setFormData({
         brand_name: sunglassData.brand_name || "",
-        desc: sunglassData.desc || "",
         material: sunglassData.material || [],
         shape: sunglassData.shape || [],
         style: sunglassData.style || [],
         hsn_code: sunglassData.hsn_code || "",
         sizes: sunglassData.sizes || [],
         gender: sunglassData.gender || [],
-        is_power: sunglassData.is_power || false,
       });
+
+      // Set is_power state
+      setIsPowerEnabled(sunglassData.is_power || false);
 
       // Set variants data
       if (sunglassData.variants && sunglassData.variants.length > 0) {
@@ -168,7 +180,24 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
           frame_color: variant.frame_color || [],
           temple_color: variant.temple_color || [],
           lens_color: variant.lens_color || [],
-          price: variant.price?.mrp || variant.price?.base_price || 0,
+          price: {
+            base_price: variant.price?.base_price || 0,
+            mrp: variant.price?.mrp || 0,
+            shipping_price: {
+              custom: variant.price?.shipping_price?.custom || false,
+              value: variant.price?.shipping_price?.value || 100,
+            },
+            total_price:
+              variant.price?.total_price ||
+              (variant.price?.mrp || 0) +
+                (variant.price?.shipping_price?.custom
+                  ? variant.price?.shipping_price?.value || 0
+                  : 100),
+          },
+          stock: {
+            current: variant.stock?.current || 0,
+            minimum: variant.stock?.minimum || 5,
+          },
           images: variant.images || [],
         }));
         setVariants(transformedVariants);
@@ -189,13 +218,63 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
 
   if (isLoading) {
     return (
-      <DashboardSkeleton />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-7 w-40" />
+        </div>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <Skeleton className="h-4 w-20 mb-2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {[...Array(7)].map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="h-4 w-16 mb-2" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-9 w-28" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Edit Sunglasses</h2>
+      <div className="flex items-center justify-between">
+        <BackButton href="/dashboard/products/sunglasses">Back to Sunglasses</BackButton>
+        <h2 className="text-xl font-semibold">Edit Sunglasses</h2>
+        <div></div> {/* Empty div for spacing */}
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 [&_label]:mb-1">
         {/* Basic Information */}
@@ -213,16 +292,6 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
                   name="brand_name"
                   placeholder="Enter brand name"
                   defaultValue={formData.brand_name}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  required
-                  name="desc"
-                  placeholder="Enter product description"
-                  defaultValue={formData.desc}
                 />
               </div>
             </div>
@@ -339,16 +408,21 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
               </div>
 
               <div>
-                <Label htmlFor="is_power">Provide Powered Prescribed Lens</Label>
-                <Select name="is_power" defaultValue={formData.is_power ? "true" : "false"}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select powered prescribed lens" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Yes</SelectItem>
-                    <SelectItem value="false">No</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label htmlFor="is_power" className="text-sm font-medium">
+                      Provide Powered Prescribed Lens
+                    </Label>
+                    <div className="text-xs text-muted-foreground">
+                      {isPowerEnabled ? "Power lens support enabled" : "No power lens support"}
+                    </div>
+                  </div>
+                  <Switch
+                    id="is_power"
+                    checked={isPowerEnabled}
+                    onCheckedChange={setIsPowerEnabled}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>

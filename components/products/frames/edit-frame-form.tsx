@@ -23,6 +23,7 @@ import { getFrameFormData } from "@/actions/vendors/form-data";
 import { useRouter } from "next/navigation";
 import { FrameSchema, FrameVariantType } from "@/lib/validations";
 import FramesVariantManager from "@/components/products/frames/FramesVariantManager";
+import { BackButton } from "@/components/ui/back-button";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -253,7 +254,11 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Edit Frame</h2>
+      <div className="flex items-center justify-between">
+        <BackButton href="/dashboard/products/frames">Back to Frames</BackButton>
+        <h2 className="text-xl font-semibold">Edit Frame</h2>
+        <div></div> {/* Empty div for spacing */}
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 [&_label]:mb-1">
         {/* Basic Information */}

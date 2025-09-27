@@ -15,15 +15,14 @@ import { createSunglassAction } from "@/actions/vendors/products";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 import { SunglassSchema, SunglassVariantType } from "@/lib/validations";
-import SunglassVariantManager from "./SunglassVarientManager";
-
+import SunglassVarientManager from "./SunglassVarientManager";
+import { BackButton } from "@/components/ui/back-button";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -45,12 +44,25 @@ export default function AddSunglassesForm() {
   const router = useRouter();
 
   const [options, setOptions] = useState<Record<string, string[]>>({});
+  const [isPowerEnabled, setIsPowerEnabled] = useState(false);
   const [variants, setVariants] = useState<SunglassVariantType[]>([
     {
       frame_color: [],
       temple_color: [],
       lens_color: [],
-      price: 0,
+      price: {
+        base_price: 0,
+        mrp: 0,
+        shipping_price: {
+          custom: false,
+          value: 100,
+        },
+        total_price: 100,
+      },
+      stock: {
+        current: 0,
+        minimum: 5,
+      },
       images: [],
     },
   ]);
@@ -69,20 +81,12 @@ export default function AddSunglassesForm() {
     // Get basic form data and normalize it properly
     const basicData = normalizeObject(formdata, ["hsn_code"]);
 
-    // Ensure stock object is properly formed
-    const stockData = {
-      current: parseInt(formdata.get("stock.current") as string) || 0,
-      minimum: parseInt(formdata.get("stock.minimum") as string) || 5,
-      maximum: parseInt(formdata.get("stock.maximum") as string) || 100,
-    };
-
     // Prepare the complete data structure
     const completeData = {
       ...basicData,
-      stock: stockData,
+      is_power: isPowerEnabled,
       variants: variants,
     };
-
 
     const result = SunglassSchema.safeParse(completeData);
     if (!result.success) {
@@ -128,7 +132,11 @@ export default function AddSunglassesForm() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Add New Sunglasses</h2>
+      <div className="flex items-center justify-between">
+        <BackButton href="/dashboard/products/sunglasses">Back to Sunglasses</BackButton>
+        <h2 className="text-xl font-semibold">Add New Sunglasses</h2>
+        <div></div> {/* Empty div for spacing */}
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 [&_label]:mb-1">
         {/* Basic Information */}
@@ -141,15 +149,6 @@ export default function AddSunglassesForm() {
               <div className="md:col-span-2">
                 <Label htmlFor="brandName">Brand Name</Label>
                 <Input id="brandName" required name="brand_name" placeholder="Enter brand name" />
-              </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  required
-                  name="desc"
-                  placeholder="Enter product description"
-                />
               </div>
             </div>
           </CardContent>
@@ -259,67 +258,28 @@ export default function AddSunglassesForm() {
               </div>
 
               <div>
-                <Label htmlFor="is_power">Provide Powered Prescribed Lens</Label>
-                <Select name="is_power" defaultValue="false">
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select powered prescribed lens" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Yes</SelectItem>
-                    <SelectItem value="false">No</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stock Information */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Stock Information</h3>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="currentStock">Current Stock</Label>
-                <Input
-                  id="currentStock"
-                  type="number"
-                  name="stock.current"
-                  required
-                  placeholder="Enter current stock"
-                  min="0"
-                />
-              </div>
-              <div>
-                <Label htmlFor="minStock">Minimum Stock</Label>
-                <Input
-                  id="minStock"
-                  type="number"
-                  name="stock.minimum"
-                  defaultValue="5"
-                  placeholder="Enter minimum stock"
-                  min="0"
-                />
-              </div>
-              <div>
-                <Label htmlFor="maxStock">Maximum Stock</Label>
-                <Input
-                  id="maxStock"
-                  type="number"
-                  name="stock.maximum"
-                  defaultValue="100"
-                  placeholder="Enter maximum stock"
-                  min="1"
-                />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label htmlFor="is_power" className="text-sm font-medium">
+                      Provide Powered Prescribed Lens
+                    </Label>
+                    <div className="text-xs text-muted-foreground">
+                      {isPowerEnabled ? "Power lens support enabled" : "No power lens support"}
+                    </div>
+                  </div>
+                  <Switch
+                    id="is_power"
+                    checked={isPowerEnabled}
+                    onCheckedChange={setIsPowerEnabled}
+                  />
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Variants */}
-        <SunglassVariantManager
+        <SunglassVarientManager
           variants={variants}
           onVariantsChange={setVariants}
           uploadFunction={ImageUploadFunction}
