@@ -23,56 +23,41 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
 
-
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {/* <TableHead>Image</TableHead> */}
           <TableHead>Brand</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Code</TableHead>
+          <TableHead>Product Code</TableHead>
           <TableHead>Variants</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Options</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {products.map((product) => {
-
           return (
             <TableRow key={product._id}>
               <TableCell className="font-medium">{product.brand_name}</TableCell>
-              <TableCell className="max-w-xs truncate text-sm text-gray-600">
-                {product.desc}
+              <TableCell>
+                <Badge variant="outline">{product.productCode}</Badge>
               </TableCell>
               <TableCell>
-                <Badge variant="outline">
-                  {product.productCode}
-                </Badge>
+                <span className="text-sm">{product?.variants?.length || 0} variants</span>
               </TableCell>
               <TableCell>
-                {product?.variants?.length || 0} variant
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    product?.status === "active"
-                      ? "default"
-                        : "secondary"
-                  }
-                >
+                <Badge variant={product?.status === "active" ? "default" : "secondary"}>
                   {product?.status}
                 </Badge>
               </TableCell>
-              <TableCell className="font-semibold">
+              <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size={"icon"}>
+                    <Button variant="ghost" size="icon">
                       &#x22EE;
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
+                  <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
                       <Link href={`${type}/${product._id}`}>View Details</Link>
                     </DropdownMenuItem>
@@ -83,7 +68,7 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
           );
         })}
       </TableBody>
-    </Table >
+    </Table>
   );
 }
 
