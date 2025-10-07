@@ -43,8 +43,8 @@ export default function AddFrameForm() {
   const [options, setOptions] = useState<Record<string, string[]>>({});
   const [variants, setVariants] = useState<FrameVariantType[]>([
     {
-      frame_color: [],
-      temple_color: [],
+      frame_color: "",
+      temple_color: "",
       price: {
         base_price: 0,
         mrp: 0,
@@ -74,11 +74,26 @@ export default function AddFrameForm() {
     const formdata = new FormData(e.currentTarget);
 
     // Get basic form data and normalize it properly
-    const basicData = normalizeObject(formdata, ["hsn_code"]);
+    const basicData = normalizeObject(formdata, ["hsn_code", "productCode"]);
+
+    // Extract dimension data from form fields
+    const dimension = {
+      lens_width: basicData.lens_width as string,
+      bridge_width: basicData.bridge_width as string,
+      temple_length: basicData.temple_length as string,
+      lens_height: basicData.lens_height as string,
+    };
+
+    // Remove dimension fields from basicData to avoid duplication
+    delete basicData.lens_width;
+    delete basicData.bridge_width;
+    delete basicData.temple_length;
+    delete basicData.lens_height;
 
     // Prepare the complete data structure
     const completeData = {
       ...basicData,
+      dimension,
       variants: variants,
     };
 
@@ -140,7 +155,16 @@ export default function AddFrameForm() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
+              <div>
+                <Label htmlFor="productCode">Product Code</Label>
+                <Input
+                  id="productCode"
+                  required
+                  name="productCode"
+                  placeholder="Enter product code"
+                />
+              </div>
+              <div>
                 <Label htmlFor="brandName">Brand Name</Label>
                 <Input id="brandName" required name="brand_name" placeholder="Enter brand name" />
               </div>
@@ -248,6 +272,72 @@ export default function AddFrameForm() {
               <div>
                 <Label htmlFor="hsnSacCode">HSN/SAC Code</Label>
                 <Input id="hsnSacCode" name="hsn_code" required placeholder="Enter HSN/SAC code" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Frame Dimensions */}
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Frame Dimensions</h3>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Dimension Reference Image */}
+            <div className="flex justify-center mb-6">
+              <div className="max-w-md w-full">
+                <img
+                  src="/placeholders/frame-dimensions-placeholder.svg"
+                  alt="Frame Dimensions Reference"
+                  className="w-full h-auto border rounded-lg bg-gray-50"
+                />
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  Reference guide for frame measurements
+                </p>
+              </div>
+            </div>
+
+            {/* Dimension Input Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="lensWidth">Lens Width (mm)</Label>
+                <Input
+                  id="lensWidth"
+                  name="lens_width"
+                  required
+                  placeholder="e.g., 50"
+                  type="number"
+                />
+              </div>
+              <div>
+                <Label htmlFor="bridgeWidth">Bridge Width (mm)</Label>
+                <Input
+                  id="bridgeWidth"
+                  name="bridge_width"
+                  required
+                  placeholder="e.g., 21"
+                  type="number"
+                />
+              </div>
+              <div>
+                <Label htmlFor="templeLength">Temple Length (mm)</Label>
+                <Input
+                  id="templeLength"
+                  name="temple_length"
+                  required
+                  placeholder="e.g., 145"
+                  type="number"
+                />
+              </div>
+              <div>
+                <Label htmlFor="lensHeight">Lens Height (mm)</Label>
+                <Input
+                  id="lensHeight"
+                  name="lens_height"
+                  required
+                  placeholder="e.g., 35"
+                  type="number"
+                />
               </div>
             </div>
           </CardContent>

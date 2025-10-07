@@ -3,8 +3,8 @@ import { z } from "zod";
 // Variant schema for frame products
 export type FrameVariantType = z.infer<typeof FrameVariantSchema>;
 export const FrameVariantSchema = z.object({
-  frame_color: z.array(z.string()).min(1, "Add at least one frame color"),
-  temple_color: z.array(z.string()).min(1, "Add at least one temple color"),
+  frame_color: z.string().min(1, "Frame color is required"),
+  temple_color: z.string().min(1, "Temple color is required"),
   price: z.object({
     base_price: z.coerce.number().positive("Base price must be positive"),
     mrp: z.coerce.number().positive("MRP must be positive"),
@@ -23,6 +23,7 @@ export const FrameVariantSchema = z.object({
 
 export type FrameFormDataType = z.infer<typeof FrameSchema>;
 export const FrameSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
   brand_name: z.string().min(1, "Brand name is required"),
   material: z.array(z.string()).min(1, "Select at least one material"),
   shape: z.array(z.string()).min(1, "Select at least one shape"),
@@ -30,6 +31,12 @@ export const FrameSchema = z.object({
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
+  dimension: z.object({
+    lens_width: z.coerce.number().positive("Lens width must be positive"),
+    bridge_width: z.coerce.number().positive("Bridge width must be positive"),
+    temple_length: z.coerce.number().positive("Temple length must be positive"),
+    lens_height: z.coerce.number().positive("Lens height must be positive"),
+  }),
   rating: z.coerce.number().min(0).max(5).optional().default(0),
   status: z.enum(["active", "inactive"]).optional().default("active"),
   variants: z.array(FrameVariantSchema).min(1, "At least one variant is required"),
@@ -38,9 +45,9 @@ export const FrameSchema = z.object({
 // Variant schema for sunglasses products
 export type SunglassVariantType = z.infer<typeof SunglassVariantSchema>;
 export const SunglassVariantSchema = z.object({
-  frame_color: z.array(z.string()).min(1, "Add at least one frame color"),
-  temple_color: z.array(z.string()).min(1, "Add at least one temple color"),
-  lens_color: z.array(z.string()).min(1, "Add at least one lens color"),
+  frame_color: z.string().min(1, "Frame color is required"),
+  temple_color: z.string().min(1, "Temple color is required"),
+  lens_color: z.string().min(1, "Lens color is required"),
   price: z.object({
     base_price: z.coerce.number().positive("Base price must be positive"),
     mrp: z.coerce.number().positive("MRP must be positive"),
@@ -59,6 +66,7 @@ export const SunglassVariantSchema = z.object({
 
 export type SunglassFormDataType = z.infer<typeof SunglassSchema>;
 export const SunglassSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
   brand_name: z.string().min(1, "Brand name is required"),
   material: z.array(z.string()).min(1, "Select at least one material"),
   shape: z.array(z.string()).min(1, "Select at least one shape"),
@@ -66,7 +74,13 @@ export const SunglassSchema = z.object({
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
-  is_power: z.boolean("Lens Power must be boolean"),
+  dimension: z.object({
+    lens_width: z.coerce.number().positive("Lens width must be positive"),
+    bridge_width: z.coerce.number().positive("Bridge width must be positive"),
+    temple_length: z.coerce.number().positive("Temple length must be positive"),
+    lens_height: z.coerce.number().positive("Lens height must be positive"),
+  }),
+  is_Power: z.boolean("Lens Power must be boolean"),
   rating: z.coerce.number().min(0).max(5).optional().default(0),
   status: z.enum(["active", "inactive"]).optional().default("active"),
   variants: z.array(SunglassVariantSchema).min(1, "At least one variant is required"),

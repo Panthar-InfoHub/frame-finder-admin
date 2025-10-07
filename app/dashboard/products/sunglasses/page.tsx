@@ -22,8 +22,8 @@ const SunglassesTable = async ({ searchParams }: SunglassesTableProps) => {
     search: searchParams.search || "",
   });
 
-  console.debug("Response ===> ", resp.data?.sunglass);
-  return <ProductsTable products={resp?.data?.sunglass || []} type="sunglasses" />;
+  const products = resp.data?.result?.products || [];
+  return <ProductsTable products={products} type="sunglasses" />;
 };
 
 const page = async ({

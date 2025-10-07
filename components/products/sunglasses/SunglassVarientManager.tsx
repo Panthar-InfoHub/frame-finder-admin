@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2, Plus, ImageIcon, Info } from "lucide-react";
-import { InputTags } from "@/components/ui/custom/InputTags";
 import { ImageUploader } from "@/components/ui/custom/ImageUploader";
 import { ImageSection } from "@/components/ui/custom/ImageSection";
 import { getSignedViewUrl } from "@/actions/cloud-storage";
@@ -14,9 +13,9 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SunglassVariant {
-  frame_color: string[];
-  temple_color: string[];
-  lens_color: string[];
+  frame_color: string;
+  temple_color: string;
+  lens_color: string;
   price: {
     base_price: number;
     mrp: number;
@@ -46,9 +45,9 @@ export default function SunglassVariantManager({
 }: SunglassVariantManagerProps) {
   const addVariant = () => {
     const newVariant: SunglassVariant = {
-      frame_color: [],
-      temple_color: [],
-      lens_color: [],
+      frame_color: "",
+      temple_color: "",
+      lens_color: "",
       price: {
         base_price: 0,
         mrp: 0,
@@ -121,34 +120,31 @@ export default function SunglassVariantManager({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Frame Colors */}
               <div>
-                <Label>Frame Colors</Label>
-                <InputTags
-                  tags={variant.frame_color}
-                  onChange={(tags) => updateVariant(index, "frame_color", tags)}
-                  placeholder="Add frame colors..."
-                  emptyMessage="No frame colors added"
+                <Label>Frame Color</Label>
+                <Input
+                  value={variant.frame_color}
+                  onChange={(e) => updateVariant(index, "frame_color", e.target.value)}
+                  placeholder="Enter frame color..."
                 />
               </div>
 
               {/* Temple Colors */}
               <div>
-                <Label>Temple Colors</Label>
-                <InputTags
-                  tags={variant.temple_color}
-                  onChange={(tags) => updateVariant(index, "temple_color", tags)}
-                  placeholder="Add temple colors..."
-                  emptyMessage="No temple colors added"
+                <Label>Temple Color</Label>
+                <Input
+                  value={variant.temple_color}
+                  onChange={(e) => updateVariant(index, "temple_color", e.target.value)}
+                  placeholder="Enter temple color..."
                 />
               </div>
 
               {/* Lens Colors */}
               <div>
-                <Label>Lens Colors</Label>
-                <InputTags
-                  tags={variant.lens_color}
-                  onChange={(tags) => updateVariant(index, "lens_color", tags)}
-                  placeholder="Add lens colors..."
-                  emptyMessage="No lens colors added"
+                <Label>Lens Color</Label>
+                <Input
+                  value={variant.lens_color}
+                  onChange={(e) => updateVariant(index, "lens_color", e.target.value)}
+                  placeholder="Enter lens color..."
                 />
               </div>
             </div>

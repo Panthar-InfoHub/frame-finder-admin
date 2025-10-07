@@ -150,8 +150,8 @@ const SunglassesDetails = async ({
                     className="flex flex-col items-center p-4 h-auto"
                   >
                     <span className="text-xs text-muted-foreground">Variant {index + 1}</span>
-                    <span className="font-medium">{variant?.frame_color?.join("/")} Frame</span>
-                    <span className="text-sm">{variant?.lens_color?.join("/")} Lens</span>
+                    <span className="font-medium">{variant?.frame_color} Frame</span>
+                    <span className="text-sm">{variant?.lens_color} Lens</span>
                     <span className="text-sm font-semibold">₹{variant?.price?.base_price}</span>
                   </Button>
                 </form>
@@ -192,31 +192,19 @@ const SunglassesDetails = async ({
                       <div>
                         <h4 className="font-medium text-sm text-muted-foreground">Frame Color</h4>
                         <div className="flex flex-wrap gap-1">
-                          {selectedVariant?.frame_color?.map((color: string) => (
-                            <Badge key={color} variant="outline">
-                              {color}
-                            </Badge>
-                          ))}
+                          <Badge variant="outline">{selectedVariant?.frame_color}</Badge>
                         </div>
                       </div>
                       <div>
                         <h4 className="font-medium text-sm text-muted-foreground">Temple Color</h4>
                         <div className="flex flex-wrap gap-1">
-                          {selectedVariant?.temple_color?.map((color: string) => (
-                            <Badge key={color} variant="outline">
-                              {color}
-                            </Badge>
-                          ))}
+                          <Badge variant="outline">{selectedVariant?.temple_color}</Badge>
                         </div>
                       </div>
                       <div>
                         <h4 className="font-medium text-sm text-muted-foreground">Lens Color</h4>
                         <div className="flex flex-wrap gap-1">
-                          {selectedVariant?.lens_color?.map((color: string) => (
-                            <Badge key={color} variant="secondary">
-                              {color}
-                            </Badge>
-                          ))}
+                          <Badge variant="secondary">{selectedVariant?.lens_color}</Badge>
                         </div>
                       </div>
                     </div>

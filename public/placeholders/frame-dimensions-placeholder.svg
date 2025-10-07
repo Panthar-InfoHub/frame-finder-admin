@@ -1,0 +1,54 @@
+<svg width="400" height="200" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="200" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+  
+  <!-- Frame outline -->
+  <g transform="translate(50, 50)">
+    <!-- Left lens -->
+    <ellipse cx="60" cy="50" rx="45" ry="35" fill="none" stroke="#6c757d" stroke-width="3"/>
+    <!-- Right lens -->
+    <ellipse cx="240" cy="50" rx="45" ry="35" fill="none" stroke="#6c757d" stroke-width="3"/>
+    <!-- Bridge -->
+    <line x1="105" y1="50" x2="195" y2="50" stroke="#6c757d" stroke-width="3"/>
+    <!-- Left temple -->
+    <line x1="15" y1="50" x2="105" y2="50" stroke="#6c757d" stroke-width="3"/>
+    <!-- Right temple -->
+    <line x1="285" y1="50" x2="375" y2="50" stroke="#6c757d" stroke-width="3"/>
+  </g>
+  
+  <!-- Dimension arrows and labels -->
+  <!-- Lens Width -->
+  <g transform="translate(65, 30)">
+    <line x1="0" y1="0" x2="90" y2="0" stroke="#28a745" stroke-width="2" marker-end="url(#arrowhead)" marker-start="url(#arrowhead)"/>
+    <text x="45" y="-5" text-anchor="middle" fill="#28a745" font-size="12" font-weight="bold">50 mm</text>
+    <text x="45" y="-18" text-anchor="middle" fill="#28a745" font-size="10">Lens Width</text>
+  </g>
+  
+  <!-- Bridge Width -->
+  <g transform="translate(155, 80)">
+    <line x1="0" y1="0" x2="90" y2="0" stroke="#dc3545" stroke-width="2" marker-end="url(#arrowhead)" marker-start="url(#arrowhead)"/>
+    <text x="45" y="15" text-anchor="middle" fill="#dc3545" font-size="12" font-weight="bold">21 mm</text>
+    <text x="45" y="28" text-anchor="middle" fill="#dc3545" font-size="10">Bridge Width</text>
+  </g>
+  
+  <!-- Temple Length -->
+  <g transform="translate(335, 130)">
+    <line x1="0" y1="0" x2="90" y2="0" stroke="#ffc107" stroke-width="2" marker-end="url(#arrowhead)" marker-start="url(#arrowhead)"/>
+    <text x="45" y="15" text-anchor="middle" fill="#ffc107" font-size="12" font-weight="bold">145 mm</text>
+    <text x="45" y="28" text-anchor="middle" fill="#ffc107" font-size="10">Temple Length</text>
+  </g>
+  
+  <!-- Lens Height -->
+  <g transform="translate(20, 65)">
+    <line x1="0" y1="0" x2="0" y2="70" stroke="#17a2b8" stroke-width="2" marker-end="url(#arrowhead)" marker-start="url(#arrowhead)"/>
+    <text x="-25" y="35" text-anchor="middle" fill="#17a2b8" font-size="12" font-weight="bold" transform="rotate(-90, -25, 35)">35 mm</text>
+    <text x="-40" y="35" text-anchor="middle" fill="#17a2b8" font-size="10" transform="rotate(-90, -40, 35)">Lens Height</text>
+  </g>
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+</svg>

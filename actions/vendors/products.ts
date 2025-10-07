@@ -19,6 +19,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
 
     // Transform the data to match the expected API structure
     const finalData = {
+      product_code: data.productCode,
       brand_name: data.brand_name,
       material: data.material,
       shape: data.shape,
@@ -26,6 +27,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
+      dimension: data.dimension,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -46,7 +48,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       })),
     };
 
-    // console.debug("Final data to be sent to API:", finalData);
+    console.debug("Final data to be sent to API:", finalData.variants);
 
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
@@ -74,6 +76,7 @@ export const updateFrameAction = async (id: string, data: FrameFormDataType) => 
 
     // Transform the data to match the expected API structure
     const finalData = {
+      product_code: data.productCode,
       brand_name: data.brand_name,
       material: data.material,
       shape: data.shape,
@@ -81,6 +84,7 @@ export const updateFrameAction = async (id: string, data: FrameFormDataType) => 
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
+      dimension: data.dimension,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -253,13 +257,15 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
+      productCode: data.productCode,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      is_power: data.is_power,
+      dimension: data.dimension,
+      is_Power: data.is_Power,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -280,6 +286,7 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     });
 
     const result = await parseApiResponse(resp);
+    console.log("API Response:", result);
 
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
@@ -305,13 +312,15 @@ export const updateSunglassAction = async (
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
+      product_code: data.productCode,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      is_power: data.is_power,
+      dimension: data.dimension,
+      is_Power: data.is_Power,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",

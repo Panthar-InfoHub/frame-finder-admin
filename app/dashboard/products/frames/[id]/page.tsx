@@ -147,7 +147,7 @@ const FrameDetails = async ({
                     className="flex flex-col items-center p-4 h-auto"
                   >
                     <span className="text-xs  font-bold">Variant {index + 1}</span>
-                    <span className="font-medium">{variant?.frame_color?.join("/")} Frame</span>
+                    <span className="font-medium">{variant?.frame_color} Frame</span>
                   </Button>
                 </form>
               ))}
@@ -187,21 +187,13 @@ const FrameDetails = async ({
                       <div>
                         <h4 className="font-medium text-sm text-muted-foreground">Frame Color</h4>
                         <div className="flex flex-wrap gap-1">
-                          {selectedVariant?.frame_color?.map((color: string) => (
-                            <Badge key={color} variant="outline">
-                              {color}
-                            </Badge>
-                          ))}
+                          <Badge variant="outline">{selectedVariant?.frame_color}</Badge>
                         </div>
                       </div>
                       <div>
                         <h4 className="font-medium text-sm text-muted-foreground">Temple Color</h4>
                         <div className="flex flex-wrap gap-1">
-                          {selectedVariant?.temple_color?.map((color: string) => (
-                            <Badge key={color} variant="outline">
-                              {color}
-                            </Badge>
-                          ))}
+                          <Badge variant="outline">{selectedVariant?.temple_color}</Badge>
                         </div>
                       </div>
                     </div>

@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2, Plus, ImageIcon, Info } from "lucide-react";
-import { InputTags } from "@/components/ui/custom/InputTags";
 import { ImageUploader } from "@/components/ui/custom/ImageUploader";
 import { ImageSection } from "@/components/ui/custom/ImageSection";
 import { getSignedViewUrl } from "@/actions/cloud-storage";
@@ -14,8 +13,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Variant {
-  frame_color: string[];
-  temple_color: string[];
+  frame_color: string;
+  temple_color: string;
   price: {
     base_price: number;
     mrp: number;
@@ -45,8 +44,8 @@ export default function FramesVariantManager({
 }: VariantManagerProps) {
   const addVariant = () => {
     const newVariant: Variant = {
-      frame_color: [],
-      temple_color: [],
+      frame_color: "",
+      temple_color: "",
       price: {
         base_price: 0,
         mrp: 0,
@@ -119,23 +118,21 @@ export default function FramesVariantManager({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Frame Colors */}
               <div>
-                <Label>Frame Colors</Label>
-                <InputTags
-                  tags={variant.frame_color}
-                  onChange={(tags) => updateVariant(index, "frame_color", tags)}
-                  placeholder="Add frame colors..."
-                  emptyMessage="No frame colors added"
+                <Label>Frame Color</Label>
+                <Input
+                  value={variant.frame_color}
+                  onChange={(e) => updateVariant(index, "frame_color", e.target.value)}
+                  placeholder="Enter frame color..."
                 />
               </div>
 
               {/* Temple Colors */}
               <div>
-                <Label>Temple Colors</Label>
-                <InputTags
-                  tags={variant.temple_color}
-                  onChange={(tags) => updateVariant(index, "temple_color", tags)}
-                  placeholder="Add temple colors..."
-                  emptyMessage="No temple colors added"
+                <Label>Temple Color</Label>
+                <Input
+                  value={variant.temple_color}
+                  onChange={(e) => updateVariant(index, "temple_color", e.target.value)}
+                  placeholder="Enter temple color..."
                 />
               </div>
             </div>
