@@ -49,7 +49,6 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       })),
     };
 
-    console.debug("Final data to be sent to API:", finalData.variants);
 
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
@@ -57,7 +56,6 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       body: JSON.stringify(finalData),
     });
     const result = await parseApiResponse(resp);
-    console.log("API Response:", result);
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
@@ -291,7 +289,6 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     });
 
     const result = await parseApiResponse(resp);
-    console.log("API Response:", result);
 
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
@@ -563,7 +560,6 @@ export const getAllContactLenses = async ({
     });
 
     const data = await resp.json();
-
     if (!resp.ok || !data.success) {
       throw new Error(data.message || "Failed to fetch contact lenses");
     }

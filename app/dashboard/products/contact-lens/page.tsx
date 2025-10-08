@@ -23,7 +23,7 @@ const ContactLensTable = async ({ searchParams }: ContactLensTableProps) => {
     search: searchParams.search || "",
   });
 
-  console.debug("Contact Lens response ==> ", resp.data?.products);
+  console.debug("Contact Lens response ==> ", resp );
   return <ProductsTable products={resp?.data?.products || []} type="contact-lens" />;
 };
 

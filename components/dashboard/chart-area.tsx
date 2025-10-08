@@ -60,8 +60,6 @@ export function ChartAreaInteractive({ salesCount }) {
     };
   })
   
-  console.debug("\n filtered sales data ==> ", filteredData)
-
   return (
     <Card className="pt-0">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">

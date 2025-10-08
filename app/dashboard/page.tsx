@@ -24,7 +24,6 @@ export default async function AdminDashboard() {
 
   const [productCount, salesCount] = await Promise.all([getVendorProductCount(), getVendorSaleCount()])
 
-  console.log("Sales count ==> ", salesCount)
 
   return (
     <div className="space-y-6">

@@ -28,7 +28,6 @@ export async function completeVendorRegistration(data: VendorCompleteRegistratio
     });
 
     const result = await parseApiResponse(response);
-    console.log("Vendor registration response:", result);
 
     if (!response.ok || !result.success) {
       throw new Error(result.message || "Registration failed");

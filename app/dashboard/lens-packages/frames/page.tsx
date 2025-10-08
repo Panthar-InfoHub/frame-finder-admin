@@ -26,7 +26,6 @@ const FramesLensPackageTable = async ({ searchParams }: FramesLensPackageTablePr
     return <div className="text-center text-red-500 text-sm mt-6">{resp?.message}</div>;
   }
 
-  console.debug("Frames Lens Package response ==> ", resp.data?.lensPackages);
   const data = resp?.data?.lensPackages || [];
   return <PackagesTable products={data} type="frames" />;
 };
