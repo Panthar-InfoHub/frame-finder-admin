@@ -11,6 +11,65 @@ import { ImageSection } from "@/components/ui/custom/ImageSection";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import {
+  MultiSelect,
+  MultiSelectTrigger,
+  MultiSelectValue,
+  MultiSelectContent,
+  MultiSelectItem,
+} from "@/components/ui/custom/multi-select";
+
+// Power options for readers (arranged in ascending order from negative to positive)
+const POWER_OPTIONS = [
+  // Negative powers (from -10.00 to -0.25)
+  { value: "-10.00", label: "-10.00" },
+  { value: "-9.00", label: "-9.00" },
+  { value: "-8.00", label: "-8.00" },
+  { value: "-7.00", label: "-7.00" },
+  { value: "-6.00", label: "-6.00" },
+  { value: "-5.50", label: "-5.50" },
+  { value: "-5.00", label: "-5.00" },
+  { value: "-4.50", label: "-4.50" },
+  { value: "-4.00", label: "-4.00" },
+  { value: "-3.75", label: "-3.75" },
+  { value: "-3.50", label: "-3.50" },
+  { value: "-3.25", label: "-3.25" },
+  { value: "-3.00", label: "-3.00" },
+  { value: "-2.50", label: "-2.50" },
+  { value: "-2.25", label: "-2.25" },
+  { value: "-2.00", label: "-2.00" },
+  { value: "-1.75", label: "-1.75" },
+  { value: "-1.50", label: "-1.50" },
+  { value: "-1.25", label: "-1.25" },
+  { value: "-1.00", label: "-1.00" },
+  { value: "-0.75", label: "-0.75" },
+  { value: "-0.50", label: "-0.50" },
+  { value: "-0.25", label: "-0.25" },
+  // Positive powers (from +0.25 to +10.00)
+  { value: "0.25", label: "+0.25" },
+  { value: "0.50", label: "+0.50" },
+  { value: "0.75", label: "+0.75" },
+  { value: "1.00", label: "+1.00" },
+  { value: "1.25", label: "+1.25" },
+  { value: "1.50", label: "+1.50" },
+  { value: "1.75", label: "+1.75" },
+  { value: "2.00", label: "+2.00" },
+  { value: "2.25", label: "+2.25" },
+  { value: "2.50", label: "+2.50" },
+  { value: "3.00", label: "+3.00" },
+  { value: "3.25", label: "+3.25" },
+  { value: "3.50", label: "+3.50" },
+  { value: "3.75", label: "+3.75" },
+  { value: "4.00", label: "+4.00" },
+  { value: "4.50", label: "+4.50" },
+  { value: "5.00", label: "+5.00" },
+  { value: "5.50", label: "+5.50" },
+  { value: "6.00", label: "+6.00" },
+  { value: "7.00", label: "+7.00" },
+  { value: "8.00", label: "+8.00" },
+  { value: "9.00", label: "+9.00" },
+  { value: "10.00", label: "+10.00" },
+];
 
 interface Variant {
   frame_color: string;
@@ -84,23 +143,6 @@ export default function ReadersVariantManager({
   const handleImageChange = (variantIndex: number, imageUrls: string[]) => {
     const imageObjects = imageUrls.map((url) => ({ url }));
     updateVariant(variantIndex, "images", imageObjects);
-  };
-
-  const handlePowerAdd = (variantIndex: number, powerValue: string) => {
-    const power = parseFloat(powerValue);
-    if (!isNaN(power) && power >= -10 && power <= 10) {
-      const variant = variants[variantIndex];
-      if (!variant.power.includes(power)) {
-        const newPower = [...variant.power, power].sort((a, b) => a - b);
-        updateVariant(variantIndex, "power", newPower);
-      }
-    }
-  };
-
-  const handlePowerRemove = (variantIndex: number, powerValue: number) => {
-    const variant = variants[variantIndex];
-    const newPower = variant.power.filter((p) => p !== powerValue);
-    updateVariant(variantIndex, "power", newPower);
   };
 
   return (
@@ -193,53 +235,32 @@ export default function ReadersVariantManager({
                   Reading Power
                 </h4>
                 <div>
-                  <Label htmlFor={`power-input-${index}`} className="text-xs">
-                    Add Power Values (Range: -10 to +10)
+                  <Label htmlFor={`power-select-${index}`} className="text-xs">
+                    Select Power Values
                   </Label>
-                  <div className="flex gap-2 mt-1">
-                    <Input
-                      id={`power-input-${index}`}
-                      type="number"
-                      step="0.25"
-                      min="-10"
-                      max="10"
-                      placeholder="e.g., 1.5, 2.0, 2.5"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handlePowerAdd(index, e.currentTarget.value);
-                          e.currentTarget.value = "";
-                        }
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={(e) => {
-                        const input = document.getElementById(
-                          `power-input-${index}`
-                        ) as HTMLInputElement;
-                        if (input?.value) {
-                          handlePowerAdd(index, input.value);
-                          input.value = "";
-                        }
-                      }}
-                    >
-                      Add
-                    </Button>
-                  </div>
+                  <MultiSelect
+                    values={variant.power.map((p) => p.toString())}
+                    onValuesChange={(values) => {
+                      const powerNumbers = values.map((v) => parseFloat(v)).sort((a, b) => a - b);
+                      updateVariant(index, "power", powerNumbers);
+                    }}
+                  >
+                    <MultiSelectTrigger className="mt-1 min-w-[300px]">
+                      <MultiSelectValue placeholder="Select power values" />
+                    </MultiSelectTrigger>
+                    <MultiSelectContent className="min-w-[300px]">
+                      {POWER_OPTIONS.map((option) => (
+                        <MultiSelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MultiSelectItem>
+                      ))}
+                    </MultiSelectContent>
+                  </MultiSelect>
                   {variant.power.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {variant.power.map((powerValue) => (
-                        <Badge key={powerValue} variant="secondary" className="gap-2 px-3 py-1">
+                        <Badge key={powerValue} variant="secondary" className="px-3 py-1">
                           {powerValue > 0 ? `+${powerValue}` : powerValue}
-                          <button
-                            type="button"
-                            onClick={() => handlePowerRemove(index, powerValue)}
-                            className="ml-1 hover:text-destructive"
-                          >
-                            ×
-                          </button>
                         </Badge>
                       ))}
                     </div>
