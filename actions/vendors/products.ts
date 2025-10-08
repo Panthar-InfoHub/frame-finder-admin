@@ -19,15 +19,15 @@ export const createFrameAction = async (data: FrameFormDataType) => {
 
     // Transform the data to match the expected API structure
     const finalData = {
+      product_code: data.productCode,
       brand_name: data.brand_name,
-      desc: data.desc,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      stock: data.stock,
+      dimension: data.dimension,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -35,12 +35,20 @@ export const createFrameAction = async (data: FrameFormDataType) => {
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         price: {
-          mrp: variant.price,
-          base_price: variant.price,
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
         },
         images: variant.images,
       })),
     };
+
+    console.debug("Final data to be sent to API:", finalData.variants);
 
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
@@ -48,6 +56,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       body: JSON.stringify(finalData),
     });
     const result = await parseApiResponse(resp);
+    console.log("API Response:", result);
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
@@ -60,21 +69,22 @@ export const createFrameAction = async (data: FrameFormDataType) => {
   }
 };
 
-export const updateFrameAction = async (id: string, data: Omit<FrameFormDataType, "stock">) => {
+export const updateFrameAction = async (id: string, data: FrameFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
 
     // Transform the data to match the expected API structure
     const finalData = {
+      product_code: data.productCode,
       brand_name: data.brand_name,
-      desc: data.desc,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
+      dimension: data.dimension,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -82,8 +92,14 @@ export const updateFrameAction = async (id: string, data: Omit<FrameFormDataType
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         price: {
-          mrp: variant.price,
-          base_price: variant.price,
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
         },
         images: variant.images,
       })),
@@ -120,7 +136,7 @@ export const updateFrameStockAction = async (
     const body = {
       operation,
       quantity,
-      variantId
+      variantId,
     };
 
     const resp = await fetch(`${API_URL}/products/${id}/stock`, {
@@ -241,15 +257,15 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      desc: data.desc,
+      productCode: data.productCode,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      stock: data.stock,
-      is_power: data.is_power,
+      dimension: data.dimension,
+      is_Power: data.is_Power,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -257,10 +273,8 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         lens_color: variant.lens_color,
-        price: {
-          mrp: variant.price,
-          base_price: variant.price,
-        },
+        price: variant.price,
+        stock: variant.stock,
         images: variant.images,
       })),
     };
@@ -272,6 +286,7 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     });
 
     const result = await parseApiResponse(resp);
+    console.log("API Response:", result);
 
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
@@ -297,14 +312,15 @@ export const updateSunglassAction = async (
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      desc: data.desc,
+      product_code: data.productCode,
       material: data.material,
       shape: data.shape,
       style: data.style,
       hsn_code: data.hsn_code,
       sizes: data.sizes,
       gender: data.gender,
-      is_power: data.is_power,
+      dimension: data.dimension,
+      is_Power: data.is_Power,
       vendorId: user?.id,
       rating: data.rating || 4.5,
       status: data.status || "active",
@@ -312,10 +328,8 @@ export const updateSunglassAction = async (
         frame_color: variant.frame_color,
         temple_color: variant.temple_color,
         lens_color: variant.lens_color,
-        price: {
-          mrp: variant.price,
-          base_price: variant.price,
-        },
+        price: variant.price,
+        stock: variant.stock,
         images: variant.images,
       })),
     };
@@ -346,7 +360,6 @@ export const updateSunglassStockAction = async (
   operation: string,
   quantity: number,
   variantId: string
-
 ) => {
   try {
     const token = await getAccessToken();
@@ -354,7 +367,7 @@ export const updateSunglassStockAction = async (
     const body = {
       operation,
       quantity,
-      variantId
+      variantId,
     };
 
     const resp = await fetch(`${API_URL}/sunglass/${id}/stock`, {
@@ -369,8 +382,8 @@ export const updateSunglassStockAction = async (
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
-    revalidatePath("/dashboard/sunglasses")
-    revalidatePath(`/dashboard/sunglasses/${id}/edit`)
+    revalidatePath("/dashboard/sunglasses");
+    revalidatePath(`/dashboard/sunglasses/${id}/edit`);
 
     return {
       success: true,
@@ -684,24 +697,28 @@ export const createAccessoryAction = async (data: AccessoryFormDataType) => {
 
     // Transform the data to match the expected API structure
     const finalData = {
+      productCode: data.productCode,
       brand_name: data.brand_name,
-      desc: data.desc,
-      material: data.material,
+      material: data.material || [],
       hsn_code: data.hsn_code,
-      stock: data.stock || {
-        current: 0,
-        minimum: 5,
-        maximum: 100,
-      },
+      sizes: data.sizes || [],
       vendorId: user?.id,
       rating: data.rating || 0,
       status: data.status || "active",
-      images: data.images?.map((url) => ({ url })) || [],
+      type: "Accessories",
+      images: data.images || [],
+      mfg_date: data.mfg_date,
+      exp: data.exp,
+      origin_country: data.origin_country,
       price: {
         base_price: data.price.base_price,
         mrp: data.price.mrp,
+        total_price: data.price.total_price || data.price.base_price,
       },
-      type: "Accessories",
+      stock: {
+        current: data.stock?.current || 0,
+        minimum: data.stock?.minimum || 5,
+      },
     };
 
     const resp = await fetch(`${API_URL}/accessories`, {
@@ -727,16 +744,19 @@ export const updateAccessoryAction = async (id: string, data: Partial<AccessoryF
   try {
     const token = await getAccessToken();
 
-    const finalData = {
-      brand_name: data.brand_name,
-      desc: data.desc,
-      material: data.material,
-      hsn_code: data.hsn_code,
-      rating: data.rating,
-      status: data.status,
-      images: data.images?.map((url) => ({ url })),
-      price: data.price,
-    };
+    const finalData: any = {};
+
+    if (data.brand_name) finalData.brand_name = data.brand_name;
+    if (data.material) finalData.material = data.material;
+    if (data.origin_country) finalData.origin_country = data.origin_country;
+    if (data.sizes) finalData.sizes = data.sizes;
+    if (data.price)
+      finalData.price = {
+        base_price: data.price.base_price,
+        mrp: data.price.mrp,
+        total_price: data.price.total_price || data.price.base_price,
+      };
+    if (data.images) finalData.images = data.images;
 
     const resp = await fetch(`${API_URL}/accessories/${id}`, {
       method: "PUT",

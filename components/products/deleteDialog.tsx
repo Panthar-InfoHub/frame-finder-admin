@@ -18,6 +18,7 @@ import { toast } from "sonner";
 export function DeleteDialog({
   productId,
   deleteProductFunc,
+  redirectUrl,
 }: {
   productId: string;
   deleteProductFunc: (id: string) => Promise<{ success: boolean; message?: string }>;
@@ -35,8 +36,11 @@ export function DeleteDialog({
     if (result.success) {
       toast.success("Deleted successfully");
       setOpen(false);
-    //   router.push("/admin/products");
-      router.refresh();
+      if (redirectUrl) {
+        router.push(redirectUrl);
+      } else {
+        router.refresh();
+      }
     } else {
       toast.error(result.message || "Failed to delete");
     }

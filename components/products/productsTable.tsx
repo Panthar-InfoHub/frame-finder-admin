@@ -23,56 +23,52 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
 
+  // Check if products have variants
+  const hasVariants = products.some((p) => p.variants && p.variants.length > 0);
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          {/* <TableHead>Image</TableHead> */}
           <TableHead>Brand</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Code</TableHead>
-          <TableHead>Variants</TableHead>
+          <TableHead>Product Code</TableHead>
+          {hasVariants && <TableHead>Variants</TableHead>}
+          {type === "accessories" && <TableHead>Stock</TableHead>}
           <TableHead>Status</TableHead>
-          <TableHead>Options</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {products.map((product) => {
-
           return (
             <TableRow key={product._id}>
               <TableCell className="font-medium">{product.brand_name}</TableCell>
-              <TableCell className="max-w-xs truncate text-sm text-gray-600">
-                {product.desc}
-              </TableCell>
               <TableCell>
-                <Badge variant="outline">
-                  {product.productCode}
-                </Badge>
+                <Badge variant="outline">{product.productCode}</Badge>
               </TableCell>
+              {hasVariants && (
+                <TableCell>
+                  <span className="text-sm">{product?.variants?.length || 0} variants</span>
+                </TableCell>
+              )}
+              {type === "accessories" && (
+                <TableCell>
+                  <span className="text-sm">{product?.stock?.current || 0} units</span>
+                </TableCell>
+              )}
               <TableCell>
-                {product?.variants?.length || 0} variant
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    product?.status === "active"
-                      ? "default"
-                        : "secondary"
-                  }
-                >
+                <Badge variant={product?.status === "active" ? "default" : "secondary"}>
                   {product?.status}
                 </Badge>
               </TableCell>
-              <TableCell className="font-semibold">
+              <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size={"icon"}>
+                    <Button variant="ghost" size="icon">
                       &#x22EE;
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
+                  <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
                       <Link href={`${type}/${product._id}`}>View Details</Link>
                     </DropdownMenuItem>
@@ -83,7 +79,7 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
           );
         })}
       </TableBody>
-    </Table >
+    </Table>
   );
 }
 

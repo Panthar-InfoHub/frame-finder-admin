@@ -3,26 +3,39 @@ import { z } from "zod";
 // Variant schema for frame products
 export type FrameVariantType = z.infer<typeof FrameVariantSchema>;
 export const FrameVariantSchema = z.object({
-  frame_color: z.array(z.string()).min(1, "Add at least one frame color"),
-  temple_color: z.array(z.string()).min(1, "Add at least one temple color"),
-  price: z.coerce.number().positive("Price must be positive"),
+  frame_color: z.string().min(1, "Frame color is required"),
+  temple_color: z.string().min(1, "Temple color is required"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(100),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+  }),
   images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
 });
 
 export type FrameFormDataType = z.infer<typeof FrameSchema>;
 export const FrameSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
   brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
   material: z.array(z.string()).min(1, "Select at least one material"),
   shape: z.array(z.string()).min(1, "Select at least one shape"),
   style: z.array(z.string()).min(1, "Select at least one style"),
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
-  stock: z.object({
-    current: z.coerce.number().positive("Current stock must be positive"),
-    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
-    maximum: z.coerce.number().positive("Maximum stock must be positive").optional().default(100),
+  dimension: z.object({
+    lens_width: z.coerce.number().positive("Lens width must be positive"),
+    bridge_width: z.coerce.number().positive("Bridge width must be positive"),
+    temple_length: z.coerce.number().positive("Temple length must be positive"),
+    lens_height: z.coerce.number().positive("Lens height must be positive"),
   }),
   rating: z.coerce.number().min(0).max(5).optional().default(0),
   status: z.enum(["active", "inactive"]).optional().default("active"),
@@ -32,29 +45,42 @@ export const FrameSchema = z.object({
 // Variant schema for sunglasses products
 export type SunglassVariantType = z.infer<typeof SunglassVariantSchema>;
 export const SunglassVariantSchema = z.object({
-  frame_color: z.array(z.string()).min(1, "Add at least one frame color"),
-  temple_color: z.array(z.string()).min(1, "Add at least one temple color"),
-  lens_color: z.array(z.string()).min(1, "Add at least one lens color"),
-  price: z.coerce.number().positive("Price must be positive"),
+  frame_color: z.string().min(1, "Frame color is required"),
+  temple_color: z.string().min(1, "Temple color is required"),
+  lens_color: z.string().min(1, "Lens color is required"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(100),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+  }),
   images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
 });
 
 export type SunglassFormDataType = z.infer<typeof SunglassSchema>;
 export const SunglassSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
   brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
   material: z.array(z.string()).min(1, "Select at least one material"),
   shape: z.array(z.string()).min(1, "Select at least one shape"),
   style: z.array(z.string()).min(1, "Select at least one style"),
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
-  stock: z.object({
-    current: z.coerce.number().positive("Current stock must be positive"),
-    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
-    maximum: z.coerce.number().positive("Maximum stock must be positive").optional().default(100),
+  dimension: z.object({
+    lens_width: z.coerce.number().positive("Lens width must be positive"),
+    bridge_width: z.coerce.number().positive("Bridge width must be positive"),
+    temple_length: z.coerce.number().positive("Temple length must be positive"),
+    lens_height: z.coerce.number().positive("Lens height must be positive"),
   }),
-  is_power: z.boolean("Lens Power must be boolean"),
+  is_Power: z.boolean("Lens Power must be boolean"),
   rating: z.coerce.number().min(0).max(5).optional().default(0),
   status: z.enum(["active", "inactive"]).optional().default("active"),
   variants: z.array(SunglassVariantSchema).min(1, "At least one variant is required"),
@@ -96,26 +122,35 @@ export const ContactLensFormSchema = z.object({
 export type AccessoryFormDataType = z.infer<typeof AccessorySchema>;
 
 export const AccessorySchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
   brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
   material: z.array(z.string()).optional().default([]),
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
-  stock: z.object({
-    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
-    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
-    maximum: z.coerce.number().positive("Maximum stock must be positive").optional().default(100),
-  }),
-  rating: z.coerce.number().min(0).max(5).optional().default(0),
-  status: z.enum(["active", "inactive", "pending"]).optional().default("active"),
-  images: z
-    .array(z.object({ url: z.string().url("Invalid image URL") }))
+  sizes: z
+    .array(z.enum(["S", "M", "L", "XL"]))
     .optional()
     .default([]),
+  rating: z.coerce.number().min(0).max(5).optional().default(0),
+  status: z.enum(["active", "inactive", "pending"]).optional().default("active"),
+  type: z.string().optional().default("Accessories"),
+  images: z
+    .array(z.object({ url: z.string() }))
+    .optional()
+    .default([]),
+  mfg_date: z.string().optional(),
+  exp: z.string().optional(),
+  origin_country: z.string().optional(),
   price: z.object({
     base_price: z.coerce.number().positive("Base price must be positive"),
     mrp: z.coerce.number().positive("MRP must be positive"),
+    total_price: z.coerce.number().positive("Total price must be positive").optional(),
   }),
-  type: z.string().optional().default("Accessories"),
+  stock: z
+    .object({
+      current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+      minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+    })
+    .optional(),
 });
 
 // Variant schema for lens packages

@@ -16,13 +16,14 @@ import { updateFrameAction, getFrameById } from "@/actions/vendors/products";
 import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { normalizeObject } from "@/utils/helpers";
 import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
 import { useRouter } from "next/navigation";
 import { FrameSchema, FrameVariantType } from "@/lib/validations";
 import FramesVariantManager from "@/components/products/frames/FramesVariantManager";
+import { BackButton } from "@/components/ui/back-button";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -47,23 +48,41 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   const [options, setOptions] = useState<Record<string, string[]>>({});
   const [variants, setVariants] = useState<FrameVariantType[]>([
     {
-      frame_color: [],
-      temple_color: [],
-      price: 0,
+      frame_color: "",
+      temple_color: "",
+      price: {
+        base_price: 0,
+        mrp: 0,
+        shipping_price: {
+          custom: false,
+          value: 100,
+        },
+        total_price: 100,
+      },
+      stock: {
+        current: 0,
+        minimum: 5,
+      },
       images: [],
     },
   ]);
 
   // Form state for pre-filled data
   const [formData, setFormData] = useState({
+    productCode: "",
     brand_name: "",
-    desc: "",
     material: [] as string[],
     shape: [] as string[],
     style: [] as string[],
     hsn_code: "",
     sizes: [] as string[],
     gender: [] as string[],
+    dimension: {
+      lens_width: "",
+      bridge_width: "",
+      temple_length: "",
+      lens_height: "",
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,17 +97,30 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     const formdata = new FormData(e.currentTarget);
 
     // Get basic form data and normalize it properly
-    const basicData = normalizeObject(formdata, ["hsn_code"]);
+    const basicData = normalizeObject(formdata, ["hsn_code", "productCode"]);
 
-    // Prepare the complete data structure (without stock for edit)
+    // Extract dimension data from form fields
+    const dimension = {
+      lens_width: basicData.lens_width as string,
+      bridge_width: basicData.bridge_width as string,
+      temple_length: basicData.temple_length as string,
+      lens_height: basicData.lens_height as string,
+    };
+
+    // Remove dimension fields from basicData to avoid duplication
+    delete basicData.lens_width;
+    delete basicData.bridge_width;
+    delete basicData.temple_length;
+    delete basicData.lens_height;
+
+    // Prepare the complete data structure
     const completeData = {
       ...basicData,
+      dimension,
       variants: variants,
     };
 
-    // For edit, we can use a modified schema that doesn't require stock
-    const editSchema = FrameSchema.omit({ stock: true });
-    const result = editSchema.safeParse(completeData);
+    const result = FrameSchema.safeParse(completeData);
 
     if (!result.success) {
       const errorMessages = result.error.issues
@@ -140,22 +172,45 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
 
       // Set form data
       setFormData({
+        productCode: frameData.productCode || "",
         brand_name: frameData.brand_name || "",
-        desc: frameData.desc || "",
         material: frameData.material || [],
         shape: frameData.shape || [],
         style: frameData.style || [],
         hsn_code: frameData.hsn_code || "",
         sizes: frameData.sizes || [],
         gender: frameData.gender || [],
+        dimension: {
+          lens_width: frameData.dimension?.lens_width || "",
+          bridge_width: frameData.dimension?.bridge_width || "",
+          temple_length: frameData.dimension?.temple_length || "",
+          lens_height: frameData.dimension?.lens_height || "",
+        },
       });
 
       // Set variants data
       if (frameData.variants && frameData.variants.length > 0) {
         const transformedVariants = frameData.variants.map((variant: any) => ({
-          frame_color: variant.frame_color || [],
-          temple_color: variant.temple_color || [],
-          price: variant.price?.mrp || variant.price?.base_price || 0,
+          frame_color: variant.frame_color || "",
+          temple_color: variant.temple_color || "",
+          price: {
+            base_price: variant.price?.base_price || 0,
+            mrp: variant.price?.mrp || 0,
+            shipping_price: {
+              custom: variant.price?.shipping_price?.custom || false,
+              value: variant.price?.shipping_price?.value || 100,
+            },
+            total_price:
+              variant.price?.total_price ||
+              (variant.price?.mrp || 0) +
+                (variant.price?.shipping_price?.custom
+                  ? variant.price?.shipping_price?.value || 0
+                  : 100),
+          },
+          stock: {
+            current: variant.stock?.current || 0,
+            minimum: variant.stock?.minimum || 5,
+          },
           images: variant.images || [],
         }));
         setVariants(transformedVariants);
@@ -172,11 +227,67 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   useEffect(() => {
     fetchOptions();
     fetchFrameData();
-  }, [frameId]);
+  }, [frameId]); // Add frameId dependency
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-7 w-32" />
+        </div>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <Skeleton className="h-4 w-20 mb-2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="h-4 w-16 mb-2" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-9 w-28" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Edit Frame</h2>
+      <div className="flex items-center justify-between">
+        <BackButton href="/dashboard/products/frames">Back to Frames</BackButton>
+        <h2 className="text-xl font-semibold">Edit Frame</h2>
+        <div></div> {/* Empty div for spacing */}
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 [&_label]:mb-1">
         {/* Basic Information */}
@@ -186,7 +297,17 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
+              <div>
+                <Label htmlFor="productCode">Product Code</Label>
+                <Input
+                  id="productCode"
+                  required
+                  name="productCode"
+                  placeholder="Enter product code"
+                  defaultValue={formData.productCode}
+                />
+              </div>
+              <div>
                 <Label htmlFor="brandName">Brand Name</Label>
                 <Input
                   id="brandName"
@@ -194,16 +315,6 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   name="brand_name"
                   placeholder="Enter brand name"
                   defaultValue={formData.brand_name}
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  required
-                  name="desc"
-                  placeholder="Enter product description"
-                  defaultValue={formData.desc}
                 />
               </div>
             </div>
@@ -224,7 +335,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select gender" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...genders, ...formData.gender].map((gender, i) => (
+                    {Array.from(new Set([...genders, ...formData.gender])).map((gender, i) => (
                       <MultiSelectItem key={`${gender}-${i}`} value={gender}>
                         {gender}
                       </MultiSelectItem>
@@ -241,7 +352,9 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.material?.length > 0 &&
-                      [...(options?.material ?? []), ...formData?.material].map((material, i) => (
+                      Array.from(
+                        new Set([...(options?.material ?? []), ...formData?.material])
+                      ).map((material, i) => (
                         <MultiSelectItem key={`${material}-${i}`} value={material}>
                           {material}
                         </MultiSelectItem>
@@ -261,11 +374,13 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      [...(options?.shape ?? []), ...formData.shape].map((shape, i) => (
-                        <MultiSelectItem key={`${shape}-${i}`} value={shape}>
-                          {shape}
-                        </MultiSelectItem>
-                      ))}
+                      Array.from(new Set([...(options?.shape ?? []), ...formData.shape])).map(
+                        (shape, i) => (
+                          <MultiSelectItem key={`${shape}-${i}`} value={shape}>
+                            {shape}
+                          </MultiSelectItem>
+                        )
+                      )}
                     <div className="p-2 border-t">
                       <AddValueDialog type="shape" onValueAdded={fetchOptions} />
                     </div>
@@ -280,11 +395,13 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select style" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...(options?.style ?? []), ...formData?.style].map((style, i) => (
-                      <MultiSelectItem key={`${style}-${i}`} value={style}>
-                        {style}
-                      </MultiSelectItem>
-                    ))}
+                    {Array.from(new Set([...(options?.style ?? []), ...formData?.style])).map(
+                      (style, i) => (
+                        <MultiSelectItem key={`${style}-${i}`} value={style}>
+                          {style}
+                        </MultiSelectItem>
+                      )
+                    )}
                     <div className="p-2 border-t">
                       <AddValueDialog type="style" onValueAdded={fetchOptions} />
                     </div>
@@ -299,7 +416,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                     <MultiSelectValue placeholder="Select size" />
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
-                    {[...sizes, ...formData.sizes].map((size, i) => (
+                    {Array.from(new Set([...sizes, ...formData.sizes])).map((size, i) => (
                       <MultiSelectItem key={`${size}-${i}`} value={size} className="capitalize">
                         {size}
                       </MultiSelectItem>
@@ -315,6 +432,76 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   required
                   placeholder="Enter HSN/SAC code"
                   defaultValue={formData.hsn_code}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Frame Dimensions */}
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Frame Dimensions</h3>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Dimension Reference Image */}
+            <div className="flex justify-center mb-6">
+              <div className="max-w-md w-full">
+                <img
+                  src="/placeholders/frame-dimensions-placeholder.svg"
+                  alt="Frame Dimensions Reference"
+                  className="w-full h-auto border rounded-lg bg-gray-50"
+                />
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  Reference guide for frame measurements
+                </p>
+              </div>
+            </div>
+
+            {/* Dimension Input Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div>
+                <Label htmlFor="lensWidth">Lens Width (mm)</Label>
+                <Input
+                  id="lensWidth"
+                  name="lens_width"
+                  required
+                  placeholder="e.g., 50"
+                  type="number"
+                  defaultValue={formData.dimension.lens_width}
+                />
+              </div>
+              <div>
+                <Label htmlFor="bridgeWidth">Bridge Width (mm)</Label>
+                <Input
+                  id="bridgeWidth"
+                  name="bridge_width"
+                  required
+                  placeholder="e.g., 21"
+                  type="number"
+                  defaultValue={formData.dimension.bridge_width}
+                />
+              </div>
+              <div>
+                <Label htmlFor="templeLength">Temple Length (mm)</Label>
+                <Input
+                  id="templeLength"
+                  name="temple_length"
+                  required
+                  placeholder="e.g., 145"
+                  type="number"
+                  defaultValue={formData.dimension.temple_length}
+                />
+              </div>
+              <div>
+                <Label htmlFor="lensHeight">Lens Height (mm)</Label>
+                <Input
+                  id="lensHeight"
+                  name="lens_height"
+                  required
+                  placeholder="e.g., 35"
+                  type="number"
+                  defaultValue={formData.dimension.lens_height}
                 />
               </div>
             </div>

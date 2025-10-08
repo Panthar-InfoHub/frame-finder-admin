@@ -22,54 +22,85 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateAccessoryStock } from "@/actions/vendors/products";
+import { ProductType } from "@/types/products";
 
-export function StockUpdateDialog({ children, product }) {
-  //   const [open, setOpen] = useState(false)
+interface StockUpdateDialogProps {
+  children: React.ReactNode;
+  productId: string;
+  currentStock: number;
+  productType: ProductType;
+  minStock?: number;
+}
+
+export function StockUpdateDialog({
+  children,
+  productId,
+  currentStock,
+  productType,
+  minStock = 5,
+}: StockUpdateDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
+
   const OPTIONS = [
     {
       value: "increase",
-      lable: "INCREASE",
+      label: "INCREASE",
     },
     {
       value: "decrease",
-      lable: "DECREASE",
+      label: "DECREASE",
     },
   ];
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setLoading(true);
 
-    const payload = {
-      quantity: Number.parseInt(formData.get("addStock")),
-      operation: formData.get("operation"),
-    };
+    const formData = new FormData(e.currentTarget);
+    const quantity = Number(formData.get("addStock"));
+    const operation = formData.get("operation") as "increase" | "decrease";
 
-    // const result = await updateProductStock(product._id, payload);
-    const result = { success: true, error: null };
+    if (!quantity || !operation) {
+      toast.error("Please fill all required fields");
+      setLoading(false);
+      return;
+    }
+
+    let result;
+
+    // Handle different product types
+    if (productType === "accessories") {
+      result = await updateAccessoryStock(productId, operation, quantity);
+    } else {
+      toast.error("Stock update not supported for this product type");
+      setLoading(false);
+      return;
+    }
 
     if (result.success) {
       toast.success("Stock updated successfully");
-    //   setOpen(false);
+      setOpen(false);
       router.refresh();
     } else {
-      toast.error(result.error || "Failed to update stock");
+      toast.error(result.message || "Failed to update stock");
     }
 
     setLoading(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Update Stock</DialogTitle>
-          <DialogDescription>Update stock levels for {product.name}</DialogDescription>
+          <DialogDescription>Update stock levels for this product</DialogDescription>
         </DialogHeader>
 
-        <form action={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="currentStock">Current Stock </Label>
             <Input
@@ -78,18 +109,22 @@ export function StockUpdateDialog({ children, product }) {
               type="number"
               min="0"
               disabled={true}
-              defaultValue={product.stock.current}
+              defaultValue={currentStock}
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="currentStock">Add Stock *</Label>
-            <Input id="addStock" name="addStock" type="number" min="0" defaultValue={0} required />
+            <Label htmlFor="addStock">
+              Quantity <span className="text-red-500">*</span>
+            </Label>
+            <Input id="addStock" name="addStock" type="number" min="1" defaultValue={1} required />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="operation">Operation *</Label>
+            <Label htmlFor="operation">
+              Operation <span className="text-red-500">*</span>
+            </Label>
             <Select name="operation" required>
               <SelectTrigger>
                 <SelectValue placeholder="Select Operation" />
@@ -97,7 +132,7 @@ export function StockUpdateDialog({ children, product }) {
               <SelectContent>
                 {OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    {option.lable}
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -112,13 +147,13 @@ export function StockUpdateDialog({ children, product }) {
               type="number"
               disabled={true}
               min="0"
-              defaultValue={product.stock.minimum}
+              defaultValue={minStock}
             />
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
             <DialogClose asChild>
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" disabled={loading}>
                 Cancel
               </Button>
             </DialogClose>
