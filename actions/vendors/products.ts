@@ -5,6 +5,7 @@ import {
   AccessoryFormDataType,
   ContactLensFormDataType,
   FrameFormDataType,
+  ReaderFormDataType,
   SunglassFormDataType,
 } from "@/lib/validations";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";
@@ -149,6 +150,10 @@ export const updateFrameStockAction = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
+
+    revalidatePath("/dashboard/products/frames");
+    revalidatePath(`/dashboard/products/frames/${id}`);
+    revalidatePath(`/dashboard/products/frames/${id}/edit`);
 
     return { success: true, message: "Product stock updated successfully" };
   } catch (error) {
@@ -382,8 +387,9 @@ export const updateSunglassStockAction = async (
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
-    revalidatePath("/dashboard/sunglasses");
-    revalidatePath(`/dashboard/sunglasses/${id}/edit`);
+    revalidatePath("/dashboard/products/sunglasses");
+    revalidatePath(`/dashboard/products/sunglasses/${id}`);
+    revalidatePath(`/dashboard/products/sunglasses/${id}/edit`);
 
     return {
       success: true,
@@ -884,6 +890,239 @@ export const deleteAccessory = async (id: string) => {
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to delete accessory",
+    };
+  }
+};
+
+// ------------------- Reader Glasses API Actions -------------------
+
+export const createReaderAction = async (data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    // Transform the data to match the expected API structure
+    const finalData = {
+      productCode: data.productCode,
+      brand_name: data.brand_name,
+      material: data.material,
+      shape: data.shape,
+      style: data.style,
+      hsn_code: data.hsn_code,
+      sizes: data.sizes,
+      gender: data.gender,
+      dimension: data.dimension,
+      vendorId: user?.id,
+      rating: data.rating || 0,
+      status: data.status || "active",
+      variants: data.variants.map((variant: any) => ({
+        frame_color: variant.frame_color,
+        temple_color: variant.temple_color,
+        lens_color: variant.lens_color,
+        power: variant.power,
+        price: {
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
+        },
+        images: variant.images,
+      })),
+    };
+
+    const resp = await fetch(`${API_URL}/reader`, {
+      method: "POST",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return { success: true, message: "Reader glass created successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to create reader glass",
+    };
+  }
+};
+
+export const updateReaderAction = async (id: string, data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    // Transform the data to match the expected API structure
+    const finalData = {
+      productCode: data.productCode,
+      brand_name: data.brand_name,
+      material: data.material,
+      shape: data.shape,
+      style: data.style,
+      hsn_code: data.hsn_code,
+      sizes: data.sizes,
+      gender: data.gender,
+      dimension: data.dimension,
+      vendorId: user?.id,
+      rating: data.rating || 0,
+      status: data.status || "active",
+      variants: data.variants.map((variant: any) => ({
+        frame_color: variant.frame_color,
+        temple_color: variant.temple_color,
+        lens_color: variant.lens_color,
+        power: variant.power,
+        price: {
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
+        },
+        images: variant.images,
+      })),
+    };
+
+    const resp = await fetch(`${API_URL}/reader/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    revalidatePath(`/dashboard/products/readers/${id}`);
+    return { success: true, message: "Reader glass updated successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update reader glass",
+    };
+  }
+};
+
+export const updateReaderStock = async (
+  id: string,
+  variantId: string,
+  operation: "increase" | "decrease",
+  quantity: number
+) => {
+  try {
+    const token = await getAccessToken();
+    const resp = await fetch(`${API_URL}/reader/${id}/stock`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({
+        operation,
+        quantity,
+        variantId,
+      }),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    revalidatePath("/dashboard/products/readers");
+    revalidatePath(`/dashboard/products/readers/${id}`);
+    revalidatePath(`/dashboard/products/readers/${id}/edit`);
+
+    return { success: true, message: "Reader glass stock updated successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update reader glass stock",
+    };
+  }
+};
+
+export const getAllReaders = async (page: number = 1, limit: number = 100, search?: string) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      vendorId: user?.id || "",
+      ...(search && { search }),
+    });
+
+    const resp = await fetch(`${API_URL}/reader?${queryParams.toString()}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return {
+      success: true,
+      data: result.data?.result || {
+        products: [],
+        pagination: { totalProducts: 0, totalPages: 0 },
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch reader glasses",
+      data: { products: [], pagination: { totalProducts: 0, totalPages: 0 } },
+    };
+  }
+};
+
+export const getReaderById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const resp = await fetch(`${API_URL}/reader/${id}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return { success: true, data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch reader glass",
+      data: null,
+    };
+  }
+};
+
+export const deleteReader = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const resp = await fetch(`${API_URL}/reader/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(token),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return { success: true, message: "Reader glass deleted successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to delete reader glass",
     };
   }
 };

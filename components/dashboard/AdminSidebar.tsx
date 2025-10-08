@@ -37,7 +37,7 @@ export type NavItem =
       badge?: string;
       url?: never;
     };
-    
+
 const BaseLinks: NavItem[] = [
   {
     title: "Dashboard",
@@ -66,13 +66,17 @@ const VendorLinks: NavItem[] = [
         url: "/dashboard/products/accessories",
       },
       {
+        title: "Readers",
+        url: "/dashboard/products/readers",
+      },
+      {
         title: "Contact Lens",
         url: "/dashboard/products/contact-lens",
       },
       {
-        title:"Contact Lens Colors",
-        url:"/dashboard/products/contact-lens-colors"
-      }
+        title: "Contact Lens Colors",
+        url: "/dashboard/products/contact-lens-colors",
+      },
     ],
   },
   {
@@ -116,7 +120,12 @@ function getSidebarLinks(userRole: Role): NavItem[] {
 
 const isActive = (item: NavItem, pathname: string): boolean => {
   if ("url" in item && item.url) {
-    return pathname === item.url;
+    // Exact match for dashboard home
+    if (item.url === "/dashboard") {
+      return pathname === "/dashboard";
+    }
+    // For other routes, check if pathname starts with the URL followed by / or is exact match
+    return pathname === item.url || pathname.startsWith(item.url + "/");
   }
   if ("children" in item && item.children) {
     return item.children.some((child) => isActive(child, pathname));
@@ -135,8 +144,8 @@ export function AppSidebar() {
   const userDetail = {
     name: user?.name || "",
     email: user?.email || "",
-    avatar: user?.image || ""
-  }
+    avatar: user?.image || "",
+  };
 
   return (
     <Sidebar className="border-r">
@@ -156,13 +165,17 @@ export function AppSidebar() {
         <SidebarMenu className="space-y-1">
           {navItems.map((item) =>
             item.children ? (
-              <Collapsible key={item.title} defaultOpen className="group/collapsible">
+              <Collapsible
+                key={item.title}
+                defaultOpen={isActive(item, pathname)}
+                className="group/collapsible"
+              >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       className={cn(
-                        "w-full justify-start gap-3 rounded-lg hover:text-primary-foreground! px-3 py-2 text-sm font-medium hover:bg-primary/10 "
-                        // isActive(item, pathname) && "bg-primary/10 text-primary-foreground"
+                        "w-full justify-start gap-3 rounded-lg hover:text-primary-foreground! px-3 py-2 text-sm font-medium hover:bg-primary/10",
+                        
                       )}
                     >
                       {item.icon && <item.icon className="h-4 w-4" />}
@@ -182,7 +195,9 @@ export function AppSidebar() {
                             href={sub.url || "#"}
                             className={cn(
                               "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
-                              pathname === sub.url && "bg-primary/10 text-primary-foreground"
+                              (pathname === sub.url ||
+                                pathname.startsWith((sub.url || "") + "/")) &&
+                                "bg-primary/10 text-primary-foreground"
                             )}
                           >
                             {sub.icon && <sub.icon className="h-4 w-4" />}
@@ -200,7 +215,7 @@ export function AppSidebar() {
                   asChild
                   className={cn(
                     "w-full justify-start gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
-                    pathname === item.url && "bg-primary/10 text-primary-foreground"
+                    isActive(item, pathname) && "bg-primary/10 text-primary-foreground"
                   )}
                 >
                   <Link href={item.url}>
@@ -220,7 +235,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t p-4">
-        <NavUser user = {userDetail}/>
+        <NavUser user={userDetail} />
       </SidebarFooter>
     </Sidebar>
   );

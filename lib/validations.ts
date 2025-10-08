@@ -153,6 +153,50 @@ export const AccessorySchema = z.object({
     .optional(),
 });
 
+// Variant schema for reader glasses
+export type ReaderVariantType = z.infer<typeof ReaderVariantSchema>;
+export const ReaderVariantSchema = z.object({
+  frame_color: z.string().min(1, "Frame color is required"),
+  temple_color: z.string().min(1, "Temple color is required"),
+  lens_color: z.string().min(1, "Lens color is required"),
+  power: z.array(z.coerce.number().min(-10).max(10)).min(1, "At least one power value is required"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(100),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+  }),
+  images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
+});
+
+export type ReaderFormDataType = z.infer<typeof ReaderSchema>;
+export const ReaderSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
+  brand_name: z.string().min(1, "Brand name is required"),
+  material: z.array(z.string()).min(1, "Select at least one material"),
+  shape: z.array(z.string()).min(1, "Select at least one shape"),
+  style: z.array(z.string()).min(1, "Select at least one style"),
+  hsn_code: z.string().min(1, "HSN/SAC code is required"),
+  sizes: z.array(z.string()).min(1, "Select at least one size"),
+  gender: z.array(z.string()).min(1, "Select at least one gender"),
+  dimension: z.object({
+    lens_width: z.coerce.number().positive("Lens width must be positive"),
+    bridge_width: z.coerce.number().positive("Bridge width must be positive"),
+    temple_length: z.coerce.number().positive("Temple length must be positive"),
+    lens_height: z.coerce.number().positive("Lens height must be positive"),
+  }),
+  rating: z.coerce.number().min(0).max(5).optional().default(0),
+  status: z.enum(["active", "inactive"]).optional().default("active"),
+  variants: z.array(ReaderVariantSchema).min(1, "At least one variant is required"),
+});
+
 // Variant schema for lens packages
 export type FrameLensPackageType = z.infer<typeof FrameLensPackageSchema>;
 export const FrameLensPackageSchema = z.object({
