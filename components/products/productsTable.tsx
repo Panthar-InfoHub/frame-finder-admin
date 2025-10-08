@@ -23,13 +23,17 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
 
+  // Check if products have variants
+  const hasVariants = products.some((p) => p.variants && p.variants.length > 0);
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Brand</TableHead>
           <TableHead>Product Code</TableHead>
-          <TableHead>Variants</TableHead>
+          {hasVariants && <TableHead>Variants</TableHead>}
+          {type === "accessories" && <TableHead>Stock</TableHead>}
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
@@ -42,9 +46,16 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
               <TableCell>
                 <Badge variant="outline">{product.productCode}</Badge>
               </TableCell>
-              <TableCell>
-                <span className="text-sm">{product?.variants?.length || 0} variants</span>
-              </TableCell>
+              {hasVariants && (
+                <TableCell>
+                  <span className="text-sm">{product?.variants?.length || 0} variants</span>
+                </TableCell>
+              )}
+              {type === "accessories" && (
+                <TableCell>
+                  <span className="text-sm">{product?.stock?.current || 0} units</span>
+                </TableCell>
+              )}
               <TableCell>
                 <Badge variant={product?.status === "active" ? "default" : "secondary"}>
                   {product?.status}

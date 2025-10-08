@@ -122,26 +122,35 @@ export const ContactLensFormSchema = z.object({
 export type AccessoryFormDataType = z.infer<typeof AccessorySchema>;
 
 export const AccessorySchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
   brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
   material: z.array(z.string()).optional().default([]),
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
-  stock: z.object({
-    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
-    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
-    maximum: z.coerce.number().positive("Maximum stock must be positive").optional().default(100),
-  }),
-  rating: z.coerce.number().min(0).max(5).optional().default(0),
-  status: z.enum(["active", "inactive", "pending"]).optional().default("active"),
-  images: z
-    .array(z.object({ url: z.string().url("Invalid image URL") }))
+  sizes: z
+    .array(z.enum(["S", "M", "L", "XL"]))
     .optional()
     .default([]),
+  rating: z.coerce.number().min(0).max(5).optional().default(0),
+  status: z.enum(["active", "inactive", "pending"]).optional().default("active"),
+  type: z.string().optional().default("Accessories"),
+  images: z
+    .array(z.object({ url: z.string() }))
+    .optional()
+    .default([]),
+  mfg_date: z.string().optional(),
+  exp: z.string().optional(),
+  origin_country: z.string().optional(),
   price: z.object({
     base_price: z.coerce.number().positive("Base price must be positive"),
     mrp: z.coerce.number().positive("MRP must be positive"),
+    total_price: z.coerce.number().positive("Total price must be positive").optional(),
   }),
-  type: z.string().optional().default("Accessories"),
+  stock: z
+    .object({
+      current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+      minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+    })
+    .optional(),
 });
 
 // Variant schema for lens packages

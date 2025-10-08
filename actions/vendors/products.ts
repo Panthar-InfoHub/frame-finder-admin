@@ -697,24 +697,28 @@ export const createAccessoryAction = async (data: AccessoryFormDataType) => {
 
     // Transform the data to match the expected API structure
     const finalData = {
+      productCode: data.productCode,
       brand_name: data.brand_name,
-      desc: data.desc,
-      material: data.material,
+      material: data.material || [],
       hsn_code: data.hsn_code,
-      stock: data.stock || {
-        current: 0,
-        minimum: 5,
-        maximum: 100,
-      },
+      sizes: data.sizes || [],
       vendorId: user?.id,
       rating: data.rating || 0,
       status: data.status || "active",
-      images: data.images?.map((url) => ({ url })) || [],
+      type: "Accessories",
+      images: data.images || [],
+      mfg_date: data.mfg_date,
+      exp: data.exp,
+      origin_country: data.origin_country,
       price: {
         base_price: data.price.base_price,
         mrp: data.price.mrp,
+        total_price: data.price.total_price || data.price.base_price,
       },
-      type: "Accessories",
+      stock: {
+        current: data.stock?.current || 0,
+        minimum: data.stock?.minimum || 5,
+      },
     };
 
     const resp = await fetch(`${API_URL}/accessories`, {
@@ -740,16 +744,19 @@ export const updateAccessoryAction = async (id: string, data: Partial<AccessoryF
   try {
     const token = await getAccessToken();
 
-    const finalData = {
-      brand_name: data.brand_name,
-      desc: data.desc,
-      material: data.material,
-      hsn_code: data.hsn_code,
-      rating: data.rating,
-      status: data.status,
-      images: data.images?.map((url) => ({ url })),
-      price: data.price,
-    };
+    const finalData: any = {};
+
+    if (data.brand_name) finalData.brand_name = data.brand_name;
+    if (data.material) finalData.material = data.material;
+    if (data.origin_country) finalData.origin_country = data.origin_country;
+    if (data.sizes) finalData.sizes = data.sizes;
+    if (data.price)
+      finalData.price = {
+        base_price: data.price.base_price,
+        mrp: data.price.mrp,
+        total_price: data.price.total_price || data.price.base_price,
+      };
+    if (data.images) finalData.images = data.images;
 
     const resp = await fetch(`${API_URL}/accessories/${id}`, {
       method: "PUT",
