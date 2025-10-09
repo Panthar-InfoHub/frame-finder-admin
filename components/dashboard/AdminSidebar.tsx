@@ -74,8 +74,8 @@ const VendorLinks: NavItem[] = [
         url: "/dashboard/products/contact-lens",
       },
       {
-        title: "Contact Lens Colors",
-        url: "/dashboard/products/contact-lens-colors",
+        title: "Color Contact Lens",
+        url: "/dashboard/products/contact-lens-color",
       },
     ],
   },
@@ -174,8 +174,7 @@ export function AppSidebar() {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       className={cn(
-                        "w-full justify-start gap-3 rounded-lg hover:text-primary-foreground! px-3 py-2 text-sm font-medium hover:bg-primary/10",
-                        
+                        "w-full justify-start gap-3 rounded-lg hover:text-primary-foreground! px-3 py-2 text-sm font-medium hover:bg-primary/10"
                       )}
                     >
                       {item.icon && <item.icon className="h-4 w-4" />}

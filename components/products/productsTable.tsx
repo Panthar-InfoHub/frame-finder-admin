@@ -23,8 +23,10 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
     return <div className="text-center text-gray-500 text-sm mt-6">No products found.</div>;
   }
 
-  // Check if products have variants
-  const hasVariants = products.some((p) => p.variants && p.variants.length > 0);
+  // Check if products have variants (handle both 'variants' and 'variant' field names)
+  const hasVariants = products.some(
+    (p) => (p.variants && p.variants.length > 0) || (p.variant && p.variant.length > 0)
+  );
 
   return (
     <Table>
@@ -48,7 +50,9 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
               </TableCell>
               {hasVariants && (
                 <TableCell>
-                  <span className="text-sm">{product?.variants?.length || 0} variants</span>
+                  <span className="text-sm">
+                    {product?.variants?.length || product?.variant?.length || 0} variants
+                  </span>
                 </TableCell>
               )}
               {type === "accessories" && (

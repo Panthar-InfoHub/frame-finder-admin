@@ -18,37 +18,27 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { ImageUploader } from "@/components/ui/custom/ImageUploader";
 import { ImageSection } from "@/components/ui/custom/ImageSection";
-import type { ContactLensVariantType } from "@/lib/validations";
+import type { ColorContactLensVariantType } from "@/lib/validations";
 
-interface ContactLensVariantManagerProps {
-  lensType: "non_toric" | "toric" | "multi_focal";
-  variants: ContactLensVariantType[];
-  onVariantsChange: (variants: ContactLensVariantType[]) => void;
+interface ColorContactLensVariantManagerProps {
+  lensType: "zero_power" | "power";
+  variants: ColorContactLensVariantType[];
+  onVariantsChange: (variants: ColorContactLensVariantType[]) => void;
   uploadFunction: (files: File[]) => Promise<string[]>;
 }
 
-export default function ContactLensVariantManager({
+export default function ColorContactLensVariantManager({
   lensType,
   variants,
   onVariantsChange,
   uploadFunction,
-}: ContactLensVariantManagerProps) {
+}: ColorContactLensVariantManagerProps) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([0]);
 
-  // Power options for selects
+  // Power options for selects (only used for "power" lens type)
   const sphericalPowers = Array.from({ length: 81 }, (_, i) => {
     const value = -20 + i * 0.5;
     return { label: value > 0 ? `+${value.toFixed(2)}` : value.toFixed(2), value };
-  });
-
-  const cylindricalPowers = Array.from({ length: 41 }, (_, i) => {
-    const value = -10 + i * 0.25;
-    return { label: value.toFixed(2), value };
-  });
-
-  const additionPowers = Array.from({ length: 17 }, (_, i) => {
-    const value = 1 + i * 0.25;
-    return { label: `+${value.toFixed(2)}`, value };
   });
 
   const toggleVariant = (index: number) => {
@@ -58,12 +48,13 @@ export default function ContactLensVariantManager({
   };
 
   const addVariant = () => {
-    const newVariant: ContactLensVariantType = {
+    const newVariant: ColorContactLensVariantType = {
       disposability: "monthly",
       mfg_date: new Date(),
       exp_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
       hsn_code: "",
       pieces_per_box: 1,
+      color: "",
       price: {
         base_price: 0,
         mrp: 0,
@@ -75,11 +66,7 @@ export default function ContactLensVariantManager({
         minimum: 5,
       },
       images: [],
-      power_range: {
-        spherical: { min: -10, max: 10 },
-        cylindrical: lensType === "toric" ? { min: -10, max: 0 } : undefined,
-        addition: lensType === "multi_focal" ? { min: 1, max: 5 } : undefined,
-      },
+      power_range: lensType === "power" ? { spherical: { min: -8, max: 0 } } : undefined,
     };
     onVariantsChange([...variants, newVariant]);
     setOpenIndexes([...openIndexes, variants.length]);
@@ -93,7 +80,7 @@ export default function ContactLensVariantManager({
     }
   };
 
-  const updateVariant = (index: number, updates: Partial<ContactLensVariantType>) => {
+  const updateVariant = (index: number, updates: Partial<ColorContactLensVariantType>) => {
     const newVariants = [...variants];
     newVariants[index] = { ...newVariants[index], ...updates };
     onVariantsChange(newVariants);
@@ -152,7 +139,7 @@ export default function ContactLensVariantManager({
         </Card>
       )}
 
-      {variants.map((variant: ContactLensVariantType, index: number) => {
+      {variants.map((variant: ColorContactLensVariantType, index: number) => {
         const isOpen = openIndexes.includes(index);
 
         return (
@@ -166,7 +153,9 @@ export default function ContactLensVariantManager({
                     ) : (
                       <ChevronDown className="h-4 w-4" />
                     )}
-                    <CardTitle className="text-base">Variant {index + 1}</CardTitle>
+                    <CardTitle className="text-base">
+                      Variant {index + 1} {variant.color && `- ${variant.color}`}
+                    </CardTitle>
                   </CollapsibleTrigger>
                   {variants.length > 1 && (
                     <Button
@@ -183,8 +172,8 @@ export default function ContactLensVariantManager({
 
               <CollapsibleContent>
                 <CardContent className="space-y-4">
-                  {/* Disposability & HSN */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Disposability, HSN & Color */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <Label htmlFor={`disposability-${index}`}>Disposability</Label>
                       <Select
@@ -212,6 +201,17 @@ export default function ContactLensVariantManager({
                         value={variant.hsn_code}
                         onChange={(e) => updateVariant(index, { hsn_code: e.target.value })}
                         placeholder="Enter HSN code"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`color-${index}`}>Color *</Label>
+                      <Input
+                        id={`color-${index}`}
+                        value={variant.color}
+                        onChange={(e) => updateVariant(index, { color: e.target.value })}
+                        placeholder="e.g., Blue, Green, Gray"
+                        required
                       />
                     </div>
                   </div>
@@ -400,203 +400,74 @@ export default function ContactLensVariantManager({
                     </div>
                   </div>
 
-                  <Separator />
-
-                  {/* Power Range Section */}
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Power Range</h4>
-
-                    {/* Spherical (all types) */}
-                    <div>
-                      <Label className="text-sm font-medium mb-2">Spherical Power</Label>
-                      <div className="grid grid-cols-2 gap-4">
+                  {/* Power Range Section (only for "power" type) */}
+                  {lensType === "power" && variant.power_range && (
+                    <>
+                      <Separator />
+                      <div className="space-y-4">
+                        <h4 className="font-semibold">Power Range</h4>
                         <div>
-                          <Label htmlFor={`spherical-min-${index}`}>Min Power</Label>
-                          <Select
-                            value={variant.power_range.spherical.min.toString()}
-                            onValueChange={(value) =>
-                              updateNestedField(
-                                index,
-                                ["power_range", "spherical", "min"],
-                                Number(value)
-                              )
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select min power" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {sphericalPowers.map((power) => (
-                                <SelectItem
-                                  key={`min-${power.value}`}
-                                  value={power.value.toString()}
-                                >
-                                  {power.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label htmlFor={`spherical-max-${index}`}>Max Power</Label>
-                          <Select
-                            value={variant.power_range.spherical.max.toString()}
-                            onValueChange={(value) =>
-                              updateNestedField(
-                                index,
-                                ["power_range", "spherical", "max"],
-                                Number(value)
-                              )
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select max power" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {sphericalPowers.map((power) => (
-                                <SelectItem
-                                  key={`max-${power.value}`}
-                                  value={power.value.toString()}
-                                >
-                                  {power.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Cylindrical (toric only) */}
-                    {lensType === "toric" && (
-                      <div>
-                        <Label className="text-sm font-medium mb-2">Cylindrical Power</Label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor={`cylindrical-min-${index}`}>Min Power</Label>
-                            <Select
-                              value={(variant.power_range.cylindrical?.min || -10).toString()}
-                              onValueChange={(value) =>
-                                updateNestedField(
-                                  index,
-                                  ["power_range", "cylindrical", "min"],
-                                  Number(value)
-                                )
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select min power" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {cylindricalPowers
-                                  .filter((p) => p.value <= 0)
-                                  .map((power) => (
+                          <Label className="text-sm font-medium mb-2">Spherical Power</Label>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor={`spherical-min-${index}`}>Min Power</Label>
+                              <Select
+                                value={variant.power_range.spherical.min.toString()}
+                                onValueChange={(value) =>
+                                  updateNestedField(
+                                    index,
+                                    ["power_range", "spherical", "min"],
+                                    Number(value)
+                                  )
+                                }
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select min power" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {sphericalPowers.map((power) => (
                                     <SelectItem
-                                      key={`cyl-min-${power.value}`}
+                                      key={`min-${power.value}`}
                                       value={power.value.toString()}
                                     >
                                       {power.label}
                                     </SelectItem>
                                   ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div>
-                            <Label htmlFor={`cylindrical-max-${index}`}>Max Power</Label>
-                            <Select
-                              value={(variant.power_range.cylindrical?.max || 0).toString()}
-                              onValueChange={(value) =>
-                                updateNestedField(
-                                  index,
-                                  ["power_range", "cylindrical", "max"],
-                                  Number(value)
-                                )
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select max power" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {cylindricalPowers
-                                  .filter((p) => p.value <= 0)
-                                  .map((power) => (
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label htmlFor={`spherical-max-${index}`}>Max Power</Label>
+                              <Select
+                                value={variant.power_range.spherical.max.toString()}
+                                onValueChange={(value) =>
+                                  updateNestedField(
+                                    index,
+                                    ["power_range", "spherical", "max"],
+                                    Number(value)
+                                  )
+                                }
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select max power" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {sphericalPowers.map((power) => (
                                     <SelectItem
-                                      key={`cyl-max-${power.value}`}
+                                      key={`max-${power.value}`}
                                       value={power.value.toString()}
                                     >
                                       {power.label}
                                     </SelectItem>
                                   ))}
-                              </SelectContent>
-                            </Select>
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    )}
-
-                    {/* Addition (multi_focal only) */}
-                    {lensType === "multi_focal" && (
-                      <div>
-                        <Label className="text-sm font-medium mb-2">Addition Power</Label>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor={`addition-min-${index}`}>Min Power</Label>
-                            <Select
-                              value={(variant.power_range.addition?.min || 1).toString()}
-                              onValueChange={(value) =>
-                                updateNestedField(
-                                  index,
-                                  ["power_range", "addition", "min"],
-                                  Number(value)
-                                )
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select min power" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {additionPowers.map((power) => (
-                                  <SelectItem
-                                    key={`add-min-${power.value}`}
-                                    value={power.value.toString()}
-                                  >
-                                    {power.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div>
-                            <Label htmlFor={`addition-max-${index}`}>Max Power</Label>
-                            <Select
-                              value={(variant.power_range.addition?.max || 5).toString()}
-                              onValueChange={(value) =>
-                                updateNestedField(
-                                  index,
-                                  ["power_range", "addition", "max"],
-                                  Number(value)
-                                )
-                              }
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select max power" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {additionPowers.map((power) => (
-                                  <SelectItem
-                                    key={`add-max-${power.value}`}
-                                    value={power.value.toString()}
-                                  >
-                                    {power.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                    </>
+                  )}
 
                   <Separator />
 

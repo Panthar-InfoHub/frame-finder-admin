@@ -22,18 +22,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package, TrendingUp, TrendingDown } from "lucide-react";
 import { toast } from "sonner";
-import { updateContactLensStockAction } from "@/actions/vendors/products";
+import { updateColorContactLensStockAction } from "@/actions/vendors/products";
 import { useRouter } from "next/navigation";
 
-export function ContactLensVariantStock({ children, product }) {
+export function ColorContactLensVariantStock({ children, product }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedVariantId, setSelectedVariantId] = useState("");
   const [operation, setOperation] = useState("");
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
-
-
 
   const OPTIONS = [
     {
@@ -53,7 +51,7 @@ export function ContactLensVariantStock({ children, product }) {
   // Get all variants
   const allVariants = (product.variant || []).map((variant, index) => ({
     ...variant,
-    name: `Variant ${index + 1} - ${variant.disposability || "N/A"}`,
+    name: `Variant ${index + 1} - ${variant.color || "N/A"} - ${variant.disposability || "N/A"}`,
   }));
 
   const selectedVariant = allVariants.find((v) => v._id === selectedVariantId);
@@ -74,7 +72,7 @@ export function ContactLensVariantStock({ children, product }) {
     setLoading(true);
 
     try {
-      const result = await updateContactLensStockAction(
+      const result = await updateColorContactLensStockAction(
         product._id,
         selectedVariantId,
         operation as "increase" | "decrease",
@@ -106,25 +104,12 @@ export function ContactLensVariantStock({ children, product }) {
   };
 
   const formatPowerRange = (variant) => {
-    const parts = [];
-    if (variant.power_range?.spherical) {
-      parts.push(
-        `SPH: ${variant.power_range.spherical.min} to ${variant.power_range.spherical.max}`
-      );
-    }
-    if (variant.power_range?.cylindrical) {
-      parts.push(
-        `CYL: ${variant.power_range.cylindrical.min} to ${variant.power_range.cylindrical.max}`
-      );
-    }
-    if (variant.power_range?.addition) {
-      parts.push(`ADD: ${variant.power_range.addition.min} to ${variant.power_range.addition.max}`);
-    }
-    return parts.join(" • ");
+    if (!variant.power_range?.spherical) return "Zero Power";
+    return `SPH: ${variant.power_range.spherical.min} to ${variant.power_range.spherical.max}`;
   };
 
   return (
-   <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
@@ -187,10 +172,16 @@ export function ContactLensVariantStock({ children, product }) {
                       <div className="font-medium">₹{selectedVariant.price.base_price}</div>
                     </div>
                   </div>
-                  <div className="text-sm">
-                    <span className="text-muted-foreground">Disposability:</span>
-                    <div className="font-medium capitalize">
-                      {selectedVariant.disposability || "N/A"}
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Color:</span>
+                      <div className="font-medium capitalize">{selectedVariant.color || "N/A"}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Disposability:</span>
+                      <div className="font-medium capitalize">
+                        {selectedVariant.disposability || "N/A"}
+                      </div>
                     </div>
                   </div>
                   {selectedVariant.power_range && (

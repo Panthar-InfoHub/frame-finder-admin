@@ -3,6 +3,7 @@ import AddFrameForm from "@/components/products/frames/create-frame-form";
 import AddSunglassesForm from "@/components/products/sunglasses/create-sunglasses-form";
 import AddReaderForm from "@/components/products/readers/create-reader-form";
 import CreateContactLensForm from "@/components/products/contact-lens/create-contact-lens-form";
+import CreateColorContactLensForm from "@/components/products/contact-lens-color/create-color-contact-lens-form";
 
 import { redirect } from "next/navigation";
 import React from "react";
@@ -20,7 +21,7 @@ const getFormByType = (type: string) => {
     case "contact-lens":
       return <CreateContactLensForm />;
     case "contact-lens-color":
-      return <div>Add Contact Lens Color Form later</div>;
+      return <CreateColorContactLensForm />;
     default:
       return <div>Unknown Product Type</div>;
   }

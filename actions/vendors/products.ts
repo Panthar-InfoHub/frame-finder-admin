@@ -4,6 +4,7 @@ import { getAccessToken, getSession } from "@/actions/session";
 import {
   AccessoryFormDataType,
   ContactLensFormDataType,
+  ColorContactLensFormDataType,
   FrameFormDataType,
   ReaderFormDataType,
   SunglassFormDataType,
@@ -383,7 +384,6 @@ export const updateSunglassStockAction = async (
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
-
     return {
       success: true,
       message: "Sunglass stock updated successfully",
@@ -605,7 +605,6 @@ export const updateContactLensAction = async (id: string, data: ContactLensFormD
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
-
     return { success: true, message: "Contact lens updated successfully", data: result.data };
   } catch (error) {
     return {
@@ -624,7 +623,7 @@ export const updateContactLensStockAction = async (
 ) => {
   try {
     const token = await getAccessToken();
-    console.debug("Updating contact lens stock with:",  JSON.stringify({ operation, quantity, variantId }));
+
 
     const resp = await fetch(`${API_URL}/contact-lens/${id}/stock`, {
       method: "PUT",
@@ -633,12 +632,11 @@ export const updateContactLensStockAction = async (
     });
 
     const result = await parseApiResponse(resp);
-    console.debug("lens stock update result:", result);
 
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
-    return { success: true, message: "Contact lens stock updated successfully", data: result.data};
+    return { success: true, message: "Contact lens stock updated successfully", data: result.data };
   } catch (error) {
     console.error("Failed to update contact lens stock:", error);
     return {
@@ -875,6 +873,233 @@ export const deleteAccessory = async (id: string) => {
   }
 };
 
+// ------------------- Color Contact Lens API Actions -------------------
+
+// 1. Create Color Contact Lens
+export const createColorContactLensAction = async (data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const finalData = {
+      ...data,
+      vendorId: user?.id,
+    };
+
+
+    const resp = await fetch(`${API_URL}/color-contact-lens`, {
+      method: "POST",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+
+
+    const result = await parseApiResponse(resp);
+
+ 
+
+    if (!resp.ok || !result.success) {
+      console.error("API Error:", result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+
+
+    revalidatePath("/dashboard/products/contact-lens-color");
+
+    return { success: true, message: "Color contact lens created successfully", data: result.data };
+  } catch (error) {
+    console.error("❌ Create Color Contact Lens Action Error:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to create color contact lens",
+    };
+  }
+};
+
+// 2. Get All Color Contact Lenses
+export const getAllColorContactLenses = async (
+  page: number = 1,
+  limit: number = 100,
+  search?: string
+) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      vendorId: user?.id || "",
+      ...(search && { search }),
+    });
+
+    const resp = await fetch(`${API_URL}/color-contact-lens?${queryParams.toString()}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || "Failed to fetch color contact lenses");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch color contact lenses",
+    };
+  }
+};
+
+// 3. Get Color Contact Lens by ID
+export const getColorContactLensById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
+      method: "GET",
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || "Failed to fetch color contact lens details");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to fetch color contact lens details",
+    };
+  }
+};
+
+// 4. Update Color Contact Lens (except stock and variant)
+export const updateColorContactLensAction = async (id: string, data: any) => {
+  try {
+
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    });
+
+
+    const result = await parseApiResponse(resp);
+
+
+    if (!resp.ok || !result.success) {
+      console.error("❌ Update Failed:", result?.message);
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Color contact lens updated successfully", data: result.data };
+  } catch (error) {
+    console.error("❌ Update Action Error:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update color contact lens",
+    };
+  }
+};
+
+// 5. Update Color Contact Lens Variant Details (except stock)
+export const updateColorContactLensVariantAction = async (
+  id: string,
+  variantId: string,
+  variantData: any
+) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}/variant`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ variantId, ...variantData }),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Variant updated successfully", data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update variant",
+    };
+  }
+};
+
+// 6. Update Color Contact Lens Stock
+export const updateColorContactLensStockAction = async (
+  id: string,
+  variantId: string,
+  operation: "increase" | "decrease",
+  quantity: number
+) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}/stock`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ operation, quantity, variantId }),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Stock updated successfully", data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update stock",
+    };
+  }
+};
+
+// 7. Delete Color Contact Lens (soft delete)
+export const deleteColorContactLensAction = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(token),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    revalidatePath("/dashboard/products/contact-lens-color");
+
+    return { success: true, message: "Color contact lens deleted successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to delete color contact lens",
+    };
+  }
+};
+
 // ------------------- Reader Glasses API Actions -------------------
 
 export const createReaderAction = async (data: any) => {
@@ -1014,7 +1239,6 @@ export const updateReaderStock = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
-
 
     return { success: true, message: "Reader glass stock updated successfully" };
   } catch (error) {
