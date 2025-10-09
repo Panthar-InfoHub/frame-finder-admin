@@ -16,14 +16,13 @@ interface ContactLensTableProps {
 }
 
 const ContactLensTable = async ({ searchParams }: ContactLensTableProps) => {
-  const resp = await getAllContactLenses({
-    type: "contact_lens",
-    page: parseInt(searchParams.page || "1"),
-    limit: parseInt(searchParams.limit || "10"),
-    search: searchParams.search || "",
-  });
+  const resp = await getAllContactLenses(
+    parseInt(searchParams.page || "1"),
+    parseInt(searchParams.limit || "10"),
+    searchParams.search || ""
+  );
 
-  console.debug("Contact Lens response ==> ", resp );
+  console.debug("Contact Lens response ==> ", resp);
   return <ProductsTable products={resp?.data?.products || []} type="contact-lens" />;
 };
 
