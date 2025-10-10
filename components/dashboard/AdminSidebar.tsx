@@ -1,5 +1,5 @@
 "use client";
-import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun } from "lucide-react";
+import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -24,19 +24,19 @@ import { NavUser } from "./sidebarfooter";
 
 export type NavItem =
   | {
-      title: string;
-      icon?: React.ElementType;
-      url: string;
-      badge?: string;
-      children?: never;
-    }
+    title: string;
+    icon?: React.ElementType;
+    url: string;
+    badge?: string;
+    children?: never;
+  }
   | {
-      title: string;
-      icon?: React.ElementType;
-      children: NavItem[];
-      badge?: string;
-      url?: never;
-    };
+    title: string;
+    icon?: React.ElementType;
+    children: NavItem[];
+    badge?: string;
+    url?: never;
+  };
 
 const BaseLinks: NavItem[] = [
   {
@@ -90,6 +90,16 @@ const VendorLinks: NavItem[] = [
       {
         title: "Sunglasses",
         url: "/dashboard/lens-packages/sunglasses",
+      },
+    ],
+  },
+  {
+    title: "Orders",
+    icon: ShoppingCart,
+    children: [
+      {
+        title: "Orders",
+        url: "/dashboard/orders",
       },
     ],
   },
@@ -196,7 +206,7 @@ export function AppSidebar() {
                               "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
                               (pathname === sub.url ||
                                 pathname.startsWith((sub.url || "") + "/")) &&
-                                "bg-primary/10 text-primary-foreground"
+                              "bg-primary/10 text-primary-foreground"
                             )}
                           >
                             {sub.icon && <sub.icon className="h-4 w-4" />}

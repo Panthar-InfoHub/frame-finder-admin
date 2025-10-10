@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,7 @@ export function ContactLensVariantStock({ children, product }) {
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
 
+  console.log("Product in variant stockkkkk ==> ", product);
 
 
   const OPTIONS = [
@@ -124,8 +125,8 @@ export function ContactLensVariantStock({ children, product }) {
   };
 
   return (
-   <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

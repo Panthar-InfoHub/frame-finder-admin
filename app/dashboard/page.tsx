@@ -1,5 +1,5 @@
 import { getSession } from "@/actions/session";
-import { getVendorProductCount, getVendorSaleCount } from "@/actions/vendors/analytics";
+import { getVendorMetrics, getVendorProductCount, getVendorSaleCount } from "@/actions/vendors/analytics";
 import { getVendorById } from "@/actions/vendors/vendors";
 import { ChartAreaInteractive } from "@/components/dashboard/chart-area";
 import { ChartBarDefault } from "@/components/dashboard/chart-bar";
@@ -10,11 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Activity,
+  ClipboardCheck,
   DollarSign,
-  Star,
+  ShoppingBasket,
   Store,
-  TrendingUp,
-  Users
+  TrendingUp
 } from "lucide-react";
 import Link from "next/link";
 export default async function AdminDashboard() {
@@ -22,8 +22,8 @@ export default async function AdminDashboard() {
   const { user } = await getSession();
   const resp = await getVendorById(user?.id);
 
-  const [productCount, salesCount] = await Promise.all([getVendorProductCount(), getVendorSaleCount()])
-
+  const [productCount, salesCount, metrics] = await Promise.all([getVendorProductCount(), getVendorSaleCount(), getVendorMetrics()])
+  console.log("Vendor metrics ==> ", salesCount);
 
   return (
     <div className="space-y-6">
@@ -35,45 +35,41 @@ export default async function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">All Time Sales</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹45,231</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+            <div className="text-2xl font-bold">₹{metrics.total_sales}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Vendors</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
             <Store className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">142</div>
-            <p className="text-xs text-muted-foreground">+12 new this month</p>
+            <div className="text-2xl font-bold">{metrics.total_orders}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+            <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">2,350</div>
-            <p className="text-xs text-muted-foreground">+180 new users</p>
+            <div className="text-2xl font-bold"> {metrics.pending_orders} </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Rating</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Total Items Sold</CardTitle>
+            <ShoppingBasket className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">4.7</div>
-            <p className="text-xs text-muted-foreground">+0.3 from last month</p>
+            <div className="text-2xl font-bold"> {metrics.total_items_sold} </div>
           </CardContent>
         </Card>
       </div>

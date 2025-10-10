@@ -59,7 +59,9 @@ export function ChartAreaInteractive({ salesCount }) {
       customerCount: item.customerCount
     };
   })
-  
+
+  console.debug("FIltered data ==> ", filteredData)
+
   return (
     <Card className="pt-0">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
@@ -123,7 +125,7 @@ export function ChartAreaInteractive({ salesCount }) {
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="totalSales"
+              dataKey="date"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -136,12 +138,12 @@ export function ChartAreaInteractive({ salesCount }) {
                 })
               }}
             />
-            {/* <YAxis
+            <YAxis
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickCount={3}
-            /> */}
+              tickCount={5}
+            />
             <ChartTooltip
               cursor={false}
               content={

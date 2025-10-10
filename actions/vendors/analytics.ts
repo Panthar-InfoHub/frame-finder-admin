@@ -43,3 +43,25 @@ export async function getVendorSaleCount() {
         };
     }
 }
+
+export async function getVendorMetrics() {
+    try {
+        const accessToken = await getAccessToken();
+        const headers = getAuthHeaders(accessToken);
+        const response = await fetch(`${API_URL}/vendor-analytics/metrics`, {
+            method: "GET",
+            headers,
+        });
+
+        const data = await response.json();
+
+        return data.data;
+    } catch (error) {
+        console.error("Error while fetching metrics analytics ==> ", error);
+        return {
+            success: false,
+            message: "Failed to fetch vendors",
+            data: [],
+        };
+    }
+}
