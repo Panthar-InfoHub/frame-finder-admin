@@ -1,7 +1,7 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+
 
 import {
   Card,
@@ -36,34 +36,32 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartRadarDots() {
+export function BestSellerGraph({ data }) {
   return (
     <Card className=" w-full md:w-1/2" >
       <CardHeader className="items-center">
-        <CardTitle>Radar Chart - Dots</CardTitle>
+        <CardTitle>Best Seller Graph</CardTitle>
         <CardDescription>
-          Showing total visitors for the last 6 months
+          Showing best selling products of last 30 days
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <RadarChart data={chartData}>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <PolarAngleAxis dataKey="month" />
-            <PolarGrid />
-            <Radar
-              dataKey="desktop"
-              fill="var(--color-desktop)"
-              fillOpacity={0.6}
-              dot={{
-                r: 4,
-                fillOpacity: 1,
-              }}
+        <ChartContainer config={chartConfig}>
+          <BarChart accessibilityLayer data={data}>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="productId.brand_name"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
             />
-          </RadarChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Bar dataKey="total_revenue" fill="var(--color-desktop)" radius={8} />
+          </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>

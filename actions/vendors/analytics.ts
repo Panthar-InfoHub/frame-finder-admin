@@ -44,6 +44,28 @@ export async function getVendorSaleCount() {
     }
 }
 
+export async function getBestSellerProducts(vendorId, page = 1, limit = 10) {
+    try {
+        const accessToken = await getAccessToken();
+        const headers = getAuthHeaders(accessToken);
+        const response = await fetch(`${API_URL}/best-seller/search?page=${page}&limit=${limit}&vendorId=${vendorId}`, {
+            method: "GET",
+            headers,
+        });
+
+        const data = await response.json();
+
+        return data.data;
+    } catch (error) {
+        console.error("Error while fetching metrics analytics ==> ", error);
+        return {
+            success: false,
+            message: "Failed to fetch vendors",
+            data: [],
+        };
+    }
+}
+
 export async function getVendorMetrics() {
     try {
         const accessToken = await getAccessToken();

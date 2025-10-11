@@ -60,7 +60,6 @@ export function ChartAreaInteractive({ salesCount }) {
     };
   })
 
-  console.debug("FIltered data ==> ", filteredData)
 
   return (
     <Card className="pt-0">
