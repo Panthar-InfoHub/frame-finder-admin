@@ -44,10 +44,8 @@ export default function PersonalDetailsStep({ onComplete, initialData }: Persona
       recaptchaRef.current = new RecaptchaVerifier(firebaseAuth, "recaptcha-container", {
         size: "invisible",
         callback: (response) => {
-          console.log("reCAPTCHA solved");
         },
         "expired-callback": () => {
-          console.log("reCAPTCHA expired");
         },
       });
       recaptchaRef.current.render().catch(console.error);
@@ -73,7 +71,6 @@ export default function PersonalDetailsStep({ onComplete, initialData }: Persona
     try {
       // Check if user is already registered
       const userCheck = await IsUserNumberVerified(phone.national);
-      console.log("isUserAlreadyVerified", userCheck);
       if (userCheck.success) {
         setIsUserRegistered(true);
         toast.success("Phone number is already registered. Continue filling the form.");

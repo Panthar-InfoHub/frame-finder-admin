@@ -4,7 +4,9 @@ import { getAccessToken, getSession } from "@/actions/session";
 import {
   AccessoryFormDataType,
   ContactLensFormDataType,
+  ColorContactLensFormDataType,
   FrameFormDataType,
+  ReaderFormDataType,
   SunglassFormDataType,
 } from "@/lib/validations";
 import { API_URL, getAuthHeaders, parseApiResponse } from "@/utils/helpers";
@@ -48,15 +50,12 @@ export const createFrameAction = async (data: FrameFormDataType) => {
       })),
     };
 
-    console.debug("Final data to be sent to API:", finalData.variants);
-
     const resp = await fetch(`${API_URL}/products`, {
       method: "POST",
       headers: getAuthHeaders(token),
       body: JSON.stringify(finalData),
     });
     const result = await parseApiResponse(resp);
-    console.log("API Response:", result);
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
@@ -149,6 +148,10 @@ export const updateFrameStockAction = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
+
+    revalidatePath("/dashboard/products/frames");
+    revalidatePath(`/dashboard/products/frames/${id}`);
+    revalidatePath(`/dashboard/products/frames/${id}/edit`);
 
     return { success: true, message: "Product stock updated successfully" };
   } catch (error) {
@@ -286,7 +289,6 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     });
 
     const result = await parseApiResponse(resp);
-    console.log("API Response:", result);
 
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
@@ -381,9 +383,6 @@ export const updateSunglassStockAction = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
-
-    revalidatePath("/dashboard/sunglasses");
-    revalidatePath(`/dashboard/sunglasses/${id}/edit`);
 
     return {
       success: true,
@@ -494,10 +493,7 @@ export const deleteSunglassAction = async (id: string) => {
 // ------------------- Contact Lenses API Actions -------------------
 
 // 1. Create Contact Lens
-export const createContactLensAction = async (
-  type: "contact_lens" | "contact_lens_color",
-  data: ContactLensFormDataType
-) => {
+export const createContactLensAction = async (data: ContactLensFormDataType) => {
   try {
     const { user } = await getSession();
     const token = await getAccessToken();
@@ -507,7 +503,7 @@ export const createContactLensAction = async (
       vendorId: user?.id,
     };
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}`, {
+    const resp = await fetch(`${API_URL}/contact-lens`, {
       method: "POST",
       headers: getAuthHeaders(token),
       body: JSON.stringify(finalData),
@@ -519,6 +515,8 @@ export const createContactLensAction = async (
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
+    revalidatePath("/dashboard/products/contact-lens");
+
     return { success: true, message: "Contact lens created successfully", data: result.data };
   } catch (error) {
     return {
@@ -529,40 +527,33 @@ export const createContactLensAction = async (
 };
 
 // 2. Get All Contact Lenses
-export const getAllContactLenses = async ({
-  type = "contact_lens",
-  page = 1,
-  limit = 100,
-  search,
-}: {
-  type?: "contact_lens" | "contact_lens_color";
-  page?: number;
-  limit?: number;
-  search?: string;
-} = {}) => {
+export const getAllContactLenses = async (
+  page: number = 1,
+  limit: number = 100,
+  search?: string
+) => {
   try {
+    const { user } = await getSession();
     const token = await getAccessToken();
 
-    // Build query parameters
-    const params = new URLSearchParams({
+    const queryParams = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
+      vendorId: user?.id || "",
+      ...(search && { search }),
     });
 
-    if (search) params.set("search", search);
-
-    const resp = await fetch(`${API_URL}/contact-lens/${type}?${params.toString()}`, {
-      method: "GET",
+    const resp = await fetch(`${API_URL}/contact-lens?${queryParams.toString()}`, {
       headers: getAuthHeaders(token),
+      cache: "no-store",
     });
 
-    const data = await resp.json();
-
-    if (!resp.ok || !data.success) {
-      throw new Error(data.message || "Failed to fetch contact lenses");
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || "Failed to fetch contact lenses");
     }
 
-    return data;
+    return result;
   } catch (error) {
     return {
       success: false,
@@ -572,25 +563,23 @@ export const getAllContactLenses = async ({
 };
 
 // 3. Get Contact Lens by ID
-export const getContactLensById = async (
-  type: "contact_lens" | "contact_lens_color",
-  id: string
-) => {
+export const getContactLensById = async (id: string) => {
   try {
     const token = await getAccessToken();
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}/${id}`, {
+    const resp = await fetch(`${API_URL}/contact-lens/${id}`, {
       method: "GET",
       headers: getAuthHeaders(token),
+      cache: "no-store",
     });
 
-    const data = await resp.json();
+    const result = await parseApiResponse(resp);
 
-    if (!resp.ok || !data.success) {
-      throw new Error(data.message || "Failed to fetch contact lens details");
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || "Failed to fetch contact lens details");
     }
 
-    return data;
+    return result;
   } catch (error) {
     return {
       success: false,
@@ -600,15 +589,11 @@ export const getContactLensById = async (
 };
 
 // 4. Update Contact Lens (except stock)
-export const updateContactLensAction = async (
-  type: "contact_lens" | "contact_lens_color",
-  id: string,
-  data: Partial<ContactLensFormDataType>
-) => {
+export const updateContactLensAction = async (id: string, data: ContactLensFormDataType) => {
   try {
     const token = await getAccessToken();
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}/${id}`, {
+    const resp = await fetch(`${API_URL}/contact-lens/${id}`, {
       method: "PUT",
       headers: getAuthHeaders(token),
       body: JSON.stringify(data),
@@ -631,18 +616,19 @@ export const updateContactLensAction = async (
 
 // 5. Update Contact Lens Stock
 export const updateContactLensStockAction = async (
-  type: "contact_lens" | "contact_lens_color",
   id: string,
+  variantId: string,
   operation: "increase" | "decrease",
   quantity: number
 ) => {
   try {
     const token = await getAccessToken();
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}/${id}/stock`, {
+
+    const resp = await fetch(`${API_URL}/contact-lens/${id}/stock`, {
       method: "PUT",
       headers: getAuthHeaders(token),
-      body: JSON.stringify({ operation, quantity }),
+      body: JSON.stringify({ operation, quantity, variantId }),
     });
 
     const result = await parseApiResponse(resp);
@@ -650,9 +636,9 @@ export const updateContactLensStockAction = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
-
     return { success: true, message: "Contact lens stock updated successfully", data: result.data };
   } catch (error) {
+    console.error("Failed to update contact lens stock:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to update stock",
@@ -661,14 +647,11 @@ export const updateContactLensStockAction = async (
 };
 
 // 6. Delete Contact Lens (soft delete)
-export const deleteContactLensAction = async (
-  type: "contact_lens" | "contact_lens_color",
-  id: string
-) => {
+export const deleteContactLensAction = async (id: string) => {
   try {
     const token = await getAccessToken();
 
-    const resp = await fetch(`${API_URL}/contact-lens/${type}/${id}`, {
+    const resp = await fetch(`${API_URL}/contact-lens/${id}`, {
       method: "DELETE",
       headers: getAuthHeaders(token),
     });
@@ -678,6 +661,8 @@ export const deleteContactLensAction = async (
     if (!resp.ok || !result.success) {
       throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
+
+    revalidatePath("/dashboard/products/contact-lens");
 
     return { success: true, message: "Contact lens deleted successfully" };
   } catch (error) {
@@ -884,6 +869,462 @@ export const deleteAccessory = async (id: string) => {
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to delete accessory",
+    };
+  }
+};
+
+// ------------------- Color Contact Lens API Actions -------------------
+
+// 1. Create Color Contact Lens
+export const createColorContactLensAction = async (data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const finalData = {
+      ...data,
+      vendorId: user?.id,
+    };
+
+
+    const resp = await fetch(`${API_URL}/color-contact-lens`, {
+      method: "POST",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+
+
+    const result = await parseApiResponse(resp);
+
+ 
+
+    if (!resp.ok || !result.success) {
+      console.error("API Error:", result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+
+
+    revalidatePath("/dashboard/products/contact-lens-color");
+
+    return { success: true, message: "Color contact lens created successfully", data: result.data };
+  } catch (error) {
+    console.error("❌ Create Color Contact Lens Action Error:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to create color contact lens",
+    };
+  }
+};
+
+// 2. Get All Color Contact Lenses
+export const getAllColorContactLenses = async (
+  page: number = 1,
+  limit: number = 100,
+  search?: string
+) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      vendorId: user?.id || "",
+      ...(search && { search }),
+    });
+
+    const resp = await fetch(`${API_URL}/color-contact-lens?${queryParams.toString()}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || "Failed to fetch color contact lenses");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch color contact lenses",
+    };
+  }
+};
+
+// 3. Get Color Contact Lens by ID
+export const getColorContactLensById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
+      method: "GET",
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || "Failed to fetch color contact lens details");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to fetch color contact lens details",
+    };
+  }
+};
+
+// 4. Update Color Contact Lens (except stock and variant)
+export const updateColorContactLensAction = async (id: string, data: any) => {
+  try {
+
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    });
+
+
+    const result = await parseApiResponse(resp);
+
+
+    if (!resp.ok || !result.success) {
+      console.error("❌ Update Failed:", result?.message);
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Color contact lens updated successfully", data: result.data };
+  } catch (error) {
+    console.error("❌ Update Action Error:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update color contact lens",
+    };
+  }
+};
+
+// 5. Update Color Contact Lens Variant Details (except stock)
+export const updateColorContactLensVariantAction = async (
+  id: string,
+  variantId: string,
+  variantData: any
+) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}/variant`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ variantId, ...variantData }),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Variant updated successfully", data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update variant",
+    };
+  }
+};
+
+// 6. Update Color Contact Lens Stock
+export const updateColorContactLensStockAction = async (
+  id: string,
+  variantId: string,
+  operation: "increase" | "decrease",
+  quantity: number
+) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}/stock`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ operation, quantity, variantId }),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Stock updated successfully", data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update stock",
+    };
+  }
+};
+
+// 7. Delete Color Contact Lens (soft delete)
+export const deleteColorContactLensAction = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(token),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    revalidatePath("/dashboard/products/contact-lens-color");
+
+    return { success: true, message: "Color contact lens deleted successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to delete color contact lens",
+    };
+  }
+};
+
+// ------------------- Reader Glasses API Actions -------------------
+
+export const createReaderAction = async (data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    // Transform the data to match the expected API structure
+    const finalData = {
+      productCode: data.productCode,
+      brand_name: data.brand_name,
+      material: data.material,
+      shape: data.shape,
+      style: data.style,
+      hsn_code: data.hsn_code,
+      sizes: data.sizes,
+      gender: data.gender,
+      dimension: data.dimension,
+      vendorId: user?.id,
+      rating: data.rating || 0,
+      status: data.status || "active",
+      variants: data.variants.map((variant: any) => ({
+        frame_color: variant.frame_color,
+        temple_color: variant.temple_color,
+        lens_color: variant.lens_color,
+        power: variant.power,
+        price: {
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
+        },
+        images: variant.images,
+      })),
+    };
+
+    const resp = await fetch(`${API_URL}/reader`, {
+      method: "POST",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return { success: true, message: "Reader glass created successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to create reader glass",
+    };
+  }
+};
+
+export const updateReaderAction = async (id: string, data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    // Transform the data to match the expected API structure
+    const finalData = {
+      productCode: data.productCode,
+      brand_name: data.brand_name,
+      material: data.material,
+      shape: data.shape,
+      style: data.style,
+      hsn_code: data.hsn_code,
+      sizes: data.sizes,
+      gender: data.gender,
+      dimension: data.dimension,
+      vendorId: user?.id,
+      rating: data.rating || 0,
+      status: data.status || "active",
+      variants: data.variants.map((variant: any) => ({
+        frame_color: variant.frame_color,
+        temple_color: variant.temple_color,
+        lens_color: variant.lens_color,
+        power: variant.power,
+        price: {
+          base_price: variant.price.base_price,
+          mrp: variant.price.mrp,
+          shipping_price: variant.price.shipping_price,
+          total_price: variant.price.total_price,
+        },
+        stock: {
+          current: variant.stock.current,
+          minimum: variant.stock.minimum,
+        },
+        images: variant.images,
+      })),
+    };
+
+    const resp = await fetch(`${API_URL}/reader/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    revalidatePath(`/dashboard/products/readers/${id}`);
+    return { success: true, message: "Reader glass updated successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update reader glass",
+    };
+  }
+};
+
+export const updateReaderStock = async (
+  id: string,
+  variantId: string,
+  operation: "increase" | "decrease",
+  quantity: number
+) => {
+  try {
+    const token = await getAccessToken();
+    const resp = await fetch(`${API_URL}/reader/${id}/stock`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({
+        operation,
+        quantity,
+        variantId,
+      }),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Reader glass stock updated successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update reader glass stock",
+    };
+  }
+};
+
+export const getAllReaders = async (page: number = 1, limit: number = 100, search?: string) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      vendorId: user?.id || "",
+      ...(search && { search }),
+    });
+
+    const resp = await fetch(`${API_URL}/reader?${queryParams.toString()}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return {
+      success: true,
+      data: result.data?.result || {
+        products: [],
+        pagination: { totalProducts: 0, totalPages: 0 },
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch reader glasses",
+      data: { products: [], pagination: { totalProducts: 0, totalPages: 0 } },
+    };
+  }
+};
+
+export const getReaderById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const resp = await fetch(`${API_URL}/reader/${id}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return { success: true, data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch reader glass",
+      data: null,
+    };
+  }
+};
+
+export const deleteReader = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const resp = await fetch(`${API_URL}/reader/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(token),
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+    return { success: true, message: "Reader glass deleted successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to delete reader glass",
     };
   }
 };

@@ -16,14 +16,12 @@ interface ContactLensColorsTableProps {
 }
 
 const ContactLensColorsTable = async ({ searchParams }: ContactLensColorsTableProps) => {
-  const resp = await getAllContactLenses({
-    type: "contact_lens_color",
-    page: parseInt(searchParams.page || "1"),
-    limit: parseInt(searchParams.limit || "10"),
-    search: searchParams.search || "",
-  });
+  const resp = await getAllContactLenses(
+    parseInt(searchParams.page || "1"),
+    parseInt(searchParams.limit || "10"),
+    searchParams.search || ""
+  );
 
-  console.debug("Contact Lens Colors response ==> ", resp.data?.products);
   return <ProductsTable products={resp?.data?.products || []} type="contact-lens-color" />;
 };
 

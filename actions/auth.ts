@@ -51,7 +51,6 @@ export async function IsUserNumberVerified(phone: string) {
     }
 
     const data = await response.json();
-    console.log("isUserAlreadyVerified", data);
     return data;
   } catch (err) {
     return {
@@ -74,7 +73,6 @@ export async function VerifyOTP(phone: string) {
     }
 
     const data = await response.json();
-    console.log("OTP verification result:", data);
     return data;
   } catch (error) {
     return {

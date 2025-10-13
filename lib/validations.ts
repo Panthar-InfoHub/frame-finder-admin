@@ -86,37 +86,7 @@ export const SunglassSchema = z.object({
   variants: z.array(SunglassVariantSchema).min(1, "At least one variant is required"),
 });
 
-// Variant schema for contact lens products
-export type ContactLensFormDataType = z.infer<typeof ContactLensFormSchema>;
-
-export const ContactLensFormSchema = z.object({
-  brand_name: z.string().min(1, "Brand name is required"),
-  desc: z.string().min(1, "Description is required"),
-  hsn_code: z.string().min(1, "HSN code is required"),
-  stock: z
-    .object({
-      current: z.number().default(0),
-      minimum: z.number().default(5),
-      maximum: z.number().default(100),
-    })
-    .optional(),
-  exp_date: z.string().min(1, "Expiry date is required"), // use ISO string
-  contact_lens_cover: z.boolean().optional(),
-  price: z.object({
-    base_price: z.number(),
-    mrp: z.number(),
-  }),
-  images: z
-    .array(
-      z.object({
-        url: z.string().url("Invalid image URL"),
-      })
-    )
-    .optional(),
-  size: z.array(z.string()).optional(),
-  status: z.enum(["active", "inactive", "pending"]).default("active"),
-  rating: z.number().min(0).max(5).default(0),
-});
+// Contact Lens schemas are defined below (after Accessory and Reader schemas)
 
 // Variant schema for accessory products
 export type AccessoryFormDataType = z.infer<typeof AccessorySchema>;
@@ -151,6 +121,155 @@ export const AccessorySchema = z.object({
       minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
     })
     .optional(),
+});
+
+// Variant schema for reader glasses
+export type ReaderVariantType = z.infer<typeof ReaderVariantSchema>;
+export const ReaderVariantSchema = z.object({
+  frame_color: z.string().min(1, "Frame color is required"),
+  temple_color: z.string().min(1, "Temple color is required"),
+  lens_color: z.string().min(1, "Lens color is required"),
+  power: z.array(z.coerce.number().min(-10).max(10)).min(1, "At least one power value is required"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(100),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
+  }),
+  images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
+});
+
+export type ReaderFormDataType = z.infer<typeof ReaderSchema>;
+export const ReaderSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
+  brand_name: z.string().min(1, "Brand name is required"),
+  material: z.array(z.string()).min(1, "Select at least one material"),
+  shape: z.array(z.string()).min(1, "Select at least one shape"),
+  style: z.array(z.string()).min(1, "Select at least one style"),
+  hsn_code: z.string().min(1, "HSN/SAC code is required"),
+  sizes: z.array(z.string()).min(1, "Select at least one size"),
+  gender: z.array(z.string()).min(1, "Select at least one gender"),
+  dimension: z.object({
+    lens_width: z.coerce.number().positive("Lens width must be positive"),
+    bridge_width: z.coerce.number().positive("Bridge width must be positive"),
+    temple_length: z.coerce.number().positive("Temple length must be positive"),
+    lens_height: z.coerce.number().positive("Lens height must be positive"),
+  }),
+  rating: z.coerce.number().min(0).max(5).optional().default(0),
+  status: z.enum(["active", "inactive"]).optional().default("active"),
+  variants: z.array(ReaderVariantSchema).min(1, "At least one variant is required"),
+});
+
+// Contact Lens Variant Schema
+export type ContactLensVariantType = z.infer<typeof ContactLensVariantSchema>;
+export const ContactLensVariantSchema = z.object({
+  disposability: z.enum(["daily", "monthly", "quarterly", "yearly"], {
+    message: "Please select a valid disposability option",
+  }),
+  mfg_date: z.coerce.date(),
+  exp_date: z.coerce.date(),
+  hsn_code: z.string().min(1, "HSN code is required"),
+  pieces_per_box: z.coerce.number().min(1, "Pieces per box must be at least 1"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(0),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").default(5),
+  }),
+  images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
+  power_range: z.object({
+    spherical: z.object({
+      min: z.coerce.number().min(-20).max(20),
+      max: z.coerce.number().min(-20).max(20),
+    }),
+    cylindrical: z
+      .object({
+        min: z.coerce.number().min(-10).max(0).optional().default(0),
+        max: z.coerce.number().min(-10).max(0).optional().default(0),
+      })
+      .optional(),
+    addition: z
+      .object({
+        min: z.coerce.number().min(0).max(5).optional().default(0),
+        max: z.coerce.number().min(0).max(5).optional().default(0),
+      })
+      .optional(),
+  }),
+});
+
+// Contact Lens Schema
+export type ContactLensFormDataType = z.infer<typeof ContactLensSchema>;
+export const ContactLensSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
+  brand_name: z.string().min(1, "Brand name is required"),
+  contact_lens_cover: z.boolean().optional().default(false),
+  size: z.array(z.string()).min(1, "Select at least one size"),
+  lens_type: z.enum(["non_toric", "toric", "multi_focal"], {
+    message: "Please select a lens type",
+  }),
+  variant: z.array(ContactLensVariantSchema).min(1, "At least one variant is required"),
+});
+
+// Color Contact Lens Variant Schema
+export type ColorContactLensVariantType = z.infer<typeof ColorContactLensVariantSchema>;
+export const ColorContactLensVariantSchema = z.object({
+  disposability: z.enum(["daily", "monthly", "quarterly", "yearly"], {
+    message: "Please select a valid disposability option",
+  }),
+  mfg_date: z.coerce.date(),
+  exp_date: z.coerce.date(),
+  hsn_code: z.string().min(1, "HSN code is required"),
+  pieces_per_box: z.coerce.number().min(1, "Pieces per box must be at least 1"),
+  color: z.string().min(1, "Color is required"),
+  price: z.object({
+    base_price: z.coerce.number().positive("Base price must be positive"),
+    mrp: z.coerce.number().positive("MRP must be positive"),
+    shipping_price: z.object({
+      custom: z.boolean().default(false),
+      value: z.coerce.number().min(0).default(100),
+    }),
+    total_price: z.coerce.number().positive("Total price must be positive"),
+  }),
+  stock: z.object({
+    current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
+    minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").default(5),
+  }),
+  images: z.array(z.object({ url: z.string() })).min(1, "Upload at least one image"),
+  power_range: z
+    .object({
+      spherical: z.object({
+        min: z.coerce.number().min(-20).max(20),
+        max: z.coerce.number().min(-20).max(20),
+      }),
+    })
+    .optional(),
+});
+
+// Color Contact Lens Schema
+export type ColorContactLensFormDataType = z.infer<typeof ColorContactLensSchema>;
+export const ColorContactLensSchema = z.object({
+  productCode: z.string().min(1, "Product code is required"),
+  brand_name: z.string().min(1, "Brand name is required"),
+  contact_lens_cover: z.boolean().optional().default(false),
+  size: z.array(z.string()).min(1, "Select at least one size"),
+  lens_type: z.enum(["zero_power", "power"], {
+    message: "Please select a lens type (zero_power or power)",
+  }),
+  variant: z.array(ColorContactLensVariantSchema).min(1, "At least one variant is required"),
 });
 
 // Variant schema for lens packages

@@ -1,1 +1,7 @@
-export type ProductType = "frames" | "sunglasses" | "accessories" | "contact-lens" | "contact-lens-color";
+export type ProductType =
+  | "frames"
+  | "sunglasses"
+  | "accessories"
+  | "readers"
+  | "contact-lens"
+  | "contact-lens-color";

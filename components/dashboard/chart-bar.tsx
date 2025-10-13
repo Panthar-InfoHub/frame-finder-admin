@@ -1,15 +1,13 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts"
+
 
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -33,28 +31,28 @@ export function ChartBarDefault({ data }) {
     { name: key, count: value }
   ))
 
+  console.debug(" radar chart data ==>  ", formattedData)
+
   return (
     <Card className=" w-full md:w-1/2" >
       <CardHeader>
         <CardTitle> Product Count </CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={formattedData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="name"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={true}
-            // tickFormatter={(value) => value.slice(0, 3)}
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-square max-h-[450px] h-full w-full"
+        >
+          <RadarChart data={formattedData}>
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <PolarAngleAxis dataKey="name" />
+            <PolarGrid />
+            <Radar
+              dataKey="count"
+              fill="var(--color-desktop)"
+              fillOpacity={0.6}
             />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Bar dataKey="count" fill="var(--color-desktop)" radius={8} />
-          </BarChart>
+          </RadarChart>
         </ChartContainer>
       </CardContent>
     </Card>

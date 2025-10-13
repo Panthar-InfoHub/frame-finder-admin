@@ -5,9 +5,9 @@ import SectionHeader from "@/components/dashboard/SectionHeader";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
 import React, { Suspense } from "react";
-import { getAllContactLenses } from "@/actions/vendors/products";
+import { getAllColorContactLenses } from "@/actions/vendors/products";
 
-interface ContactLensTableProps {
+interface ColorContactLensTableProps {
   searchParams: {
     page?: string;
     limit?: string;
@@ -15,21 +15,20 @@ interface ContactLensTableProps {
   };
 }
 
-const ContactLensTable = async ({ searchParams }: ContactLensTableProps) => {
-  const resp = await getAllContactLenses(
+const ColorContactLensTable = async ({ searchParams }: ColorContactLensTableProps) => {
+  const resp = await getAllColorContactLenses(
     parseInt(searchParams.page || "1"),
     parseInt(searchParams.limit || "10"),
     searchParams.search || ""
   );
 
-
-  return <ProductsTable products={resp?.data?.products || []} type="contact-lens" />;
+  return <ProductsTable products={resp?.data?.products || []} type="contact-lens-color" />;
 };
 
 const page = async ({
   searchParams,
 }: {
-  searchParams: Promise<ContactLensTableProps["searchParams"]>;
+  searchParams: Promise<ColorContactLensTableProps["searchParams"]>;
 }) => {
   const searchP = await searchParams;
 
@@ -38,13 +37,13 @@ const page = async ({
 
   return (
     <div className="flex flex-col gap-6">
-      <SectionHeader title="Contact Lenses" link={`add?type=contact-lens`} />
+      <SectionHeader title="Color Contact Lenses" link={`add?type=contact-lens-color`} />
       <SearchAndFilter
         initialSearchTerm={searchP.search || ""}
-        placeholder="Search contact lenses..."
+        placeholder="Search color contact lenses..."
       />
       <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
-        <ContactLensTable searchParams={searchP} />
+        <ColorContactLensTable searchParams={searchP} />
       </Suspense>
     </div>
   );

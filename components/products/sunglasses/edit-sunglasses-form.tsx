@@ -144,7 +144,6 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
       toast.error(`Validation failed:\n${errorMessages}`);
       return;
     }
-    console.log("Final Data to submit:", result.data);
 
     startTransition(async () => {
       const resp = await updateSunglassAction(sunglassId, result.data);

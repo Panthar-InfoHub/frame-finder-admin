@@ -1,3 +1,4 @@
+import { getAllReaders } from "@/actions/vendors/products";
 import ProductsTable from "@/components/products/productsTable";
 import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
@@ -5,9 +6,8 @@ import SectionHeader from "@/components/dashboard/SectionHeader";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
 import React, { Suspense } from "react";
-import { getAllContactLenses } from "@/actions/vendors/products";
 
-interface ContactLensTableProps {
+interface ReadersTableProps {
   searchParams: {
     page?: string;
     limit?: string;
@@ -15,21 +15,20 @@ interface ContactLensTableProps {
   };
 }
 
-const ContactLensTable = async ({ searchParams }: ContactLensTableProps) => {
-  const resp = await getAllContactLenses(
+const ReadersTable = async ({ searchParams }: ReadersTableProps) => {
+  const resp = await getAllReaders(
     parseInt(searchParams.page || "1"),
     parseInt(searchParams.limit || "10"),
     searchParams.search || ""
   );
 
-
-  return <ProductsTable products={resp?.data?.products || []} type="contact-lens" />;
+  return <ProductsTable products={resp?.data?.products || []} type="readers" />;
 };
 
 const page = async ({
   searchParams,
 }: {
-  searchParams: Promise<ContactLensTableProps["searchParams"]>;
+  searchParams: Promise<ReadersTableProps["searchParams"]>;
 }) => {
   const searchP = await searchParams;
 
@@ -38,13 +37,10 @@ const page = async ({
 
   return (
     <div className="flex flex-col gap-6">
-      <SectionHeader title="Contact Lenses" link={`add?type=contact-lens`} />
-      <SearchAndFilter
-        initialSearchTerm={searchP.search || ""}
-        placeholder="Search contact lenses..."
-      />
+      <SectionHeader title="Reader Glasses" link={`add?type=readers`} />
+      <SearchAndFilter initialSearchTerm={searchP.search || ""} placeholder="Search readers..." />
       <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
-        <ContactLensTable searchParams={searchP} />
+        <ReadersTable searchParams={searchP} />
       </Suspense>
     </div>
   );
