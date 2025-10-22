@@ -1,5 +1,5 @@
 "use client";
-import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun } from "lucide-react";
+import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -48,6 +48,11 @@ const BaseLinks: NavItem[] = [
 
 const VendorLinks: NavItem[] = [
   ...BaseLinks,
+  {
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: ShoppingCart,
+  },
   {
     title: "Products",
     // url: "/dashboard/products",
