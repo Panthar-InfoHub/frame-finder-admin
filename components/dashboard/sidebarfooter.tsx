@@ -1,22 +1,12 @@
 "use client";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  Lock,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
@@ -25,18 +15,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  ChevronsUpDown,
+  KeyRound,
+  Lock,
+  LogOut,
+  UserRoundMinus
+} from "lucide-react";
 
+import { useState } from "react";
+import { Button } from "../ui/button";
 import LogoutButton from "./LogoutButton";
 import { ChangePasswordModal } from "./passwordchange-modal";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { useState } from "react";
 export function NavUser({
   user,
 }: {
@@ -59,7 +48,7 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg"> {user.name.split(" ")[0].slice(0, 3).toUpperCase() || user.email.split(" ")[0].slice(0, 2).toUpperCase()} </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -78,7 +67,7 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg"> {user.name.split(" ")[0].slice(0, 3).toUpperCase() || user.email.split(" ")[0].slice(0, 2).toUpperCase()} </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -90,6 +79,21 @@ export function NavUser({
             <DropdownMenuItem asChild>
               <Button className="bg-transparent hover:bg-transparent" onClick={() => setIsModalOpen(true)}><Lock /> Change Password</Button>
             </DropdownMenuItem>
+
+            {/* TODO : Enable 2fa and Deactivate account in future */}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <UserRoundMinus />
+              Deactive Account
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <KeyRound />
+              Two Factor Authentication
+            </DropdownMenuItem>
+
+
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />

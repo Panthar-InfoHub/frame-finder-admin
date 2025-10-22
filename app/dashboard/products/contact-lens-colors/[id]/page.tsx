@@ -12,7 +12,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 const ContactLensColorsDetails = async ({ id }: { id: string }) => {
-  const resp = await getContactLensById("contact_lens_color", id);
+  const resp = await getContactLensById(id);
   if (!resp) return <div>Contact Lens not found</div>;
   return <pre lang="json">{JSON.stringify(resp, null, 2)}</pre>;
 };

@@ -11,6 +11,7 @@ import { Edit, Package, Star } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
+
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   return (
@@ -19,6 +20,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
     </Suspense>
   );
 };
+
 
 const ContactLensDetails = async ({ id }: { id: string }) => {
   let resp = await getContactLensById(id);
@@ -32,20 +34,23 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
     return <div className="p-4">No product data available</div>;
   }
 
-  // Convert image paths to signed URLs
-  if (data?.variant) {
-    for (const variant of data.variant) {
-      if (variant.images && variant.images.length > 0) {
-        const signedImages = await Promise.all(
-          variant.images.map(async (img: any) => ({
-            ...img,
-            signedUrl: await getSignedViewUrl(img.url),
-          }))
-        );
-        variant.images = signedImages;
-      }
-    }
-  }
+  const transformedData = {
+    ...data,
+    variant: await Promise.all(
+      (data.variant || []).map(async (variant) => {
+        if (variant.images && variant.images.length > 0) {
+          const signedImages = await Promise.all(
+            variant.images.map(async (img: any) => ({
+              ...img,
+              signedUrl: await getSignedViewUrl(img.url),
+            }))
+          );
+          return { ...variant, images: signedImages };
+        }
+        return variant;
+      })
+    ),
+  };
 
   // Map lens type to display name
   const lensTypeDisplay = {
@@ -65,16 +70,16 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
         {/* Product Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">{data?.brand_name}</h1>
+            <h1 className="text-3xl font-bold mb-2">{transformedData?.brand_name}</h1>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium">{data?.rating || 0}</span>
+                <span className="text-sm font-medium">{transformedData?.rating || 0}</span>
               </div>
-              <Badge variant={data?.status === "active" ? "default" : "secondary"}>
-                {data?.status}
+              <Badge variant={transformedData?.status === "active" ? "default" : "secondary"}>
+                {transformedData?.status}
               </Badge>
-              {data?.contact_lens_cover && (
+              {transformedData?.contact_lens_cover && (
                 <Badge variant="outline">Contact Lens Cover Included</Badge>
               )}
             </div>
@@ -94,8 +99,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
               redirectUrl="/dashboard/products/contact-lens"
             />
 
-            <ContactLensVariantStock product={data}>
-              
+            <ContactLensVariantStock product={transformedData}>
               <Button variant="outline">
                 <Package className="w-4 h-4 mr-2" />
                 Update Stock
@@ -113,21 +117,22 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Product Code</p>
-                <p className="font-medium">{data?.productCode}</p>
+                <p className="font-medium">{transformedData?.productCode}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Lens Type</p>
                 <p className="font-medium">
-                  {lensTypeDisplay[data?.lens_type as keyof typeof lensTypeDisplay]}
+                  {lensTypeDisplay[transformedData?.lens_type as keyof typeof lensTypeDisplay]}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-muted-foreground">Available Sizes</p>
-                <p className="font-medium">{data?.size?.join(", ")}</p>
+                <p className="font-medium">{transformedData?.size?.join(", ")}</p>
               </div>
             </div>
           </CardContent>
         </Card>
+
         {/* Variants Section */}
         <Card>
           <CardHeader>
@@ -135,7 +140,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {data?.variant?.map((variant: any, index: number) => (
+              {transformedData?.variant?.map((variant: any, index: number) => (
                 <Card key={index}>
                   <CardHeader>
                     <CardTitle className="text-base">
