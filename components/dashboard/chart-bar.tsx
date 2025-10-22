@@ -31,7 +31,6 @@ export function ChartBarDefault({ data }) {
     { name: key, count: value }
   ))
 
-  console.debug(" radar chart data ==>  ", formattedData)
 
   return (
     <Card className=" w-full md:w-1/2" >

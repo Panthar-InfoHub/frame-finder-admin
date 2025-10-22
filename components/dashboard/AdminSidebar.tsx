@@ -1,25 +1,24 @@
 "use client";
-import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun, ShoppingCart } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { CircleQuestionMark, Contact, Home, IndianRupee, Package, PackagePlus, Settings2, ShoppingCart, Store } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
   SidebarMenuSub,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { useSession } from "@/hooks/use-session";
 import { Role } from "@/utils/permissions";
-import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
 import { NavUser } from "./sidebarfooter";
 
 export type NavItem =
@@ -33,7 +32,7 @@ export type NavItem =
   | {
     title: string;
     icon?: React.ElementType;
-    children: NavItem[];
+    children?: NavItem[];
     badge?: string;
     url?: never;
   };
@@ -100,6 +99,39 @@ const VendorLinks: NavItem[] = [
       {
         title: "Orders",
         url: "/dashboard/orders",
+      },
+    ],
+  },
+  {
+    title: "Payments",
+    url: "/dashboard/payments",
+    icon: IndianRupee,
+  },
+  {
+    title: "Reviews",
+    url: "/dashboard/reviews",
+    icon: Contact,
+  },
+  {
+    title: "Setting",
+    url: "/dashboard/setting",
+    icon: Settings2,
+  },
+  {
+    title: "Help & Support",
+    icon: CircleQuestionMark,
+    children: [
+      {
+        title: "Vendor Guidelines",
+        url: "/dashboard/help/guidelines",
+      },
+      {
+        title: "Vendor Support",
+        url: "/dashboard/help/support",
+      },
+      {
+        title: "Tutorials",
+        url: "/dashboard/help/tutorials",
       },
     ],
   },
