@@ -8,20 +8,11 @@ export const createFrameLensPackage = async (data: FrameLensPackageType) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const { quantity, min_quantity, max_quantity, ...restData } = data;
-    const finalData = {
-      ...restData,
-      stock: {
-        current: quantity || 0,
-        minimum: min_quantity || 0,
-        maximum: max_quantity || 100,
-      },
-    };
 
     const resp = await fetch(`${API_URL}/lens-package`, {
       method: "POST",
       headers,
-      body: JSON.stringify(finalData),
+      body: JSON.stringify(data),
     });
     const respData = await resp.json();
 
@@ -59,12 +50,15 @@ export const getAllFrameLensPackages = async ({
 
     if (code) params.set("code", code);
 
+ 
     const resp = await fetch(`${API_URL}/lens-package?${params.toString()}`, {
       method: "GET",
       headers,
     });
 
     const data = await resp.json();
+
+  
 
     if (!resp.ok || !data.success) {
       throw new Error(data.message || "Failed to fetch lens packages");
@@ -103,40 +97,74 @@ export const getFrameLensPackageById = async (id: string) => {
   }
 };
 
-export const createSunglassLensPackage = async (data: SunglassLensPackageType) => {
+export const updateFrameLensPackage = async (id: string, data: Partial<FrameLensPackageType>) => {
   try {
     const token = await getAccessToken();
     const headers = getAuthHeaders(token);
-    const { quantity, min_quantity, max_quantity, images, price, lens_color, ...restData } = data;
-    const finalData = {
-      ...restData,
-      stock: {
-        current: quantity || 0,
-        minimum: min_quantity || 0,
-        maximum: max_quantity || 100,
-      },
-      variants: [
-        {
-          lens_color,
-          price,
-          images,
-        },
-      ],
-    };
 
-    const resp = await fetch(`${API_URL}/sun-lens-package`, {
-      method: "POST",
+    const resp = await fetch(`${API_URL}/lens-package/${id}`, {
+      method: "PUT",
       headers,
-      body: JSON.stringify(finalData),
+      body: JSON.stringify(data),
     });
     const respData = await resp.json();
 
     if (!resp.ok || !respData.success) {
-      throw new Error(respData.message || "Failed to create lens package");
+      throw new Error(respData.message || "Failed to update lens package");
     }
     return respData;
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to create lens package";
+    const message = error instanceof Error ? error.message : "Failed to update lens package";
+    return {
+      success: false,
+      message,
+    };
+  }
+};
+
+export const deleteFrameLensPackage = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+
+    const resp = await fetch(`${API_URL}/lens-package/${id}`, {
+      method: "DELETE",
+      headers,
+    });
+    const respData = await resp.json();
+
+    if (!resp.ok || !respData.success) {
+      throw new Error(respData.message || "Failed to delete lens package");
+    }
+    return respData;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to delete lens package";
+    return {
+      success: false,
+      message,
+    };
+  }
+};
+
+export const createSunglassLensPackage = async (data: SunglassLensPackageType) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+
+    const resp = await fetch(`${API_URL}/sun-lens-package`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(data),
+    });
+    const respData = await resp.json();
+
+    if (!resp.ok || !respData.success) {
+      throw new Error(respData.message || "Failed to create sunglass lens package");
+    }
+    return respData;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to create sunglass lens package";
     return {
       success: false,
       message,
@@ -202,6 +230,60 @@ export const getSunglassLensPackageById = async (id: string) => {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Failed to get the sunglass lens package";
+    return {
+      success: false,
+      message,
+    };
+  }
+};
+
+export const updateSunglassLensPackage = async (
+  id: string,
+  data: Partial<SunglassLensPackageType>
+) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+
+    const resp = await fetch(`${API_URL}/sun-lens-package/${id}`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify(data),
+    });
+    const respData = await resp.json();
+
+    if (!resp.ok || !respData.success) {
+      throw new Error(respData.message || "Failed to update sunglass lens package");
+    }
+    return respData;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to update sunglass lens package";
+    return {
+      success: false,
+      message,
+    };
+  }
+};
+
+export const deleteSunglassLensPackage = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+    const headers = getAuthHeaders(token);
+
+    const resp = await fetch(`${API_URL}/sun-lens-package/${id}`, {
+      method: "DELETE",
+      headers,
+    });
+    const respData = await resp.json();
+
+    if (!resp.ok || !respData.success) {
+      throw new Error(respData.message || "Failed to delete sunglass lens package");
+    }
+    return respData;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Failed to delete sunglass lens package";
     return {
       success: false,
       message,

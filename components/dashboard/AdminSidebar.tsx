@@ -85,7 +85,7 @@ const VendorLinks: NavItem[] = [
     ],
   },
   {
-    title: "Lens Packages",
+    title: "Prescription Lens",
     icon: PackagePlus,
     children: [
       {
