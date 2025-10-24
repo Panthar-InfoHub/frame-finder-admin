@@ -1,5 +1,16 @@
 "use client";
-import { Home, Store, Package, PackagePlus, CircleQuestionMark, Contact, ShoppingCart,IndianRupee,Settings2 } from "lucide-react";
+import {
+  Home,
+  Store,
+  Package,
+  PackagePlus,
+  CircleQuestionMark,
+  Contact,
+  ShoppingCart,
+  IndianRupee,
+  Settings2,
+  Ticket,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import Link from "next/link";
@@ -24,19 +35,19 @@ import { NavUser } from "./sidebarfooter";
 
 export type NavItem =
   | {
-    title: string;
-    icon?: React.ElementType;
-    url: string;
-    badge?: string;
-    children?: never;
-  }
+      title: string;
+      icon?: React.ElementType;
+      url: string;
+      badge?: string;
+      children?: never;
+    }
   | {
-    title: string;
-    icon?: React.ElementType;
-    children?: NavItem[];
-    badge?: string;
-    url?: never;
-  };
+      title: string;
+      icon?: React.ElementType;
+      children?: NavItem[];
+      badge?: string;
+      url?: never;
+    };
 
 const BaseLinks: NavItem[] = [
   {
@@ -97,6 +108,11 @@ const VendorLinks: NavItem[] = [
         url: "/dashboard/lens-packages/sunglasses",
       },
     ],
+  },
+  {
+    title: "Coupons",
+    url: "/dashboard/coupons",
+    icon: Ticket,
   },
   {
     title: "Payments",
@@ -234,7 +250,7 @@ export function AppSidebar() {
                               "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
                               (pathname === sub.url ||
                                 pathname.startsWith((sub.url || "") + "/")) &&
-                              "bg-primary/10 text-primary-foreground"
+                                "bg-primary/10 text-primary-foreground"
                             )}
                           >
                             {sub.icon && <sub.icon className="h-4 w-4" />}
