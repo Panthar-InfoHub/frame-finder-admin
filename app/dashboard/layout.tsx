@@ -1,10 +1,7 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/dashboard/AdminSidebar";
 import LogoutButton from "@/components/dashboard/LogoutButton";
-import { Bell, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import ThemeToggle from "@/components/dashboard/theme-toggle";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

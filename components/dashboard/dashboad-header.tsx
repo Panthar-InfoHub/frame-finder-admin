@@ -1,162 +1,89 @@
-import { Building2, Mail, Phone, MapPin, Calendar, Star, CheckCircle, XCircle, ImageIcon, Clock } from "lucide-react"
+import { Building2, Mail, Phone, MapPin, Star, CheckCircle, XCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
 export default function BusinessHeader({ resp }: { resp: any }) {
-  // Format dates for display
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
-
   return (
-    <div className="bg-background border-b border-border/50">
-      <div className="container mx-auto px-6 py-12">
-        {/* Hero Section */}
-        <div className="mb-12 text-center">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-              <Building2 className="w-6 h-6 text-primary-foreground" />
+    <div className="relative p-8">
+      {/* Compact Hero Section */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        {/* Business Info */}
+        <div className="flex items-start gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
+              <Building2 className="w-8 h-8 text-primary-foreground" />
             </div>
-            <div className="text-left">
-              <h1 className="text-5xl  font-light text-foreground mb-2 text-balance">{resp.business_name}</h1>
-              <p className="text-lg text-muted-foreground font-light">Led by {resp.business_owner}</p>
-            </div>
-          </div>
-
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border/50">
-            {resp.isActive ? (
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            ) : (
-              <XCircle className="w-4 h-4 text-red-600" />
-            )}
-            <span className="text-sm font-medium">{resp.isActive ? "Active Business" : "Inactive"}</span>
-            <div className="w-px h-4 bg-border mx-2" />
-            <Star className="w-4 h-4 text-amber-500" />
-            <span className="text-sm font-medium">{resp.rating}/5</span>
-          </div>
-        </div>
-
-        {/* Information Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          {/* Contact Information */}
-          <div className="bg-card rounded-lg p-8 border border-border/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                <Mail className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="text-xl  font-medium text-foreground">Contact</h3>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-foreground">{resp.email}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-foreground">{resp.phone}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Building2 className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-foreground">GST: {resp.gst_number}</span>
-              </div>
+            <div
+              className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-background flex items-center justify-center ${
+                resp.isActive ? "bg-green-500" : "bg-red-500"
+              }`}
+            >
+              {resp.isActive ? (
+                <CheckCircle className="w-3 h-3 text-white" />
+              ) : (
+                <XCircle className="w-3 h-3 text-white" />
+              )}
             </div>
           </div>
-
-          {/* Address */}
-          <div className="bg-card rounded-lg p-8 border border-border/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="text-xl  font-medium text-foreground">Location</h3>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-foreground leading-relaxed">{resp.address.address_line_1}</p>
-              <p className="text-sm text-foreground">
-                {resp.address.city}, {resp.address.state}
-              </p>
-              <p className="text-sm text-muted-foreground">Pincode: {resp.address.pincode}</p>
-            </div>
-          </div>
-
-          {/* Business Details */}
-          <div className="bg-card rounded-lg p-8 border border-border/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="text-xl  font-medium text-foreground">Details</h3>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">Role</span>
-                <p className="text-sm text-foreground font-medium">{resp.role}</p>
-              </div>
-              <div>
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">Business ID</span>
-                <p className="text-xs text-muted-foreground font-mono">{resp._id}</p>
-              </div>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-foreground mb-1">{resp.business_name}</h1>
+            <p className="text-muted-foreground mb-3">Led by {resp.business_owner}</p>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant={resp.isActive ? "default" : "destructive"} className="font-medium">
+                {resp.isActive ? "Active" : "Inactive"}
+              </Badge>
+              <Badge variant="secondary" className="gap-1">
+                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                {resp.rating}/5
+              </Badge>
+              <Badge variant="outline">{resp.role}</Badge>
             </div>
           </div>
         </div>
 
-        {/* Media & Timeline */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Media Information */}
-          <div className="bg-card rounded-lg p-8 border border-border/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                <ImageIcon className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="text-xl  font-medium text-foreground">Media Assets</h3>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-border/30">
-                <span className="text-sm text-muted-foreground">Logo</span>
-                <span className="text-sm text-foreground">
-                  {resp.logo !== "undefined" ? "✓ Uploaded" : "Not uploaded"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between py-3">
-                <span className="text-sm text-muted-foreground">Banner</span>
-                <span className="text-sm text-foreground">
-                  {resp.banner !== "undefined" ? "✓ Uploaded" : "Not uploaded"}
-                </span>
-              </div>
-            </div>
+        {/* Quick Contact Info */}
+        <div className="flex flex-col gap-2 text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Mail className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate max-w-[200px]">{resp.email}</span>
           </div>
-
-          {/* Timeline */}
-          <div className="bg-card rounded-lg p-8 border border-border/50">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                <Clock className="w-5 h-5 text-foreground" />
-              </div>
-              <h3 className="text-xl  font-medium text-foreground">Timeline</h3>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground block">Created</span>
-                  <span className="text-sm text-foreground">{formatDate(resp.createdAt)}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <div>
-                  <span className="text-xs uppercase tracking-wide text-muted-foreground block">Last Updated</span>
-                  <span className="text-sm text-foreground">{formatDate(resp.updatedAt)}</span>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Phone className="w-4 h-4 flex-shrink-0" />
+            <span>{resp.phone}</span>
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <MapPin className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate max-w-[200px]">
+              {resp.address.city}, {resp.address.state}
+            </span>
           </div>
         </div>
       </div>
+
+      {/* Bottom Details Strip */}
+      <div className="mt-6 pt-6 border-t border-border/50 flex flex-wrap gap-6 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <span className="font-medium">GST:</span>
+          <span className="font-mono">{resp.gst_number}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Business ID:</span>
+          <span className="font-mono">{resp._id.slice(0, 12)}...</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Logo:</span>
+          <span className={resp.logo !== "undefined" ? "text-green-600" : "text-muted-foreground"}>
+            {resp.logo !== "undefined" ? "✓ Uploaded" : "Not uploaded"}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">Banner:</span>
+          <span
+            className={resp.banner !== "undefined" ? "text-green-600" : "text-muted-foreground"}
+          >
+            {resp.banner !== "undefined" ? "✓ Uploaded" : "Not uploaded"}
+          </span>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

@@ -1,42 +1,53 @@
 "use client";
-import { Home, Store, Package, PackagePlus, Glasses, Eye, Sun, ShoppingCart } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {
+  Home,
+  Store,
+  Package,
+  PackagePlus,
+  CircleQuestionMark,
+  Contact,
+  ShoppingCart,
+  IndianRupee,
+  Settings2,
+  Ticket,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
   SidebarMenuSub,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { useSession } from "@/hooks/use-session";
 import { Role } from "@/utils/permissions";
-import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
 import { NavUser } from "./sidebarfooter";
 
 export type NavItem =
   | {
-    title: string;
-    icon?: React.ElementType;
-    url: string;
-    badge?: string;
-    children?: never;
-  }
+      title: string;
+      icon?: React.ElementType;
+      url: string;
+      badge?: string;
+      children?: never;
+    }
   | {
-    title: string;
-    icon?: React.ElementType;
-    children: NavItem[];
-    badge?: string;
-    url?: never;
-  };
+      title: string;
+      icon?: React.ElementType;
+      children?: NavItem[];
+      badge?: string;
+      url?: never;
+    };
 
 const BaseLinks: NavItem[] = [
   {
@@ -48,6 +59,11 @@ const BaseLinks: NavItem[] = [
 
 const VendorLinks: NavItem[] = [
   ...BaseLinks,
+  {
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: ShoppingCart,
+  },
   {
     title: "Products",
     // url: "/dashboard/products",
@@ -80,7 +96,7 @@ const VendorLinks: NavItem[] = [
     ],
   },
   {
-    title: "Lens Packages",
+    title: "Prescription Lens",
     icon: PackagePlus,
     children: [
       {
@@ -94,12 +110,40 @@ const VendorLinks: NavItem[] = [
     ],
   },
   {
-    title: "Orders",
-    icon: ShoppingCart,
+    title: "Coupons",
+    url: "/dashboard/coupons",
+    icon: Ticket,
+  },
+  {
+    title: "Payments",
+    url: "/dashboard/payments",
+    icon: IndianRupee,
+  },
+  {
+    title: "Reviews",
+    url: "/dashboard/reviews",
+    icon: Contact,
+  },
+  {
+    title: "Setting",
+    url: "/dashboard/setting",
+    icon: Settings2,
+  },
+  {
+    title: "Help & Support",
+    icon: CircleQuestionMark,
     children: [
       {
-        title: "Orders",
-        url: "/dashboard/orders",
+        title: "Vendor Guidelines",
+        url: "/dashboard/help/guidelines",
+      },
+      {
+        title: "Vendor Support",
+        url: "/dashboard/help/support",
+      },
+      {
+        title: "Tutorials",
+        url: "/dashboard/help/tutorials",
       },
     ],
   },
@@ -206,7 +250,7 @@ export function AppSidebar() {
                               "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary-foreground",
                               (pathname === sub.url ||
                                 pathname.startsWith((sub.url || "") + "/")) &&
-                              "bg-primary/10 text-primary-foreground"
+                                "bg-primary/10 text-primary-foreground"
                             )}
                           >
                             {sub.icon && <sub.icon className="h-4 w-4" />}

@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { normalizeObject } from "@/utils/helpers";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { ImageUploader } from "../ui/custom/ImageUploader";
 import { ImageSection } from "../ui/custom/ImageSection";
@@ -39,18 +38,25 @@ const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
 };
 
 const FrameLensPackageForm = () => {
-  const lensDesigns = ["single vision", "bifocal", "progressive"];
-  const lensTypes = [
-    "clear hardcoat lens",
-    "blue ray cut lens",
-    "polycarbonate lens",
-    "photogray lens",
-    "photogrey blueray cut",
+  const prescriptionTypes = [
+    { value: "single_vision", label: "Single Vision" },
+    { value: "bi_focal", label: "Bi-Focal" },
+    { value: "multi_focal", label: "Multi-Focal" },
   ];
 
-  const [isPending, startTransition] = useTransition();
+  const lensIndexes = ["1.50", "1.56", "1.61", "1.67", "1.74"];
 
+  const lensTypes = ["standard", "blue_cut", "photochromic", "polarized", "anti_reflective"];
+
+  const powerRanges: Record<string, { spherical: string; cylindrical: string }> = {
+    single_vision: { spherical: "-12.00 to +8.00", cylindrical: "-5.00 to +5.00" },
+    bi_focal: { spherical: "-8.00 to +6.00", cylindrical: "-4.00 to +4.00" },
+    multi_focal: { spherical: "-8.00 to +6.00", cylindrical: "-4.00 to +4.00" },
+  };
+
+  const [isPending, startTransition] = useTransition();
   const [images, setImages] = useState<string[]>([]);
+  const [selectedPrescriptionType, setSelectedPrescriptionType] = useState<string>("");
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -59,9 +65,23 @@ const FrameLensPackageForm = () => {
 
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const imagesData = images.map((url) => ({ url }));
-    formData.append("packageImage", JSON.stringify(imagesData));
-    const data = normalizeObject(Object.fromEntries(formData.entries()));
+
+    // Manually construct the data object with proper types
+    const data = {
+      productCode: formData.get("productCode") as string,
+      display_name: formData.get("display_name") as string,
+      brand_name: formData.get("brand_name") as string,
+      index: formData.get("index") as string,
+      price: {
+        mrp: Number(formData.get("mrp")),
+        base_price: Number(formData.get("base_price")),
+        total_price: Number(formData.get("total_price")),
+      },
+      duration: Number(formData.get("duration")),
+      prescription_type: formData.get("prescription_type") as string,
+      lens_type: formData.get("lens_type") as string,
+      images: images.map((url) => ({ url })),
+    };
 
     const result = FrameLensPackageSchema.safeParse(data);
     if (!result.success) {
@@ -71,19 +91,95 @@ const FrameLensPackageForm = () => {
     startTransition(async () => {
       const resp = await createFrameLensPackage(result.data);
       if (!resp.success) {
-        toast.error(resp.message || "Failed to create product");
+        toast.error(resp.message || "Failed to create lens package");
         return;
       }
-      toast.success("Product created successfully");
+      toast.success("Lens package created successfully");
       router.push("/dashboard/lens-packages/frames");
     });
   };
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Frame Lens Package</h2>
+      <h2 className="text-xl font-semibold">Create Frame Lens Package</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4 [&_label]:mb-1 ">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Lens Type Selection - At the top */}
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Lens Configuration</h3>
+            <p className="text-sm text-muted-foreground">
+              Select lens type and prescription specifications
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="prescription_type">Prescription Type *</Label>
+                <Select
+                  name="prescription_type"
+                  required
+                  onValueChange={setSelectedPrescriptionType}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {prescriptionTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lens_type">Lens Type *</Label>
+                <Select name="lens_type" required>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Lens Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lensTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type.replace(/_/g, " ").toUpperCase()}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Power Range Display */}
+            {selectedPrescriptionType && (
+              <div className="mt-4 p-4 bg-muted/30 rounded-lg border border-dashed">
+                <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                  <span className="text-muted-foreground">Supported Power Range</span>
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Spherical
+                    </p>
+                    <p className="text-xl font-bold text-foreground">
+                      {powerRanges[selectedPrescriptionType]?.spherical}
+                    </p>
+                  </div>
+                  <div className="space-y-1.5">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Cylindrical
+                    </p>
+                    <p className="text-xl font-bold text-foreground">
+                      {powerRanges[selectedPrescriptionType]?.cylindrical}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader className="flex items-center justify-between">
             <div>
@@ -107,90 +203,97 @@ const FrameLensPackageForm = () => {
           )}
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <div className="">
-            <Label htmlFor="company">Company</Label>
-            <Input id="company" required name="company" placeholder="Enter company name" />
-          </div>
-          <div>
-            <Label htmlFor="index">Index</Label>
-            <Input id="index" type="number" name="index" required placeholder="Enter index value" />
-          </div>
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Product Information</h3>
+            <p className="text-sm text-muted-foreground">Enter package details and pricing</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="productCode">Product Code *</Label>
+                <Input id="productCode" required name="productCode" placeholder="e.g., LP001" />
+              </div>
 
-          <div>
-            <Label htmlFor="quantity">Quantity</Label>
-            <Input
-              id="quantity"
-              type="number"
-              name="quantity"
-              required
-              placeholder="Enter quantity"
-            />
-          </div>
-          <div>
-            <Label htmlFor="min_quantity">Min Quantity</Label>
-            <Input
-              id="min_quantity"
-              type="number"
-              name="min_quantity"
-              required
-              placeholder="Enter min quantity"
-            />
-          </div>
-          <div>
-            <Label htmlFor="max_quantity">Max Quantity</Label>
-            <Input
-              id="max_quantity"
-              type="number"
-              name="max_quantity"
-              required
-              placeholder="Enter max quantity"
-            />
-          </div>
-          <div>
-            <Label htmlFor="package_design">Design</Label>
-            <Select name="package_design">
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Design" />
-              </SelectTrigger>
-              <SelectContent>
-                {lensDesigns.map((design: any) => (
-                  <SelectItem key={design} value={design}>
-                    {design}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="package_type">Lens Type</Label>
-            <Select name="package_type">
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent>
-                {lensTypes.map((type: any) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="packagePrice">Package Price</Label>
-            <Input
-              id="packagePrice"
-              type="number"
-              name="packagePrice"
-              required
-              placeholder="Enter package price"
-            />
-          </div>
-        </div>
-        <div className="flex justify-end mt-6">
+              <div className="space-y-2">
+                <Label htmlFor="display_name">Display Name</Label>
+                <Input
+                  id="display_name"
+                  name="display_name"
+                  placeholder="e.g., Premium Thin Lens"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="brand_name">Brand Name</Label>
+                <Input id="brand_name" name="brand_name" placeholder="e.g., Zeiss, Crizal" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="index">Index *</Label>
+                <Select name="index" required>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Index" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lensIndexes.map((index) => (
+                      <SelectItem key={index} value={index}>
+                        {index}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="duration">Duration (days) *</Label>
+                <Input id="duration" type="number" name="duration" required placeholder="e.g., 2" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Pricing Section */}
+        <Card>
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Pricing Details</h3>
+            <p className="text-sm text-muted-foreground">Set the pricing for this lens package</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="mrp">MRP (₹) *</Label>
+                <Input id="mrp" type="number" name="mrp" required placeholder="e.g., 2500" />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="base_price">Base Price (₹) *</Label>
+                <Input
+                  id="base_price"
+                  type="number"
+                  name="base_price"
+                  required
+                  placeholder="e.g., 2000"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="total_price">Total Price (₹) *</Label>
+                <Input
+                  id="total_price"
+                  type="number"
+                  name="total_price"
+                  required
+                  placeholder="e.g., 2000"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-end">
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Submitting..." : "Submit"}
+            {isPending ? "Creating..." : "Create Package"}
           </Button>
         </div>
       </form>
