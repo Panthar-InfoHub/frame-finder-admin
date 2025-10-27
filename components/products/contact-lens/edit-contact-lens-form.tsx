@@ -66,7 +66,7 @@ export default function EditContactLensForm({ contactLensId }: EditContactLensFo
         setContactLensCover(data.contact_lens_cover || false);
         setSelectedSizes(data.size || []);
         setLensType(data.lens_type || "non_toric");
-        setVariants(data.variant || []);
+        setVariants(data.variants || []);
       } catch (error) {
         console.error("Error fetching contact lens:", error);
         toast.error("Failed to load contact lens data");
@@ -92,7 +92,7 @@ export default function EditContactLensForm({ contactLensId }: EditContactLensFo
       contact_lens_cover: contactLensCover,
       size: selectedSizes,
       lens_type: lensType,
-      variant: variants,
+      variants: variants,
     };
 
     const result = ContactLensSchema.safeParse(completeData);

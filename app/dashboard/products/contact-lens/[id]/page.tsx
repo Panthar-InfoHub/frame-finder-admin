@@ -37,7 +37,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
   const transformedData = {
     ...data,
     variant: await Promise.all(
-      (data.variant || []).map(async (variant) => {
+      (data.variants || []).map(async (variant) => {
         if (variant.images && variant.images.length > 0) {
           const signedImages = await Promise.all(
             variant.images.map(async (img: any) => ({
@@ -140,7 +140,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {transformedData?.variant?.map((variant: any, index: number) => (
+              {transformedData?.variants?.map((variant: any, index: number) => (
                 <Card key={index}>
                   <CardHeader>
                     <CardTitle className="text-base">
