@@ -75,7 +75,7 @@ export default function EditColorContactLensForm({
         setContactLensCover(data.contact_lens_cover || false);
         setSelectedSizes(data.size || []);
         setLensType(data.lens_type || "zero_power");
-        setVariants(data.variant || []);
+        setVariants(data.variants || []);
       } catch (error) {
         console.error("Error fetching color contact lens:", error);
         toast.error("Failed to load color contact lens data");
@@ -101,7 +101,7 @@ export default function EditColorContactLensForm({
       contact_lens_cover: contactLensCover,
       size: selectedSizes,
       lens_type: lensType,
-      variant: variants,
+      variants: variants,
     };
 
     const result = ColorContactLensSchema.safeParse(completeData);

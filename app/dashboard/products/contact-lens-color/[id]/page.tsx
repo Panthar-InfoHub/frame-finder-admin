@@ -119,7 +119,7 @@ export default async function ColorContactLensDetailPage({
       {/* Variants */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Product Variants</h3>
-        {product.variant?.map((variant: any, index: number) => (
+        {product.variants?.map((variant: any, index: number) => (
           <Card key={variant._id || index}>
             <CardHeader>
               <div className="flex items-start justify-between">

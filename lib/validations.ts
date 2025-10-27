@@ -221,7 +221,7 @@ export const ContactLensSchema = z.object({
   lens_type: z.enum(["non_toric", "toric", "multi_focal"], {
     message: "Please select a lens type",
   }),
-  variant: z.array(ContactLensVariantSchema).min(1, "At least one variant is required"),
+  variants: z.array(ContactLensVariantSchema).min(1, "At least one variant is required"),
 });
 
 // Color Contact Lens Variant Schema
@@ -269,7 +269,7 @@ export const ColorContactLensSchema = z.object({
   lens_type: z.enum(["zero_power", "power"], {
     message: "Please select a lens type (zero_power or power)",
   }),
-  variant: z.array(ColorContactLensVariantSchema).min(1, "At least one variant is required"),
+  variants: z.array(ColorContactLensVariantSchema).min(1, "At least one variant is required"),
 });
 
 // Frame Lens Package Schema - matching new API structure
