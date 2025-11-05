@@ -21,7 +21,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
 
     // Transform the data to match the expected API structure
     const finalData = {
-      product_code: data.productCode,
+      productCode: data.productCode,
       brand_name: data.brand_name,
       material: data.material,
       shape: data.shape,
@@ -57,7 +57,7 @@ export const createFrameAction = async (data: FrameFormDataType) => {
     });
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Product created successfully" };
   } catch (error) {
@@ -75,7 +75,7 @@ export const updateFrameAction = async (id: string, data: FrameFormDataType) => 
 
     // Transform the data to match the expected API structure
     const finalData = {
-      product_code: data.productCode,
+      productCode: data.productCode,
       brand_name: data.brand_name,
       material: data.material,
       shape: data.shape,
@@ -111,7 +111,7 @@ export const updateFrameAction = async (id: string, data: FrameFormDataType) => 
     });
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Product updated successfully" };
   } catch (error) {
@@ -146,7 +146,7 @@ export const updateFrameStockAction = async (
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     revalidatePath("/dashboard/products/frames");
@@ -190,7 +190,7 @@ export const getAllFrames = async ({
 
     const data = await resp.json();
     if (!resp.ok || !data.success) {
-      throw new Error(data.message || "Failed to fetch frames");
+      throw new Error(data.error?.message || "Failed to fetch frames");
     }
     return data;
   } catch (error) {
@@ -214,7 +214,7 @@ export const getFrameById = async (id: string) => {
     const data = await resp.json();
 
     if (!resp.ok || !data.success) {
-      throw new Error(data.message || "Failed to fetch your frame details");
+      throw new Error(data.error?.message || "Failed to fetch your frame details");
     }
     return data;
   } catch (error) {
@@ -238,7 +238,7 @@ export const deleteFrameAction = async (id: string) => {
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Product deleted successfully" };
@@ -291,7 +291,7 @@ export const createSunglassAction = async (data: SunglassFormDataType) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Product created successfully" };
@@ -314,7 +314,7 @@ export const updateSunglassAction = async (
     // Transform the data to match the expected API structure
     const finalData = {
       brand_name: data.brand_name,
-      product_code: data.productCode,
+      productCode: data.productCode,
       material: data.material,
       shape: data.shape,
       style: data.style,
@@ -345,7 +345,7 @@ export const updateSunglassAction = async (
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Product updated successfully" };
@@ -381,7 +381,7 @@ export const updateSunglassStockAction = async (
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return {
@@ -426,7 +426,7 @@ export const getAllSunglasses = async ({
     const data = await resp.json();
 
     if (!resp.ok || !data.success) {
-      throw new Error(data.message || "Failed to fetch sunglasses");
+      throw new Error(data.error?.message || "Failed to fetch sunglasses");
     }
     return data;
   } catch (error) {
@@ -450,11 +450,11 @@ export const getSunglassById = async (id: string) => {
     const data = await resp.json();
 
     if (!resp.ok || !data.success) {
-      throw new Error(data.message || "Failed to fetch your sunglass");
+      throw new Error(data.error?.message || "Failed to fetch your sunglass");
     }
     return data;
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to get sunglasd details";
+    const message = error instanceof Error ? error.message : "Failed to get sunglass details";
     return {
       success: false,
       message,
@@ -474,7 +474,7 @@ export const deleteSunglassAction = async (id: string) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return {
@@ -512,7 +512,7 @@ export const createContactLensAction = async (data: ContactLensFormDataType) => 
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     revalidatePath("/dashboard/products/contact-lens");
@@ -550,7 +550,7 @@ export const getAllContactLenses = async (
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || "Failed to fetch contact lenses");
+      throw new Error(result?.error?.message || "Failed to fetch contact lenses");
     }
 
     return result;
@@ -576,7 +576,7 @@ export const getContactLensById = async (id: string) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || "Failed to fetch contact lens details");
+      throw new Error(result?.error?.message || "Failed to fetch contact lens details");
     }
 
     return result;
@@ -602,7 +602,7 @@ export const updateContactLensAction = async (id: string, data: ContactLensFormD
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Contact lens updated successfully", data: result.data };
@@ -624,7 +624,6 @@ export const updateContactLensStockAction = async (
   try {
     const token = await getAccessToken();
 
-
     const resp = await fetch(`${API_URL}/contact-lens/${id}/stock`, {
       method: "PUT",
       headers: getAuthHeaders(token),
@@ -634,11 +633,11 @@ export const updateContactLensStockAction = async (
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Contact lens stock updated successfully", data: result.data };
   } catch (error) {
-    console.error("Failed to update contact lens stock:", error);
+
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to update stock",
@@ -659,7 +658,7 @@ export const deleteContactLensAction = async (id: string) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     revalidatePath("/dashboard/products/contact-lens");
@@ -714,7 +713,7 @@ export const createAccessoryAction = async (data: AccessoryFormDataType) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Accessory created successfully" };
   } catch (error) {
@@ -751,7 +750,7 @@ export const updateAccessoryAction = async (id: string, data: Partial<AccessoryF
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Accessory updated successfully" };
   } catch (error) {
@@ -779,7 +778,7 @@ export const updateAccessoryStock = async (
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Accessory stock updated successfully" };
   } catch (error) {
@@ -862,7 +861,7 @@ export const deleteAccessory = async (id: string) => {
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Accessory deleted successfully" };
   } catch (error) {
@@ -886,31 +885,23 @@ export const createColorContactLensAction = async (data: any) => {
       vendorId: user?.id,
     };
 
-
     const resp = await fetch(`${API_URL}/color-contact-lens`, {
       method: "POST",
       headers: getAuthHeaders(token),
       body: JSON.stringify(finalData),
     });
 
-
-
     const result = await parseApiResponse(resp);
 
- 
-
     if (!resp.ok || !result.success) {
-      console.error("API Error:", result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
-
-
 
     revalidatePath("/dashboard/products/contact-lens-color");
 
     return { success: true, message: "Color contact lens created successfully", data: result.data };
   } catch (error) {
-    console.error("❌ Create Color Contact Lens Action Error:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to create color contact lens",
@@ -942,7 +933,7 @@ export const getAllColorContactLenses = async (
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || "Failed to fetch color contact lenses");
+      throw new Error(result?.error?.message || "Failed to fetch color contact lenses");
     }
 
     return result;
@@ -968,7 +959,7 @@ export const getColorContactLensById = async (id: string) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || "Failed to fetch color contact lens details");
+      throw new Error(result?.error?.message || "Failed to fetch color contact lens details");
     }
 
     return result;
@@ -984,7 +975,6 @@ export const getColorContactLensById = async (id: string) => {
 // 4. Update Color Contact Lens (except stock and variant)
 export const updateColorContactLensAction = async (id: string, data: any) => {
   try {
-
     const token = await getAccessToken();
 
     const resp = await fetch(`${API_URL}/color-contact-lens/${id}`, {
@@ -993,13 +983,10 @@ export const updateColorContactLensAction = async (id: string, data: any) => {
       body: JSON.stringify(data),
     });
 
-
     const result = await parseApiResponse(resp);
 
-
     if (!resp.ok || !result.success) {
-      console.error("❌ Update Failed:", result?.message);
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Color contact lens updated successfully", data: result.data };
@@ -1030,7 +1017,7 @@ export const updateColorContactLensVariantAction = async (
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Variant updated successfully", data: result.data };
@@ -1061,7 +1048,7 @@ export const updateColorContactLensStockAction = async (
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Stock updated successfully", data: result.data };
@@ -1086,7 +1073,7 @@ export const deleteColorContactLensAction = async (id: string) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     revalidatePath("/dashboard/products/contact-lens-color");
@@ -1148,7 +1135,7 @@ export const createReaderAction = async (data: any) => {
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Reader glass created successfully" };
   } catch (error) {
@@ -1205,7 +1192,7 @@ export const updateReaderAction = async (id: string, data: any) => {
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     revalidatePath(`/dashboard/products/readers/${id}`);
     return { success: true, message: "Reader glass updated successfully" };
@@ -1237,7 +1224,7 @@ export const updateReaderStock = async (
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
     return { success: true, message: "Reader glass stock updated successfully" };
@@ -1268,7 +1255,7 @@ export const getAllReaders = async (page: number = 1, limit: number = 100, searc
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return {
       success: true,
@@ -1296,7 +1283,7 @@ export const getReaderById = async (id: string) => {
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, data: result.data };
   } catch (error) {
@@ -1318,7 +1305,7 @@ export const deleteReader = async (id: string) => {
 
     const result = await parseApiResponse(resp);
     if (!resp.ok || !result.success) {
-      throw new Error(result?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
     return { success: true, message: "Reader glass deleted successfully" };
   } catch (error) {
