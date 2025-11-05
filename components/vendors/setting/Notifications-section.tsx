@@ -20,14 +20,21 @@ export default function NotificationsSection({ vendor }: NotificationsSectionPro
   const router = useRouter()
   const [formData, setFormData] = useState(vendor)
 
-  const handleNestedChange = (parent: string, field: string, value: any) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [parent]: {
-        ...prev[parent],
-        [field]: value,
-      },
-    }))
+  const handleNestedChange = (path: string, value: any) => {
+    setFormData((prev: any) => {
+      const paths = path.split(".");
+      const updated = { ...prev };
+      let current = updated;
+
+      for (let i = 0; i < paths.length - 1; i++) {
+        const p = paths[i];
+        current[p] = { ...current[p] };
+        current = current[p];
+      }
+
+      current[paths[paths.length - 1]] = value;
+      return updated;
+    })
   }
 
   const handleSave = async (prevState: any, formDataObj: FormData) => {
@@ -67,8 +74,8 @@ export default function NotificationsSection({ vendor }: NotificationsSectionPro
                 </Label>
                 <Switch
                   id="email_orders"
-                  checked={formData?.notifications?.email_new_orders}
-                  onCheckedChange={(checked) => handleNestedChange("notifications", "email_new_orders", checked)}
+                  checked={formData?.meta?.email_notifications?.new_order}
+                  onCheckedChange={(checked) => handleNestedChange("meta.email_notifications.new_order", checked)}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -77,8 +84,8 @@ export default function NotificationsSection({ vendor }: NotificationsSectionPro
                 </Label>
                 <Switch
                   id="email_returns"
-                  checked={formData?.notifications?.email_returns}
-                  onCheckedChange={(checked) => handleNestedChange("notifications", "email_returns", checked)}
+                  checked={formData?.meta?.email_notifications?.return}
+                  onCheckedChange={(checked) => handleNestedChange("meta.email_notifications.return", checked)}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -87,8 +94,8 @@ export default function NotificationsSection({ vendor }: NotificationsSectionPro
                 </Label>
                 <Switch
                   id="email_payouts"
-                  checked={formData?.notifications?.email_payouts}
-                  onCheckedChange={(checked) => handleNestedChange("notifications", "email_payouts", checked)}
+                  checked={formData?.meta?.email_notifications?.payout}
+                  onCheckedChange={(checked) => handleNestedChange("meta.email_notifications.payout", checked)}
                 />
               </div>
             </div>
@@ -103,8 +110,8 @@ export default function NotificationsSection({ vendor }: NotificationsSectionPro
                 </Label>
                 <Switch
                   id="sms_notifications"
-                  checked={formData?.notifications?.sms_notifications}
-                  onCheckedChange={(checked) => handleNestedChange("notifications", "sms_notifications", checked)}
+                  checked={formData?.meta?.other_notifications?.sms_notification}
+                  onCheckedChange={(checked) => handleNestedChange("meta.other_notifications.sms_notification", checked)}
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -113,8 +120,8 @@ export default function NotificationsSection({ vendor }: NotificationsSectionPro
                 </Label>
                 <Switch
                   id="app_notifications"
-                  checked={formData?.notifications?.app_notifications}
-                  onCheckedChange={(checked) => handleNestedChange("notifications", "app_notifications", checked)}
+                  checked={formData?.meta?.other_notifications?.app_notification}
+                  onCheckedChange={(checked) => handleNestedChange("meta.other_notifications.app_notification", checked)}
                 />
               </div>
             </div>

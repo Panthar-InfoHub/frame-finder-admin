@@ -25,7 +25,7 @@ function ProductsTable({ products, type }: { products: any[]; type: ProductType 
 
   // Check if products have variants (handle both 'variants' and 'variant' field names)
   const hasVariants = products.some(
-    (p) => (p.variants && p.variants.length > 0) || (p.variant && p.variant.length > 0)
+    (p) => (p.variants && p.variants.length > 0) || (p.variants && p.variants.length > 0)
   );
 
   return (
