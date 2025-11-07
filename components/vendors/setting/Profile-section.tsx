@@ -6,24 +6,59 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Save, Loader2 } from "lucide-react"
+import { Save, Loader2, ImageIcon } from "lucide-react"
 import { useActionState } from "react"
 import { toast } from "sonner"
 import { updateVendor } from "@/actions/vendors/vendors"
+import { ImageUploader } from "@/components/ui/custom/ImageUploader"
+import { uploadFilesToCloud } from "@/lib/cloud-storage"
+import { ImageSection } from "@/components/ui/custom/ImageSection"
+import { getSignedViewUrl } from "@/actions/cloud-storage"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface ProfileSectionProps {
   vendor: any
 }
 
+const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
+  const { success, failed } = await uploadFilesToCloud({
+    files,
+    folder: { rootFolder: "vendor", folderName: "logo" },
+  });
+  toast(`Uploaded ${success.length} images successfully, Failed - ${failed.length}`);
+  return success.map((item) => item.path);
+};
+
+const CategoryOptions = [
+  { value: "Product", label: "Frames" },
+  { value: "ContactLens", label: "Contact Lens" },
+  { value: "ColorContactLens", label: "Color Contact Lens" },
+  { value: "Reader", label: "Reader Glasses" },
+  { value: "Sunglasses", label: "Sunglasses" },
+  { value: "LensSolution", label: "Lens Solution" },
+  { value: "Accessories", label: "Accessories" },
+];
+
 export default function ProfileSection({ vendor }: ProfileSectionProps) {
   const router = useRouter()
   const [formData, setFormData] = useState(vendor)
+  console.log("Vendor Data:", vendor);
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }))
+    if (field === "categories") {
+      setFormData((prev: any) => {
+        const categories = prev.categories.includes(value)
+          ? prev.categories.filter((item: string) => item !== value)
+          : [...prev.categories, value];
+        return { ...prev, categories };
+      });
+
+    } else {
+      setFormData((prev: any) => ({
+        ...prev,
+        [field]: value,
+      }))
+    }
   }
 
   const handleNestedChange = (parent: string, field: string, value: any) => {
@@ -54,6 +89,10 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
     }
   }
 
+  const handleImageSectionChange = (field: string, newImageUrls: string[]) => {
+    handleInputChange(field, newImageUrls);
+  };
+
   const [state, formAction, isPending] = useActionState(handleSave, {})
 
   return (
@@ -64,6 +103,68 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <form action={formAction} className="space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+
+            {/* LOGO */}
+            <div className="space-y-2">
+              <Label htmlFor="logo">Logo</Label>
+              <ImageUploader
+                images={formData.logo}
+                onChange={(urls) => handleInputChange("logo", urls[0])}
+                uploadFunction={ImageUploadFunction}
+                maxImages={1}
+                buttonLabel="Add Logo"
+              />
+              {/* Image Gallery */}
+              {formData.logo && (
+                <div className="mb-3">
+                  <ImageSection
+                    images={[formData.logo]}
+                    getSignedUrl={getSignedViewUrl}
+                    onChange={(newUrls) => handleImageSectionChange("logo", newUrls)}
+                  />
+                </div>
+              )}
+
+              {/* No Images UI */}
+              {!formData.logo && (
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center mb-3">
+                  <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">No images uploaded</p>
+                </div>
+              )}
+            </div>
+            {/* BANNER */}
+            <div className="space-y-2">
+              <Label htmlFor="banner">Banner</Label>
+              <ImageUploader
+                images={formData.banner}
+                onChange={(urls) => handleInputChange("banner", urls[0])}
+                uploadFunction={ImageUploadFunction}
+                maxImages={1}
+                buttonLabel="Add Banner"
+              />
+              {/* Image Gallery */}
+              {formData.banner && (
+                <div className="mb-3">
+                  <ImageSection
+                    images={[formData.banner]}
+                    getSignedUrl={getSignedViewUrl}
+                    onChange={(newUrls) => handleImageSectionChange("banner", newUrls)}
+                  />
+                </div>
+              )}
+
+              {/* No Images UI */}
+              {!formData.banner && (
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center mb-3">
+                  <ImageIcon className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground">No images uploaded</p>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="business_name">Business Name</Label>
@@ -155,6 +256,21 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
               onChange={(e) => handleInputChange("phone", e.target.value)}
               placeholder="Enter phone number"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="categories">Choose Categories</Label>
+            <div className="flex flex-wrap gap-2">
+              {CategoryOptions.map((category) => {
+                const isChecked = formData.categories.includes(category.value)
+                return (
+                  <div key={category.value} className="flex items-center space-x-2 ">
+                    <Checkbox id={category.value} name="categories" value={category.value} checked={isChecked} onCheckedChange={(checked) => handleInputChange("categories", category.value)} />
+                    <Label htmlFor={category.value} >{category.value}</Label>
+                  </div>
+                )
+              })}
+            </div>
           </div>
 
           <div className="flex justify-end gap-4 pt-4">

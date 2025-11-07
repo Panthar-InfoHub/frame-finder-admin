@@ -17,7 +17,7 @@ interface BaseOptions {
 
 interface VendorOptions extends BaseOptions {
   rootFolder: "vendor";
-  folderName: "frames" | "sunglasses" | "lens-packages";
+  folderName: "frames" | "sunglasses" | "lens-packages" | "logo" | "banner";
 }
 interface UserOptions extends BaseOptions {
   rootFolder: "user";
@@ -43,7 +43,7 @@ export async function getSignedUploadUrl({
     expires: Date.now() + 5 * 60 * 1000, // valid 5 min
     contentType,
   });
-  
+
   return { url, path: file.name }; // return signed URL + final file path
 }
 

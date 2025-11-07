@@ -29,6 +29,7 @@ interface CouponFormProps {
 export function CouponForm({ initialData, mode, userRole = "VENDOR" }: CouponFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  console.debug("User Role:", initialData);
 
   const isAdmin = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
 
@@ -50,8 +51,9 @@ export function CouponForm({ initialData, mode, userRole = "VENDOR" }: CouponFor
     const formData = new FormData(e.currentTarget);
 
     // Build payload
+    console.debug("Form Data:", Object.fromEntries(formData.entries()));
     const payload: CreateCouponPayload = {
-      code: (formData.get("code") as string).toUpperCase().trim(),
+      code: initialData?.code,
       type: formData.get("type") as "number" | "percentage",
       value: Number(formData.get("value")),
       scope: isAdmin ? (formData.get("scope") as "vendor" | "global") : "vendor",
@@ -150,7 +152,7 @@ export function CouponForm({ initialData, mode, userRole = "VENDOR" }: CouponFor
                 type="date"
                 defaultValue={
                   initialData?.exp_date
-                    ? new Date(initialData.exp_date).toISOString().slice(0, 16)
+                    ? new Date(initialData.exp_date).toISOString().split("T")[0]
                     : ""
                 }
                 min={minDate}

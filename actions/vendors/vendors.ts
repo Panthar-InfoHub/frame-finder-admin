@@ -186,6 +186,7 @@ export async function updateVendor(id: string, updateData: UpdateVendorData) {
     const accessToken = await getAccessToken();
     const headers = getAuthHeaders(accessToken);
 
+    console.log("updateData", updateData)
     const response = await fetch(`${API_URL}/vendor/${id}`, {
       method: "PUT",
       headers: {
@@ -205,6 +206,7 @@ export async function updateVendor(id: string, updateData: UpdateVendorData) {
       message: "Vendor updated successfully",
     };
   } catch (error) {
+    console.log("error while updating vendor :", error.response?.data)
     return {
       success: false,
       message: "Failed to update vendor",

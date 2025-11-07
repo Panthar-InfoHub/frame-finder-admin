@@ -7,10 +7,11 @@ import { X } from "lucide-react";
 interface ImageSectionProps {
   images: string[]; // array of signed URLs ready to display
   getSignedUrl?: (path: string) => Promise<string>; // optional helper
-  onChange: (newImages: string[]) => void; // required, parent setter
+  onChange: (newImages: any) => void; // required, parent setter
+  type?: "logo" | "banner";
 }
 
-export function ImageSection({ images, getSignedUrl, onChange }: ImageSectionProps) {
+export function ImageSection({ images, getSignedUrl, onChange, type }: ImageSectionProps) {
   const [urls, setUrls] = useState<string[]>([]);
 
   //   useEffect(() => {
@@ -50,9 +51,13 @@ export function ImageSection({ images, getSignedUrl, onChange }: ImageSectionPro
   }, [images, getSignedUrl]);
 
   const handleRemove = (index: number) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    onChange(newImages);
+    if (type === "logo" || type === "banner") {
+      onChange("");
+    } else {
+      const newImages = [...images];
+      newImages.splice(index, 1);
+      onChange(newImages);
+    }
   };
 
   return (
