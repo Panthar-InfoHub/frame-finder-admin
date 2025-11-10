@@ -1,0 +1,1 @@
+- switch ispower in frames 

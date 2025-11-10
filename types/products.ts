@@ -4,4 +4,5 @@ export type ProductType =
   | "accessories"
   | "readers"
   | "contact-lens"
-  | "contact-lens-color";
+  | "contact-lens-color"
+  | "lens-solution";

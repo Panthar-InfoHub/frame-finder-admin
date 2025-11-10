@@ -448,7 +448,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
             <div className="flex justify-center mb-6">
               <div className="max-w-md w-full">
                 <img
-                  src="/placeholders/frame-dimensions-placeholder.svg"
+                  src="/placeholders/frames-sizes.png"
                   alt="Frame Dimensions Reference"
                   className="w-full h-auto border rounded-lg bg-gray-50"
                 />

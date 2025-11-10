@@ -285,9 +285,9 @@ export default function AddFrameForm() {
           <CardContent className="space-y-4">
             {/* Dimension Reference Image */}
             <div className="flex justify-center mb-6">
-              <div className="max-w-md w-full">
+              <div className=" w-full">
                 <img
-                  src="/placeholders/frame-dimensions-placeholder.svg"
+                  src="/placeholders/frames-sizes.png"
                   alt="Frame Dimensions Reference"
                   className="w-full h-auto border rounded-lg bg-gray-50"
                 />

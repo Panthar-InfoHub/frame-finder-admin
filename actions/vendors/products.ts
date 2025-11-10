@@ -637,7 +637,6 @@ export const updateContactLensStockAction = async (
     }
     return { success: true, message: "Contact lens stock updated successfully", data: result.data };
   } catch (error) {
-
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to update stock",
@@ -894,7 +893,6 @@ export const createColorContactLensAction = async (data: any) => {
     const result = await parseApiResponse(resp);
 
     if (!resp.ok || !result.success) {
-
       throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
     }
 
@@ -1083,6 +1081,189 @@ export const deleteColorContactLensAction = async (id: string) => {
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to delete color contact lens",
+    };
+  }
+};
+
+// ------------------- Lens Solution API Actions -------------------
+
+export const createLensSolutionAction = async (data: any) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const finalData = {
+      ...data,
+      vendorId: user?.id,
+    };
+
+    const resp = await fetch(`${API_URL}/lens-solution`, {
+      method: "POST",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(finalData),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    revalidatePath("/dashboard/products/lens-solution");
+
+    return { success: true, message: "Lens solution created successfully", data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to create lens solution",
+    };
+  }
+};
+
+export const updateLensSolutionAction = async (id: string, data: any) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/lens-solution/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    return { success: true, message: "Lens solution updated successfully", data: result.data };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update lens solution",
+    };
+  }
+};
+
+export const updateLensSolutionStockAction = async (
+  id: string,
+  variantId: string,
+  operation: "increase" | "decrease",
+  quantity: number
+) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/lens-solution/${id}/stock`, {
+      method: "PUT",
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ operation, quantity, variantId }),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    revalidatePath("/dashboard/products/lens-solution");
+    revalidatePath(`/dashboard/products/lens-solution/${id}`);
+
+    return {
+      success: true,
+      message: "Lens solution stock updated successfully",
+      data: result.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update stock",
+    };
+  }
+};
+
+export const getAllLensSolutions = async (
+  page: number = 1,
+  limit: number = 100,
+  search?: string
+) => {
+  try {
+    const { user } = await getSession();
+    const token = await getAccessToken();
+
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      vendorId: user?.id || "",
+      ...(search && { search }),
+    });
+
+    const resp = await fetch(`${API_URL}/lens-solution?${queryParams.toString()}`, {
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.error?.message || "Failed to fetch lens solutions");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch lens solutions",
+    };
+  }
+};
+
+export const getLensSolutionById = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/lens-solution/${id}`, {
+      method: "GET",
+      headers: getAuthHeaders(token),
+      cache: "no-store",
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.error?.message || "Failed to fetch lens solution details");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch lens solution details",
+    };
+  }
+};
+
+export const deleteLensSolutionAction = async (id: string) => {
+  try {
+    const token = await getAccessToken();
+
+    const resp = await fetch(`${API_URL}/lens-solution/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(token),
+    });
+
+    const result = await parseApiResponse(resp);
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result?.error?.message || `HTTP ${resp.status}: ${resp.statusText}`);
+    }
+
+    revalidatePath("/dashboard/products/lens-solution");
+
+    return { success: true, message: "Lens solution deleted successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to delete lens solution",
     };
   }
 };
