@@ -57,7 +57,7 @@ export async function getBestSellerProducts(vendorId, page = 1, limit = 10) {
 
         return data.data;
     } catch (error) {
-        console.error("Error while fetching metrics analytics ==> ", error);
+        console.error("Error while fetching best seller product ==> ", JSON.stringify(error, null, 2));
         return {
             success: false,
             message: "Failed to fetch vendors",
@@ -79,7 +79,7 @@ export async function getVendorMetrics() {
 
         return data.data;
     } catch (error) {
-        console.error("Error while fetching metrics analytics ==> ", error);
+        console.error("Error while fetching metrics analytics ==> ", JSON.stringify(error, null, 2));
         return {
             success: false,
             message: "Failed to fetch vendors",

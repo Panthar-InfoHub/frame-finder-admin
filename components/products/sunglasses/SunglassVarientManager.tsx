@@ -269,11 +269,10 @@ export default function SunglassVariantManager({
                     min="0"
                     step="0.01"
                     disabled={!variant.price.shipping_price.custom}
-                    className={`mt-1 ${
-                      !variant.price.shipping_price.custom
+                    className={`mt-1 ${!variant.price.shipping_price.custom
                         ? "bg-muted text-muted-foreground cursor-not-allowed"
                         : ""
-                    }`}
+                      }`}
                   />
                 </div>
               </div>
@@ -348,7 +347,7 @@ export default function SunglassVariantManager({
             </div>
 
             {/* Stock Management */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="h-5 w-1 bg-orange-500 rounded-full"></div>
                 <Label className="text-base font-semibold text-foreground">Stock Management</Label>
@@ -389,7 +388,7 @@ export default function SunglassVariantManager({
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Images */}
             <div>

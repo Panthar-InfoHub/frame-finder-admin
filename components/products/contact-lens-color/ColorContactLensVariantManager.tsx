@@ -369,7 +369,7 @@ export default function ColorContactLensVariantManager({
                   <Separator />
 
                   {/* Stock Section */}
-                  <div className="space-y-4">
+                  {/* <div className="space-y-4">
                     <h4 className="font-semibold">Stock</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -398,7 +398,7 @@ export default function ColorContactLensVariantManager({
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Power Range Section (only for "power" type) */}
                   {lensType === "power" && variant.power_range && (

@@ -341,7 +341,7 @@ export default function FramesVariantManager({
             </div>
 
             {/* Stock Management */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="h-5 w-1 bg-orange-500 rounded-full"></div>
                 <Label className="text-base font-semibold text-foreground">Stock Management</Label>
@@ -382,7 +382,7 @@ export default function FramesVariantManager({
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Images */}
             <div>

@@ -9,6 +9,7 @@ import { StockUpdateDialog } from "@/components/products/stockUpdateDialog";
 import { Edit, Package, Star, Calendar } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { getSignedViewUrl } from "@/actions/cloud-storage";
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -25,7 +26,16 @@ const AccessoriesDetails = async ({ id }: { id: string }) => {
     return <div>Unable to fetch the Accessory details</div>;
   }
 
-  resp = resp?.data;
+  const signedImages = await Promise.all(
+    resp?.data.images.map(async (img: any) => ({
+      ...img,
+      signedUrl: await getSignedViewUrl(img.url),
+    }))
+  );
+
+  resp = { ...resp, images: signedImages };
+
+
 
   if (!resp) {
     return <div className="p-4">No product data available</div>;
@@ -190,10 +200,10 @@ const AccessoriesDetails = async ({ id }: { id: string }) => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {resp.images.map((image: { url: string }, index: number) => (
+                {resp.images.map((image: { signedUrl: string }, index: number) => (
                   <div key={index} className="relative aspect-square">
                     <img
-                      src={image.url}
+                      src={image.signedUrl}
                       alt={`${resp.brand_name} - Image ${index + 1}`}
                       className="w-full h-full object-cover rounded-md border"
                     />

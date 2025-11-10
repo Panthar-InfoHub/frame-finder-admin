@@ -36,7 +36,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
 
   const transformedData = {
     ...data,
-    variant: await Promise.all(
+    variants: await Promise.all(
       (data.variants || []).map(async (variant) => {
         if (variant.images && variant.images.length > 0) {
           const signedImages = await Promise.all(
@@ -147,6 +147,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
                       Variant {index + 1} - {variant.disposability}
                     </CardTitle>
                   </CardHeader>
+
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="space-y-1">

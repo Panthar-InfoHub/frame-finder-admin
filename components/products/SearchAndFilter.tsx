@@ -34,7 +34,7 @@ const SearchAndFilter = ({
     // Reset to page 1 when searching
     current.set("page", "1");
     router.push(`?${current.toString()}`);
-  }, [debouncedSearchTerm, router, searchParams, searchParamName]);
+  }, [debouncedSearchTerm, router, searchParamName]);
 
   return (
     <div className="flex items-center justify-between gap-4 w-full">
