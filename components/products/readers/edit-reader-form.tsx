@@ -24,6 +24,7 @@ import { ReaderSchema, ReaderVariantType } from "@/lib/validations";
 import ReadersVariantManager from "@/components/products/readers/ReadersVariantManager";
 import { BackButton } from "@/components/ui/back-button";
 import { Loader2 } from "lucide-react";
+import { getSignedViewUrl } from "@/actions/cloud-storage";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -105,7 +106,21 @@ export default function EditReaderForm({ readerId }: EditReaderFormProps) {
           });
 
           if (data.variants && data.variants.length > 0) {
-            setVariants(data.variants);
+            const temp_variants = await Promise.all(
+              (data.variants || []).map(async (variant) => {
+                if (variant.images && variant.images.length > 0) {
+                  const signedImages = await Promise.all(
+                    variant.images.map(async (img: any) => ({
+                      ...img,
+                      signedUrl: await getSignedViewUrl(img.url),
+                    }))
+                  );
+                  return { ...variant, images: signedImages };
+                }
+                return variant;
+              })
+            );
+            setVariants(temp_variants);
           }
         } else {
           toast.error("Failed to load reader data");

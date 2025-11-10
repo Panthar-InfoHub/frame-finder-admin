@@ -89,7 +89,7 @@ interface Variant {
     current: number;
     minimum: number;
   };
-  images: { url: string }[];
+  images: any;
 }
 
 interface VariantManagerProps {
@@ -103,6 +103,7 @@ export default function ReadersVariantManager({
   onVariantsChange,
   uploadFunction,
 }: VariantManagerProps) {
+
   const addVariant = () => {
     const newVariant: Variant = {
       frame_color: "",
@@ -390,11 +391,10 @@ export default function ReadersVariantManager({
                       min="0"
                       step="0.01"
                       disabled={!variant.price.shipping_price.custom}
-                      className={`mt-1 ${
-                        !variant.price.shipping_price.custom
-                          ? "bg-muted text-muted-foreground cursor-not-allowed"
-                          : ""
-                      }`}
+                      className={`mt-1 ${!variant.price.shipping_price.custom
+                        ? "bg-muted text-muted-foreground cursor-not-allowed"
+                        : ""
+                        }`}
                     />
                   </div>
 
@@ -471,7 +471,7 @@ export default function ReadersVariantManager({
               </div>
 
               {/* Stock Management */}
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
                   Stock Management
                 </h4>
@@ -517,7 +517,7 @@ export default function ReadersVariantManager({
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Images Section */}
               <div className="space-y-4">
@@ -532,7 +532,7 @@ export default function ReadersVariantManager({
                   />
                   {variant.images.length > 0 && (
                     <ImageSection
-                      images={variant.images.map((img) => img.url)}
+                      images={variant.images.map((img) => img.signedUrl)}
                       onChange={(urls) => {
                         const imageObjects = urls.map((url) => ({ url }));
                         updateVariant(index, "images", imageObjects);
