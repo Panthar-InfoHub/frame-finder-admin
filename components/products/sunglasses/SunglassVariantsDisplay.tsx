@@ -130,7 +130,7 @@ export default function SunglassVariantsDisplay({
               </Badge>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Base Price</p>
+              <p className="text-sm text-muted-foreground">Discounted Price</p>
               <p className="text-xl font-bold">₹{selectedVariant.price.base_price}</p>
             </div>
             <div className="space-y-1">

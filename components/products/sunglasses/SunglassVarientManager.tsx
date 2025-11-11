@@ -269,10 +269,11 @@ export default function SunglassVariantManager({
                     min="0"
                     step="0.01"
                     disabled={!variant.price.shipping_price.custom}
-                    className={`mt-1 ${!variant.price.shipping_price.custom
+                    className={`mt-1 ${
+                      !variant.price.shipping_price.custom
                         ? "bg-muted text-muted-foreground cursor-not-allowed"
                         : ""
-                      }`}
+                    }`}
                   />
                 </div>
               </div>
@@ -298,8 +299,8 @@ export default function SunglassVariantManager({
                           </div>
                           <div className="space-y-1.5 text-popover-foreground">
                             <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground">Base Price:</span>
-                              <span className="font-medium">₹{variant.price.base_price || 0}</span>
+                              <span className="text-muted-foreground">Discounted Price:</span>
+                              <span className="font-medium">₹{variant.price.base_price}</span>
                             </div>
                             <div className="flex justify-between items-center">
                               <span className="text-muted-foreground">MRP:</span>

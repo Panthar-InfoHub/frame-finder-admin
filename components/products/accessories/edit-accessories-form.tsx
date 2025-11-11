@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/ui/back-button";
+import { AccessorySchema } from "@/lib/validations";
 import { Loader2, Info } from "lucide-react";
 import { ImageUploader } from "@/components/ui/custom/ImageUploader";
 import { ImageSection } from "@/components/ui/custom/ImageSection";
@@ -64,12 +65,29 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
   const [customShipping, setCustomShipping] = useState<boolean>(false);
   const [shippingPrice, setShippingPrice] = useState<number>(100);
   const [totalPrice, setTotalPrice] = useState<number>(accessory?.price?.total_price || 0);
+  const [priceError, setPriceError] = useState<string>("");
 
   // Auto calculate total price
   React.useEffect(() => {
     const shipping = customShipping ? shippingPrice : 100;
     setTotalPrice(mrp + shipping);
   }, [mrp, customShipping, shippingPrice]);
+
+  // Validate price difference
+  React.useEffect(() => {
+    if (basePrice > 0 && mrp > 0) {
+      const difference = mrp - basePrice;
+      if (difference < 100) {
+        setPriceError(
+          `Discounted price must be at least ₹100 less than MRP (current difference: ₹${difference})`
+        );
+      } else {
+        setPriceError("");
+      }
+    } else {
+      setPriceError("");
+    }
+  }, [basePrice, mrp]);
 
   const handleImageChange = (imageUrls: string[]) => {
     setImages(imageUrls);
@@ -86,6 +104,8 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
     const formdata = new FormData(e.currentTarget);
 
     const updateData: any = {
+      productCode: accessory.productCode,
+      hsn_code: accessory.hsn_code,
       brand_name: formdata.get("brand_name") as string,
       origin_country: formdata.get("origin_country") as string,
       material: selectedMaterials,
@@ -96,7 +116,25 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
         mrp: Number(formdata.get("mrp")),
         total_price: Number(formdata.get("total_price") || formdata.get("base_price")),
       },
+      stock: accessory.stock,
     };
+
+    // Validate the data
+    const result = AccessorySchema.safeParse(updateData);
+    if (!result.success) {
+      console.error("Validation errors:", result.error.flatten());
+      const errors = result.error.flatten();
+
+      // Check for nested price validation errors
+      const priceErrors = errors.fieldErrors?.price as string[] | undefined;
+      const firstError =
+        priceErrors?.[0] ||
+        Object.values(errors.fieldErrors)[0]?.[0] ||
+        "Please fix the form errors";
+
+      toast.error(firstError);
+      return;
+    }
 
     startTransition(async () => {
       const response = await updateAccessoryAction(accessory._id, updateData);
@@ -211,22 +249,27 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
             <h3 className="text-lg font-semibold">Pricing</h3>
           </CardHeader>
           <CardContent className="space-y-4">
+            {priceError && (
+              <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20">
+                {priceError}
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="base_price" className="text-xs">
-                  Base Price (₹)
+                  Discounted Price (₹)
                 </Label>
                 <Input
                   id="base_price"
                   name="base_price"
                   type="number"
                   step="0.01"
-                  placeholder="Enter base price"
+                  placeholder="Enter discounted price"
                   required
                   disabled={isPending}
                   value={basePrice || ""}
                   onChange={(e) => setBasePrice(parseFloat(e.target.value) || 0)}
-                  className="mt-1"
+                  className={`mt-1 ${priceError ? "border-destructive" : ""}`}
                 />
               </div>
 
@@ -305,7 +348,7 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
                           </div>
                           <div className="space-y-1.5 text-popover-foreground">
                             <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground">Base Price:</span>
+                              <span className="text-muted-foreground">Discounted Price:</span>
                               <span className="font-medium">₹{basePrice || 0}</span>
                             </div>
                             <div className="flex justify-between items-center">
@@ -390,7 +433,7 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending || !!priceError}>
             {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Update Accessory
           </Button>

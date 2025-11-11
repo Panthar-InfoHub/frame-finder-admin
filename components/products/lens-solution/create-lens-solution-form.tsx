@@ -378,7 +378,7 @@ export default function CreateLensSolutionForm() {
                 <h4 className="font-semibold mb-3">Pricing</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Base Price (₹)</Label>
+                    <Label>Discounted Price (₹)</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -463,7 +463,7 @@ export default function CreateLensSolutionForm() {
                               <div className="font-semibold border-b pb-1">💰 Price Breakdown</div>
                               <div className="space-y-1.5">
                                 <div className="flex justify-between">
-                                  <span className="text-muted-foreground">Base Price:</span>
+                                  <span className="text-muted-foreground">Discounted Price:</span>
                                   <span className="font-medium">₹{variant.price.base_price}</span>
                                 </div>
                                 <div className="flex justify-between">

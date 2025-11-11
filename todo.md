@@ -1,1 +1,5 @@
-- switch ispower in frames 
+- add a switch is_Power in add and edit frames
+- add some color contract in light mode so evething look clearly
+- ✅ base price label change to discounted price
+- ✅ add a chcek discounted price less than mrp at least 100 ruppes - if custom shipping is false
+- edit contact lens page - size field is not prefill

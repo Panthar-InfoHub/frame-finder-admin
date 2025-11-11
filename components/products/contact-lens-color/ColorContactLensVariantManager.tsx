@@ -272,9 +272,9 @@ export default function ColorContactLensVariantManager({
                     <h4 className="font-semibold">Pricing</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor={`base-price-${index}`}>Base Price</Label>
+                        <Label htmlFor={`discounted-price-${index}`}>Discounted Price</Label>
                         <Input
-                          id={`base-price-${index}`}
+                          id={`discounted-price-${index}`}
                           type="number"
                           step="0.01"
                           value={variant.price.base_price}
@@ -286,7 +286,7 @@ export default function ColorContactLensVariantManager({
                             );
                             setTimeout(() => calculateTotalPrice(index), 0);
                           }}
-                          placeholder="Enter base price"
+                          placeholder="Enter discounted price"
                         />
                       </div>
 
@@ -346,7 +346,7 @@ export default function ColorContactLensVariantManager({
                       <h5 className="font-semibold text-sm">Price Breakdown</h5>
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Base Price:</span>
+                          <span className="text-muted-foreground">Discounted Price:</span>
                           <span>₹{variant.price.base_price.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">

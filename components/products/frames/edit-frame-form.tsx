@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { FrameSchema, FrameVariantType } from "@/lib/validations";
 import FramesVariantManager from "@/components/products/frames/FramesVariantManager";
 import { BackButton } from "@/components/ui/back-button";
+import { Switch } from "@/components/ui/switch";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -41,6 +42,7 @@ interface EditFrameFormProps {
 export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   const genders = ["male", "female", "kids", "unisex"];
   const sizes = ["S", "M", "L", "XL"];
+  const [isPower, setIsPower] = useState(false);
 
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
@@ -117,6 +119,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     const completeData = {
       ...basicData,
       dimension,
+      is_power: isPower,
       variants: variants,
     };
 
@@ -187,6 +190,9 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
           lens_height: frameData.dimension?.lens_height || "",
         },
       });
+
+      // Set is_power state
+      setIsPower(frameData.is_power || false);
 
       // Set variants data
       if (frameData.variants && frameData.variants.length > 0) {
@@ -433,6 +439,16 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                   placeholder="Enter HSN/SAC code"
                   defaultValue={formData.hsn_code}
                 />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="isPower"
+                  checked={isPower}
+                  onCheckedChange={(checked) => setIsPower(checked as boolean)}
+                />
+                <Label htmlFor="isPower" className="cursor-pointer">
+                  Power Frame (Supports Power Lenses)
+                </Label>
               </div>
             </div>
           </CardContent>

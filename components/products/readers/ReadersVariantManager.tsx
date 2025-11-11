@@ -103,7 +103,6 @@ export default function ReadersVariantManager({
   onVariantsChange,
   uploadFunction,
 }: VariantManagerProps) {
-
   const addVariant = () => {
     const newVariant: Variant = {
       frame_color: "",
@@ -276,11 +275,11 @@ export default function ReadersVariantManager({
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor={`base-price-${index}`} className="text-xs">
-                      Base Price (₹)
+                    <Label htmlFor={`discounted-price-${index}`} className="text-xs">
+                      Discounted Price (₹)
                     </Label>
                     <Input
-                      id={`base-price-${index}`}
+                      id={`discounted-price-${index}`}
                       type="number"
                       value={variant.price.base_price || ""}
                       onChange={(e) => {
@@ -290,7 +289,7 @@ export default function ReadersVariantManager({
                           base_price: basePrice,
                         });
                       }}
-                      placeholder="Enter base price"
+                      placeholder="Enter discounted price"
                       required
                       min="0"
                       step="0.01"
@@ -391,10 +390,11 @@ export default function ReadersVariantManager({
                       min="0"
                       step="0.01"
                       disabled={!variant.price.shipping_price.custom}
-                      className={`mt-1 ${!variant.price.shipping_price.custom
-                        ? "bg-muted text-muted-foreground cursor-not-allowed"
-                        : ""
-                        }`}
+                      className={`mt-1 ${
+                        !variant.price.shipping_price.custom
+                          ? "bg-muted text-muted-foreground cursor-not-allowed"
+                          : ""
+                      }`}
                     />
                   </div>
 
@@ -419,7 +419,7 @@ export default function ReadersVariantManager({
                               </div>
                               <div className="space-y-1.5 text-popover-foreground">
                                 <div className="flex justify-between items-center">
-                                  <span className="text-muted-foreground">Base Price:</span>
+                                  <span className="text-muted-foreground">Discounted Price:</span>
                                   <span className="font-medium">
                                     ₹{variant.price.base_price || 0}
                                   </span>

@@ -119,7 +119,7 @@ const SunglassDetails = async ({ id }: { id: string }) => {
               <p className="text-xl font-bold">₹{pkg.price.mrp.toLocaleString()}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Base Price</p>
+              <p className="text-sm text-muted-foreground">Discounted Price</p>
               <p className="text-lg font-semibold">₹{pkg.price.base_price.toLocaleString()}</p>
             </div>
             <div className="space-y-1 pt-2 border-t">

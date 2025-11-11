@@ -145,11 +145,11 @@ export default function FramesVariantManager({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor={`base-price-${index}`} className="text-xs">
-                    Base Price (₹)
+                  <Label htmlFor={`discounted-price-${index}`} className="text-xs">
+                    Discounted Price (₹)
                   </Label>
                   <Input
-                    id={`base-price-${index}`}
+                    id={`discounted-price-${index}`}
                     type="number"
                     value={variant.price.base_price || ""}
                     onChange={(e) => {
@@ -161,7 +161,7 @@ export default function FramesVariantManager({
                         (newPrice.shipping_price.custom ? newPrice.shipping_price.value : 100);
                       updateVariant(index, "price", newPrice);
                     }}
-                    placeholder="Enter base price"
+                    placeholder="Enter discounted price"
                     min="0"
                     step="0.01"
                     className="mt-1"
@@ -289,7 +289,7 @@ export default function FramesVariantManager({
                             </div>
                             <div className="space-y-1.5 text-popover-foreground">
                               <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground">Base Price:</span>
+                                <span className="text-muted-foreground">Discounted Price:</span>
                                 <span className="font-medium">
                                   ₹{variant.price.base_price || 0}
                                 </span>
