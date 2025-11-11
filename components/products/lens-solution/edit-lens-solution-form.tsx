@@ -419,35 +419,47 @@ export default function EditLensSolutionForm({ lensSolution }: EditLensSolutionF
                           <TooltipTrigger asChild>
                             <Info className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors cursor-help" />
                           </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-xs">
+                          <TooltipContent
+                            side="top"
+                            className="bg-popover border border-border shadow-lg rounded-md p-3 max-w-xs"
+                          >
                             <div className="space-y-2 text-sm">
-                              <div className="font-semibold border-b pb-1">💰 Price Breakdown</div>
-                              <div className="space-y-1.5">
-                                <div className="flex justify-between">
-                                  <span className="text-foreground">Discounted Price:</span>
+                              <div className="font-semibold text-popover-foreground border-b border-border pb-1">
+                                💰 Price Breakdown
+                              </div>
+                              <div className="space-y-1.5 text-popover-foreground">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-muted-foreground">Discounted Price:</span>
                                   <span className="font-medium">₹{variant.price.base_price}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                  <span className="text-foreground">Shipping:</span>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-muted-foreground">Shipping:</span>
                                   <span className="font-medium">
                                     ₹
                                     {variant.price.shipping_price.custom
                                       ? variant.price.shipping_price.value
                                       : 100}
+                                    {!variant.price.shipping_price.custom && (
+                                      <span className="text-xs text-muted-foreground ml-1">
+                                        (default)
+                                      </span>
+                                    )}
                                   </span>
                                 </div>
-                                <div className="border-t pt-1.5">
-                                  <div className="flex justify-between">
-                                    <span className="font-semibold">Total:</span>
-                                    <span className="font-bold text-primary">
+                                <div className="border-t border-border pt-1.5">
+                                  <div className="flex justify-between items-center">
+                                    <span className="font-semibold text-popover-foreground">
+                                      Total:
+                                    </span>
+                                    <span className="font-bold text-primary text-base">
                                       ₹{variant.price.total_price}
                                     </span>
                                   </div>
                                 </div>
-                                <div className="text-xs text-muted-foreground italic mt-1 pt-1.5 border-t">
+                                <div className="text-xs text-muted-foreground italic mt-2 pt-2 border-t border-border">
                                   Formula: Discounted Price + Shipping
                                 </div>
-                                <div className="flex justify-between text-xs text-muted-foreground">
+                                <div className="flex justify-between items-center text-xs text-muted-foreground">
                                   <span>MRP (for reference):</span>
                                   <span>₹{variant.price.mrp}</span>
                                 </div>

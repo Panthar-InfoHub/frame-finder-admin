@@ -73,9 +73,7 @@ export default function AddAccessoriesForm() {
     if (basePrice > 0 && mrp > 0) {
       const difference = mrp - basePrice;
       if (difference < 100) {
-        setPriceError(
-          `Discounted price must be at least ₹100 less than MRP (current difference: ₹${difference})`
-        );
+        setPriceError(`Price difference must be at least ₹100 (Current: ₹${difference})`);
       } else {
         setPriceError("");
       }
@@ -305,8 +303,14 @@ export default function AddAccessoriesForm() {
                   disabled={isPending}
                   value={mrp || ""}
                   onChange={(e) => setMrp(parseFloat(e.target.value) || 0)}
-                  className="mt-1"
+                  className={`mt-1 ${priceError ? "border-destructive" : ""}`}
                 />
+                {priceError && (
+                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                    {priceError}
+                  </p>
+                )}
               </div>
 
               <div>

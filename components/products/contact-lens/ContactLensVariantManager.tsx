@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trash2, Plus, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,7 @@ export default function ContactLensVariantManager({
   uploadFunction,
 }: ContactLensVariantManagerProps) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([0]);
+  const [priceErrors, setPriceErrors] = useState<Record<number, string>>({});
 
   // Power options for selects
   const sphericalPowers = Array.from({ length: 81 }, (_, i) => {
@@ -50,6 +52,23 @@ export default function ContactLensVariantManager({
     const value = 1 + i * 0.25;
     return { label: `+${value.toFixed(2)}`, value };
   });
+
+  // Validate price difference for all variants
+  useEffect(() => {
+    const newErrors: Record<number, string> = {};
+    variants.forEach((variant, index) => {
+      const basePrice = Number(variant.price?.base_price) || 0;
+      const mrp = Number(variant.price?.mrp) || 0;
+
+      if (basePrice > 0 && mrp > 0) {
+        const difference = mrp - basePrice;
+        if (difference < 100) {
+          newErrors[index] = `Price difference must be at least ₹100 (Current: ₹${difference})`;
+        }
+      }
+    });
+    setPriceErrors(newErrors);
+  }, [variants]);
 
   const toggleVariant = (index: number) => {
     setOpenIndexes((prev) =>
@@ -287,7 +306,14 @@ export default function ContactLensVariantManager({
                             setTimeout(() => calculateTotalPrice(index), 0);
                           }}
                           placeholder="Enter discounted price"
+                          className={`${priceErrors[index] ? "border-destructive" : ""}`}
                         />
+                        {priceErrors[index] && (
+                          <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                            <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                            {priceErrors[index]}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -301,7 +327,14 @@ export default function ContactLensVariantManager({
                             updateNestedField(index, ["price", "mrp"], Number(e.target.value))
                           }
                           placeholder="Enter MRP"
+                          className={`${priceErrors[index] ? "border-destructive" : ""}`}
                         />
+                        {priceErrors[index] && (
+                          <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                            <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                            {priceErrors[index]}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -341,32 +374,59 @@ export default function ContactLensVariantManager({
                       <Label htmlFor={`custom-shipping-${index}`}>Custom Shipping Price</Label>
                     </div>
 
-                    {/* Price Breakdown */}
-                    <div className="bg-muted/50 p-4 rounded-lg space-y-2">
-                      <h5 className="font-semibold text-sm">Price Breakdown</h5>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Discounted Price:</span>
-                          <span>₹{variant.price.base_price.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Shipping:</span>
-                          <span>₹{variant.price.shipping_price.value.toFixed(2)}</span>
-                        </div>
-                        <Separator className="my-1" />
-                        <div className="flex justify-between font-semibold">
-                          <span>Total Price:</span>
-                          <span>₹{variant.price.total_price.toFixed(2)}</span>
-                        </div>
-                        <div className="text-xs text-muted-foreground italic mt-1">
-                          Formula: Discounted Price + Shipping
-                        </div>
-                        <Separator className="my-1" />
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>MRP (for reference):</span>
-                          <span>₹{variant.price.mrp.toFixed(2)}</span>
-                        </div>
-                      </div>
+                    {/* Price Breakdown - Tooltip */}
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-semibold">
+                        💰 Total Price: ₹{variant.price.total_price.toFixed(2)}
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="top"
+                            className="bg-popover border border-border shadow-lg rounded-md p-3 max-w-xs"
+                          >
+                            <div className="space-y-2 text-sm">
+                              <div className="font-semibold text-popover-foreground border-b border-border pb-1">
+                                💰 Price Breakdown
+                              </div>
+                              <div className="space-y-1.5 text-popover-foreground">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-muted-foreground">Discounted Price:</span>
+                                  <span className="font-medium">
+                                    ₹{variant.price.base_price.toFixed(2)}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-muted-foreground">Shipping:</span>
+                                  <span className="font-medium">
+                                    ₹{variant.price.shipping_price.value.toFixed(2)}
+                                    {variant.price.shipping_price.custom && (
+                                      <span className="text-xs ml-1">(custom)</span>
+                                    )}
+                                    {!variant.price.shipping_price.custom && (
+                                      <span className="text-xs ml-1">(default)</span>
+                                    )}
+                                  </span>
+                                </div>
+                                <div className="border-t border-border pt-1.5 flex justify-between items-center font-semibold">
+                                  <span>Total Price:</span>
+                                  <span>₹{variant.price.total_price.toFixed(2)}</span>
+                                </div>
+                                <div className="text-xs text-muted-foreground italic pt-1">
+                                  Formula: Discounted Price + Shipping
+                                </div>
+                                <div className="border-t border-border pt-1.5 flex justify-between items-center text-xs text-muted-foreground">
+                                  <span>MRP (for reference):</span>
+                                  <span>₹{variant.price.mrp.toFixed(2)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </div>
 

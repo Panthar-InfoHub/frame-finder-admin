@@ -43,6 +43,25 @@ export default function SunglassVariantManager({
   onVariantsChange,
   uploadFunction,
 }: SunglassVariantManagerProps) {
+  const [priceErrors, setPriceErrors] = React.useState<Record<number, string>>({});
+
+  // Validate price difference for all variants
+  React.useEffect(() => {
+    const newErrors: Record<number, string> = {};
+    variants.forEach((variant, index) => {
+      const basePrice = Number(variant.price?.base_price) || 0;
+      const mrp = Number(variant.price?.mrp) || 0;
+
+      if (basePrice > 0 && mrp > 0) {
+        const difference = mrp - basePrice;
+        if (difference < 100) {
+          newErrors[index] = `Price difference must be at least ₹100 (Current: ₹${difference})`;
+        }
+      }
+    });
+    setPriceErrors(newErrors);
+  }, [variants]);
+
   const addVariant = () => {
     const newVariant: SunglassVariant = {
       frame_color: "",
@@ -176,8 +195,14 @@ export default function SunglassVariantManager({
                     placeholder="Enter base price"
                     min="0"
                     step="0.01"
-                    className="mt-1"
+                    className={`mt-1 ${priceErrors[index] ? "border-destructive" : ""}`}
                   />
+                  {priceErrors[index] && (
+                    <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                      <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                      {priceErrors[index]}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor={`mrp-${index}`} className="text-xs">
@@ -195,8 +220,14 @@ export default function SunglassVariantManager({
                     placeholder="Enter MRP"
                     min="0"
                     step="0.01"
-                    className="mt-1"
+                    className={`mt-1 ${priceErrors[index] ? "border-destructive" : ""}`}
                   />
+                  {priceErrors[index] && (
+                    <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                      <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                      {priceErrors[index]}
+                    </p>
+                  )}
                 </div>
               </div>
 
