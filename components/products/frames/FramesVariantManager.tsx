@@ -218,7 +218,7 @@ export default function FramesVariantManager({
                         };
                         // Auto calculate total price
                         newPrice.total_price =
-                          newPrice.mrp + (checked ? newPrice.shipping_price.value : 100);
+                          newPrice.base_price + (checked ? newPrice.shipping_price.value : 100);
                         updateVariant(index, "price", newPrice);
                       }}
                     />
@@ -247,7 +247,7 @@ export default function FramesVariantManager({
                             },
                           };
                           // Auto calculate total price
-                          newPrice.total_price = newPrice.mrp + shippingValue;
+                          newPrice.total_price = newPrice.base_price + shippingValue;
                           updateVariant(index, "price", newPrice);
                         }
                       }}

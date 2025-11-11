@@ -70,8 +70,8 @@ export default function EditAccessoriesForm({ accessory }: EditAccessoriesFormPr
   // Auto calculate total price
   React.useEffect(() => {
     const shipping = customShipping ? shippingPrice : 100;
-    setTotalPrice(mrp + shipping);
-  }, [mrp, customShipping, shippingPrice]);
+    setTotalPrice(basePrice + shipping);
+  }, [basePrice, customShipping, shippingPrice]);
 
   // Validate price difference
   React.useEffect(() => {

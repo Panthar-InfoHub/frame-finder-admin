@@ -284,10 +284,16 @@ export default function ReadersVariantManager({
                       value={variant.price.base_price || ""}
                       onChange={(e) => {
                         const basePrice = parseFloat(e.target.value) || 0;
-                        updateVariant(index, "price", {
+                        const shippingValue = variant.price.shipping_price.custom
+                          ? variant.price.shipping_price.value
+                          : 100;
+                        const newPrice = {
                           ...variant.price,
                           base_price: basePrice,
-                        });
+                        };
+                        // Auto calculate total price
+                        newPrice.total_price = basePrice + shippingValue;
+                        updateVariant(index, "price", newPrice);
                       }}
                       placeholder="Enter discounted price"
                       required
@@ -307,15 +313,10 @@ export default function ReadersVariantManager({
                       value={variant.price.mrp || ""}
                       onChange={(e) => {
                         const mrp = parseFloat(e.target.value) || 0;
-                        const shippingValue = variant.price.shipping_price.custom
-                          ? variant.price.shipping_price.value
-                          : 100;
                         const newPrice = {
                           ...variant.price,
                           mrp,
                         };
-                        // Auto calculate total price
-                        newPrice.total_price = mrp + shippingValue;
                         updateVariant(index, "price", newPrice);
                       }}
                       placeholder="Enter MRP"
@@ -353,7 +354,7 @@ export default function ReadersVariantManager({
                             const shippingValue = checked
                               ? variant.price.shipping_price.value
                               : 100;
-                            newPrice.total_price = variant.price.mrp + shippingValue;
+                            newPrice.total_price = variant.price.base_price + shippingValue;
                             updateVariant(index, "price", newPrice);
                           }}
                         />
@@ -378,7 +379,7 @@ export default function ReadersVariantManager({
                             },
                           };
                           // Auto calculate total price
-                          newPrice.total_price = newPrice.mrp + shippingValue;
+                          newPrice.total_price = newPrice.base_price + shippingValue;
                           updateVariant(index, "price", newPrice);
                         }
                       }}

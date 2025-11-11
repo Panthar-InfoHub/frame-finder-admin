@@ -140,7 +140,7 @@ export default function CreateLensSolutionForm() {
       const shipping = variant.price.shipping_price.custom
         ? variant.price.shipping_price.value
         : 100;
-      newVariants[index].price.total_price = variant.price.mrp + shipping;
+      newVariants[index].price.total_price = variant.price.base_price + shipping;
     }
 
     setVariants(newVariants);

@@ -169,7 +169,7 @@ export default function SunglassVariantManager({
                       const newPrice = { ...variant.price, base_price: basePrice };
                       // Auto calculate total price
                       newPrice.total_price =
-                        newPrice.mrp +
+                        basePrice +
                         (newPrice.shipping_price.custom ? newPrice.shipping_price.value : 100);
                       updateVariant(index, "price", newPrice);
                     }}
@@ -190,10 +190,6 @@ export default function SunglassVariantManager({
                     onChange={(e) => {
                       const mrp = parseFloat(e.target.value) || 0;
                       const newPrice = { ...variant.price, mrp };
-                      // Auto calculate total price
-                      newPrice.total_price =
-                        mrp +
-                        (newPrice.shipping_price.custom ? newPrice.shipping_price.value : 100);
                       updateVariant(index, "price", newPrice);
                     }}
                     placeholder="Enter MRP"
@@ -231,7 +227,7 @@ export default function SunglassVariantManager({
                       };
                       // Auto calculate total price
                       newPrice.total_price =
-                        newPrice.mrp + (checked ? newPrice.shipping_price.value : 100);
+                        newPrice.base_price + (checked ? newPrice.shipping_price.value : 100);
                       updateVariant(index, "price", newPrice);
                     }}
                   />
@@ -257,7 +253,7 @@ export default function SunglassVariantManager({
                           shipping_price: { ...variant.price.shipping_price, value: shippingValue },
                         };
                         // Auto calculate total price
-                        newPrice.total_price = newPrice.mrp + shippingValue;
+                        newPrice.total_price = newPrice.base_price + shippingValue;
                         updateVariant(index, "price", newPrice);
                       }
                     }}
