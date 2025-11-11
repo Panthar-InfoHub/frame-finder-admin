@@ -21,21 +21,19 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 const AccessoriesDetails = async ({ id }: { id: string }) => {
-  let resp = await getAccessoryById(id);
-  if (!resp.success) {
+  const response = await getAccessoryById(id);
+  if (!response.success) {
     return <div>Unable to fetch the Accessory details</div>;
   }
 
   const signedImages = await Promise.all(
-    resp?.data.images.map(async (img: any) => ({
+    response?.data?.images?.map(async (img: any) => ({
       ...img,
       signedUrl: await getSignedViewUrl(img.url),
-    }))
+    })) || []
   );
 
-  resp = { ...resp, images: signedImages };
-
-
+  const resp = { ...response.data, images: signedImages };
 
   if (!resp) {
     return <div className="p-4">No product data available</div>;
@@ -158,7 +156,7 @@ const AccessoriesDetails = async ({ id }: { id: string }) => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Base Price</p>
+                <p className="text-sm text-muted-foreground">Discounted Price</p>
                 <p className="font-medium text-xl">₹{resp?.price?.base_price}</p>
               </div>
               <div className="space-y-1">

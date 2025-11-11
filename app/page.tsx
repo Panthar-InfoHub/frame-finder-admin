@@ -26,24 +26,21 @@ import {
   Store,
   TrendingUp,
   User,
-  Zap
+  Zap,
 } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 import Image from "next/image";
-
-
-
 
 const page = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="  px-4 lg:px-6 h-16 flex items-center border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
+      <header className="  px-4 lg:px-6 h-16 flex items-center border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60 sticky top-0 z-50">
         <Link href="/" className="flex items-center justify-center gap-3">
           <div className="bg-green-600 px-3 py-2 rounded-md">
             <span className="text-white font-bold text-lg">FrameFinder</span>
@@ -51,25 +48,40 @@ const page = () => {
           <span className="text-sm text-gray-600 font-medium p-1">An eyewear hub</span>
         </Link>
         <Link
-              href="/login-vendor"
-              className="inline-block bg-green-600 ml-180 px-3 py-2 rounded-md text-white font-bold text-lg"
-            >
-              login
-         </Link>
+          href="/login-vendor"
+          className="inline-block bg-green-600 ml-180 px-3 py-2 rounded-md text-white font-bold text-lg"
+        >
+          login
+        </Link>
         <nav className="ml-auto hidden sm:flex gap-4 sm:gap-6">
-          <Link href="#about" className="text-sm font-medium hover:text-green-600 transition-colors">
+          <Link
+            href="#about"
+            className="text-sm font-medium hover:text-green-600 transition-colors"
+          >
             About
           </Link>
-          <Link href="#mission" className="text-sm font-medium hover:text-green-600 transition-colors">
+          <Link
+            href="#mission"
+            className="text-sm font-medium hover:text-green-600 transition-colors"
+          >
             Mission
           </Link>
-          <Link href="#features" className="text-sm font-medium hover:text-green-600 transition-colors">
+          <Link
+            href="#features"
+            className="text-sm font-medium hover:text-green-600 transition-colors"
+          >
             Features
           </Link>
-          <Link href="#how-it-works" className="text-sm font-medium hover:text-green-600 transition-colors">
+          <Link
+            href="#how-it-works"
+            className="text-sm font-medium hover:text-green-600 transition-colors"
+          >
             How It Works
           </Link>
-          <Link href="#contact" className="text-sm font-medium hover:text-green-600 transition-colors">
+          <Link
+            href="#contact"
+            className="text-sm font-medium hover:text-green-600 transition-colors"
+          >
             Contact
           </Link>
         </nav>
@@ -77,56 +89,57 @@ const page = () => {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="  w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-green-50 via-white to-emerald-50">
+        <section className="  w-full py-12 md:py-24 lg:py-32 bg-linear-to-br from-green-50 via-white to-emerald-50">
           <div className="flex items-center justify-center">
             <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <Badge variant="secondary" className="w-fit">
-                    Multivendor Eyewear Platform
-                  </Badge>
-                  <h1 className="text-3xl text-black font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Revolutionizing India&apos;s <span className="text-green-600">Eyewear Business</span>
-                  </h1>
-                  <p className="text-lg text-green-600 font-semibold italic">An eyewear hub</p>
-                  <p className="max-w-[600px] text-gray-600 md:text-xl">
-                    Welcome to FrameFinder, India’s first multi-vendor B2C eyewear ecommerce platform — where your eyewear business gets a digital showroom, nationwide reach, and all the tools you need to grow fast in the online world.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button size="lg" className="bg-green-600 hover:bg-green-700">
-                    <Link href="/onboarding" >
-                      Join as Vendor
-                    </Link>
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="lg" className="text-black">
-                    Contact US  
-                  </Button>
-                </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    <span>Pan India Reach</span>
+              <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+                <div className="flex flex-col justify-center space-y-4">
+                  <div className="space-y-2">
+                    <Badge variant="secondary" className="w-fit">
+                      Multivendor Eyewear Platform
+                    </Badge>
+                    <h1 className="text-3xl text-black font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                      Revolutionizing India&apos;s{" "}
+                      <span className="text-green-600">Eyewear Business</span>
+                    </h1>
+                    <p className="text-lg text-green-600 font-semibold italic">An eyewear hub</p>
+                    <p className="max-w-[600px] text-gray-600 md:text-xl">
+                      Welcome to FrameFinder, India’s first multi-vendor B2C eyewear ecommerce
+                      platform — where your eyewear business gets a digital showroom, nationwide
+                      reach, and all the tools you need to grow fast in the online world.
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-4 w-4" />
-                    <span>10,000+ Products</span>
+                  <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                    <Button size="lg" className="bg-green-600 hover:bg-green-700">
+                      <Link href="/onboarding">Join as Vendor</Link>
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="lg" className="text-black">
+                      Contact US
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      <span>Pan India Reach</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Eye className="h-4 w-4" />
+                      <span>10,000+ Products</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center justify-center">
-                <Image
-                  src="/eyewear-collection.png"
-                  alt="Eyewear Collection"
-                  width={600}
-                  height={400}
-                  className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
-                />
+                <div className="flex items-center justify-center">
+                  <Image
+                    src="/eyewear-collection.png"
+                    alt="Eyewear Collection"
+                    width={600}
+                    height={400}
+                    className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
+                  />
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </section>
 
@@ -136,12 +149,19 @@ const page = () => {
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">About FrameFinder</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    About FrameFinder
+                  </h2>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    FrameFinder is a dedicated online marketplace designed exclusively for eyewear sellers — from small optical shops to premium frame brands. Our platform connects you directly with customers across India, without needing to open stores or invest heavily in tech.
+                    FrameFinder is a dedicated online marketplace designed exclusively for eyewear
+                    sellers — from small optical shops to premium frame brands. Our platform
+                    connects you directly with customers across India, without needing to open
+                    stores or invest heavily in tech.
                   </p>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Whether you sell spectacles, sunglasses, contact lenses, powered eyewear, or accessories, you can list your products, reach new customers, and grow your brand — all in one place.  
+                    Whether you sell spectacles, sunglasses, contact lenses, powered eyewear, or
+                    accessories, you can list your products, reach new customers, and grow your
+                    brand — all in one place.
                   </p>
                 </div>
               </div>
@@ -157,16 +177,17 @@ const page = () => {
                   <div className="grid gap-1">
                     <h3 className="text-xl font-bold">Empowering Optical Businesses</h3>
                     <p className="text-gray-600">
-                      We understand the challenges faced by optical vendors in reaching a wider audience. FrameFinder
-                      provides the technology, tools, and platform needed to transform local optical businesses into
-                      nationwide brands.
+                      We understand the challenges faced by optical vendors in reaching a wider
+                      audience. FrameFinder provides the technology, tools, and platform needed to
+                      transform local optical businesses into nationwide brands.
                     </p>
                   </div>
                   <div className="grid gap-1">
                     <h3 className="text-xl font-bold">Seamless Customer Experience</h3>
                     <p className="text-gray-600">
-                      Our platform ensures customers have access to a vast collection of eyewear from trusted vendors,
-                      with features like virtual try-on, prescription management, and doorstep delivery across India.
+                      Our platform ensures customers have access to a vast collection of eyewear
+                      from trusted vendors, with features like virtual try-on, prescription
+                      management, and doorstep delivery across India.
                     </p>
                   </div>
                 </div>
@@ -189,9 +210,10 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600 leading-relaxed">
-                      To revolutionize India&apos;s eyewear industry by creating a comprehensive digital ecosystem that
-                      empowers optical vendors to expand their reach nationwide. We aim to make quality eyewear accessible
-                      to every Indian while supporting local businesses in their digital transformation journey.
+                      To revolutionize India&apos;s eyewear industry by creating a comprehensive
+                      digital ecosystem that empowers optical vendors to expand their reach
+                      nationwide. We aim to make quality eyewear accessible to every Indian while
+                      supporting local businesses in their digital transformation journey.
                     </p>
                   </CardContent>
                 </Card>
@@ -204,9 +226,10 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600 leading-relaxed">
-                      To become India&apos;s most trusted and comprehensive eyewear marketplace, where every optical vendor,
-                      regardless of size or location, can thrive in the digital age. We envision a future where quality
-                      eyewear is just a click away for every Indian, supported by a network of empowered local businesses.
+                      To become India&apos;s most trusted and comprehensive eyewear marketplace,
+                      where every optical vendor, regardless of size or location, can thrive in the
+                      digital age. We envision a future where quality eyewear is just a click away
+                      for every Indian, supported by a network of empowered local businesses.
                     </p>
                   </CardContent>
                 </Card>
@@ -221,9 +244,12 @@ const page = () => {
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Why Choose FrameFinder?</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Why Choose FrameFinder?
+                  </h2>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Comprehensive features designed to help optical vendors succeed in the digital marketplace
+                    Comprehensive features designed to help optical vendors succeed in the digital
+                    marketplace
                   </p>
                 </div>
               </div>
@@ -246,7 +272,8 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600">
-                      Quick and simple onboarding process to get your optical store online within minutes.
+                      Quick and simple onboarding process to get your optical store online within
+                      minutes.
                     </p>
                   </CardContent>
                 </Card>
@@ -257,7 +284,8 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600">
-                      Optimized for mobile devices with responsive design ensuring seamless experience across all platforms.
+                      Optimized for mobile devices with responsive design ensuring seamless
+                      experience across all platforms.
                     </p>
                   </CardContent>
                 </Card>
@@ -290,7 +318,8 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600">
-                      Support for UPI, cards, wallets, and EMI options to cater to diverse customer preferences.
+                      Support for UPI, cards, wallets, and EMI options to cater to diverse customer
+                      preferences.
                     </p>
                   </CardContent>
                 </Card>
@@ -301,7 +330,8 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600">
-                      Advanced security measures and encrypted payment gateways ensure safe transactions for all users.
+                      Advanced security measures and encrypted payment gateways ensure safe
+                      transactions for all users.
                     </p>
                   </CardContent>
                 </Card>
@@ -323,7 +353,8 @@ const page = () => {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-gray-600">
-                      You get your own vendor dashboard, order tracking, sales analytics, and customer management — without writing a single line of code.
+                      You get your own vendor dashboard, order tracking, sales analytics, and
+                      customer management — without writing a single line of code.
                     </p>
                   </CardContent>
                 </Card>
@@ -338,7 +369,9 @@ const page = () => {
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">How FrameFinder Works</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    How FrameFinder Works
+                  </h2>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     Simple steps to join India&apos;s largest eyewear marketplace
                   </p>
@@ -351,8 +384,8 @@ const page = () => {
                   </div>
                   <h3 className="text-xl font-bold">Register Your Store</h3>
                   <p className="text-gray-600">
-                    Sign up as a vendor and provide your optical store details. Our team will verify and approve your
-                    account.
+                    Sign up as a vendor and provide your optical store details. Our team will verify
+                    and approve your account.
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center space-y-4">
@@ -361,8 +394,8 @@ const page = () => {
                   </div>
                   <h3 className="text-xl font-bold">Upload Products</h3>
                   <p className="text-gray-600">
-                    Add your eyewear collection with high-quality images, descriptions, and pricing. Our tools make it
-                    easy.
+                    Add your eyewear collection with high-quality images, descriptions, and pricing.
+                    Our tools make it easy.
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center space-y-4">
@@ -371,12 +404,12 @@ const page = () => {
                   </div>
                   <h3 className="text-xl font-bold">Start Selling</h3>
                   <p className="text-gray-600">
-                    Receive orders from customers across India, manage inventory, and grow your business with our support.
+                    Receive orders from customers across India, manage inventory, and grow your
+                    business with our support.
                   </p>
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
@@ -387,41 +420,48 @@ const page = () => {
               <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
                 <div className="flex flex-col justify-center space-y-4">
                   <div className="space-y-2">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Benefits for Optical Vendors</h2>
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                      Benefits for Optical Vendors
+                    </h2>
                     <p className="max-w-[600px] text-gray-600 md:text-xl">
-                      Join thousands of optical vendors who have transformed their business with FrameFinder
+                      Join thousands of optical vendors who have transformed their business with
+                      FrameFinder
                     </p>
                   </div>
                   <div className="grid gap-4">
                     <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-semibold">Increased Revenue</h4>
                         <p className="text-gray-600 text-sm">
-                            No listing fees (limited time offer)
+                          No listing fees (limited time offer)
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-semibold">Brand Visibility</h4>
-                        <p className="text-gray-600 text-sm">Marketing support via social media & ads</p>
+                        <p className="text-gray-600 text-sm">
+                          Marketing support via social media & ads
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-semibold">Inventory Management</h4>
-                        <p className="text-gray-600 text-sm">Customer base Focused Purely on eyewear</p>
+                        <p className="text-gray-600 text-sm">
+                          Customer base Focused Purely on eyewear
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
                       <div>
                         <h4 className="font-semibold">Marketing Support</h4>
                         <p className="text-gray-600 text-sm">
-                           Dashboard for managing orders, products, performance
+                          Dashboard for managing orders, products, performance
                         </p>
                       </div>
                     </div>
@@ -447,83 +487,82 @@ const page = () => {
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Vendor&apos;s FAQ</h2>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                    Vendor&apos;s FAQ
+                  </h2>
                   <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Here are answers to the most comman questions we recieved from vendors 
+                    Here are answers to the most comman questions we recieved from vendors
                   </p>
                 </div>
               </div>
-              <Accordion
-      type="single"
-      collapsible
-      className="w-full"
-      defaultValue="item-1"
-    >
-      <AccordionItem value="item-1">
-        <AccordionTrigger> Q1. Is there a fee to join FrameFinder?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            No! We&apos;re currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Q2. Do I need a GST number to sell?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            Yes. You must have a valid GSTIN and PAN card to register as a vendor.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Q3. What kind of eyewear can I sell?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            Spectacles, sunglasses, contact lenses, powered glasses, prescription lenses, and accessories — all are welcome!
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-4">
-        <AccordionTrigger>Q4. Who handles shipping and returns?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            We&apos;ve partnered with courier services for delivery. You pack the product — we handle pickup and return logistics.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-5">
-        <AccordionTrigger >Q5. How do I upload my products?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            Through our vendor dashboard — upload one by one or in bulk via CSV and images.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-6">
-        <AccordionTrigger>Q6. How do I receive payments?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            You&apos;ll receive direct bank transfers on a weekly cycle, minus the platform commission.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-7">
-        <AccordionTrigger>Q7. Can I talk to someone before joining?</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            Absolutely — book a free onboarding call with our team or message us on WhatsApp!
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      
-    </Accordion>
+              <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger> Q1. Is there a fee to join FrameFinder?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                      No! We&apos;re currently waiving all listing fees during our launch phase. You
+                      only pay a small commission on successful orders.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>Q2. Do I need a GST number to sell?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>Yes. You must have a valid GSTIN and PAN card to register as a vendor.</p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>Q3. What kind of eyewear can I sell?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                      Spectacles, sunglasses, contact lenses, powered glasses, prescription lenses,
+                      and accessories — all are welcome!
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-4">
+                  <AccordionTrigger>Q4. Who handles shipping and returns?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                      We&apos;ve partnered with courier services for delivery. You pack the product
+                      — we handle pickup and return logistics.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-5">
+                  <AccordionTrigger>Q5. How do I upload my products?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                      Through our vendor dashboard — upload one by one or in bulk via CSV and
+                      images.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-6">
+                  <AccordionTrigger>Q6. How do I receive payments?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                      You&apos;ll receive direct bank transfers on a weekly cycle, minus the
+                      platform commission.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-7">
+                  <AccordionTrigger>Q7. Can I talk to someone before joining?</AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4 text-balance">
+                    <p>
+                      Absolutely — book a free onboarding call with our team or message us on
+                      WhatsApp!
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
         </section>
 
-
         {/* CTA Section */}
-        <section className=" selection:bg-green-800 selection:text-white w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-green-600 to-emerald-600">
+        <section className=" selection:bg-green-800 selection:text-white w-full py-12 md:py-24 lg:py-32 bg-linear-to-r from-green-600 to-emerald-600">
           <div className="flex items-center justify-center">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
@@ -533,16 +572,14 @@ const page = () => {
                   </h2>
                   <div className="flex items-center justify-center">
                     <p className="max-w-[600px] text-green-100 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Join FrameFinder today and take your eyewear business to the next level. Reach customers across India
-                    and grow your revenue.
-                  </p>
+                      Join FrameFinder today and take your eyewear business to the next level. Reach
+                      customers across India and grow your revenue.
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button size="lg" className=" border-white bg-green-600 hover:bg-green-900">
-                    <Link href="/onboarding" >
-                      Become a Vendor
-                    </Link>
+                    <Link href="/onboarding">Become a Vendor</Link>
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                   <Button
@@ -562,10 +599,12 @@ const page = () => {
           <div className="flex items-center justify-center">
             <div className="container px-4 md:px-6">
               <div className="flex flex-col items-center justify-center space-y-8 text-center">
-                <h2 className="text-3xl tet-black font-bold tracking-tighter sm:text-5xl">Supported By</h2>
+                <h2 className="text-3xl tet-black font-bold tracking-tighter sm:text-5xl">
+                  Supported By
+                </h2>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-16">
                   <div className="flex flex-col items-center gap-2">
-                    <div className="relative h-[6rem] w-[12rem]" >
+                    <div className="relative h-24 w-48">
                       <Image
                         src="/rise.png"
                         alt="Smart City Jhansi Logo"
@@ -576,7 +615,7 @@ const page = () => {
                     <p className="text-lg font-semibold text-gray-700">Rise Incubation</p>
                   </div>
                   <div className="flex flex-col items-center gap-2 ">
-                    <div className="relative h-[6rem] w-[12rem]" >
+                    <div className="relative h-24 w-48">
                       <Image
                         src="/smart.png"
                         alt="Smart City Jhansi Logo"
@@ -611,13 +650,25 @@ const page = () => {
             <div className="space-y-4">
               <h4 className="text-sm font-semibold">Follow Us On</h4>
               <div className="flex gap-4">
-                <Link href="https://www.instagram.com/framefinder.co?igsh=OTE3Y3UybDhvY2ll" className="text-gray-600 hover:text-green-600" aria-label="Instagram">
+                <Link
+                  href="https://www.instagram.com/framefinder.co?igsh=OTE3Y3UybDhvY2ll"
+                  className="text-gray-600 hover:text-green-600"
+                  aria-label="Instagram"
+                >
                   <Instagram className="h-6 w-6" />
                 </Link>
-                <Link href="https://www.threads.com/@framefinder.co?igshid=NTc4MTIwNjQ2YQ==" className="text-gray-600 hover:text-green-600" aria-label="Threads">
+                <Link
+                  href="https://www.threads.com/@framefinder.co?igshid=NTc4MTIwNjQ2YQ=="
+                  className="text-gray-600 hover:text-green-600"
+                  aria-label="Threads"
+                >
                   <AtSign className="h-6 w-6" />
                 </Link>
-                <Link href="https://www.linkedin.com/company/framefinder-co/" className="text-gray-600 hover:text-green-600" aria-label="LinkedIn">
+                <Link
+                  href="https://www.linkedin.com/company/framefinder-co/"
+                  className="text-gray-600 hover:text-green-600"
+                  aria-label="LinkedIn"
+                >
                   <Linkedin className="h-6 w-6" />
                 </Link>
               </div>
@@ -674,11 +725,15 @@ const page = () => {
               </Link>
             </nav>
           </div>
-
         </div>
         <div className="container border-t pt-6 mt-8">
           <p className="text-xs text-gray-600 text-center">
-            © {new Date().getFullYear()} Designed and Developed By <Link href={'https://www.pantharinfohub.com'} target="_blank" className="font-bold" > Panthar InfoHub </Link>.
+            © {new Date().getFullYear()} Designed and Developed By{" "}
+            <Link href={"https://www.pantharinfohub.com"} target="_blank" className="font-bold">
+              {" "}
+              Panthar InfoHub{" "}
+            </Link>
+            .
           </p>
         </div>
       </footer>
@@ -689,40 +744,42 @@ const page = () => {
     {
       id: 1,
       title: "Is there a fee to join FrameFinder?",
-      content : "No! We&apos;re currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders."
+      content:
+        "No! We&apos;re currently waiving all listing fees during our launch phase. You only pay a small commission on successful orders.",
     },
     {
       id: 2,
       title: "Do I need a GST number to sell?",
-      content : "Yes. You must have a valid GSTIN and PAN card to register as a vendor."
+      content: "Yes. You must have a valid GSTIN and PAN card to register as a vendor.",
     },
     {
       id: 3,
       title: "What kind of eyewear can I sell?",
-      content : "Spectacles, sunglasses, contact lenses, powered glasses, prescription lenses, and accessories — all are welcome!"
+      content:
+        "Spectacles, sunglasses, contact lenses, powered glasses, prescription lenses, and accessories — all are welcome!",
     },
     {
       id: 4,
       title: "Who handles shipping and returns?",
-      content : "ve partnered with courier services for delivery. You pack the product — we handle pickup and return logistics."
+      content:
+        "ve partnered with courier services for delivery. You pack the product — we handle pickup and return logistics.",
     },
     {
       id: 5,
       title: "How do I upload my products?",
-      content : "Through our vendor dashboard — upload one by one or in bulk via CSV and images."
+      content: "Through our vendor dashboard — upload one by one or in bulk via CSV and images.",
     },
     {
       id: 6,
       title: "How do I receive payments?",
-      content : "You&apos;ll receive direct bank transfers on a weekly cycle, minus the platform commission."
+      content:
+        "You&apos;ll receive direct bank transfers on a weekly cycle, minus the platform commission.",
     },
     {
       id: 7,
       title: "Can I talk to someone before joining?",
-      content : "Absolutely — book a free onboarding call with our team or message us on WhatsApp!"
+      content: "Absolutely — book a free onboarding call with our team or message us on WhatsApp!",
     },
-    
-
   ];
 };
 

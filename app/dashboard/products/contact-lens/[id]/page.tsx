@@ -11,7 +11,6 @@ import { Edit, Package, Star } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
-
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   return (
@@ -20,7 +19,6 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
     </Suspense>
   );
 };
-
 
 const ContactLensDetails = async ({ id }: { id: string }) => {
   let resp = await getContactLensById(id);
@@ -171,7 +169,7 @@ const ContactLensDetails = async ({ id }: { id: string }) => {
                         </p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-sm text-muted-foreground">Base Price</p>
+                        <p className="text-sm text-muted-foreground">Discounted Price</p>
                         <p className="font-medium">₹{variant.price?.base_price}</p>
                       </div>
                       <div className="space-y-1">

@@ -194,7 +194,7 @@ const LensSolutionDetails = async ({ id }: { id: string }) => {
                 <h4 className="font-semibold mb-3">Pricing</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">Base Price</p>
+                    <p className="text-sm text-muted-foreground">Discounted Price</p>
                     <p className="font-medium text-xl">₹{variant.price?.base_price}</p>
                   </div>
                   <div className="space-y-1">

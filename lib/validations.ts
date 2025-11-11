@@ -5,15 +5,29 @@ export type FrameVariantType = z.infer<typeof FrameVariantSchema>;
 export const FrameVariantSchema = z.object({
   frame_color: z.string().min(1, "Frame color is required"),
   temple_color: z.string().min(1, "Temple color is required"),
-  price: z.object({
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    shipping_price: z.object({
-      custom: z.boolean().default(false),
-      value: z.coerce.number().min(0).default(100),
-    }),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      shipping_price: z.object({
+        custom: z.boolean().default(false),
+        value: z.coerce.number().min(0).default(100),
+      }),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // If custom shipping is false, discounted price must be at least 100 rupees less than MRP
+        if (!data.shipping_price.custom) {
+          return data.mrp - data.base_price >= 100;
+        }
+        return true;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP when using default shipping",
+        path: ["base_price"],
+      }
+    ),
   stock: z.object({
     current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
     minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
@@ -31,6 +45,7 @@ export const FrameSchema = z.object({
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
+  is_power: z.boolean().optional().default(false),
   dimension: z.object({
     lens_width: z.coerce.number().positive("Lens width must be positive"),
     bridge_width: z.coerce.number().positive("Bridge width must be positive"),
@@ -48,15 +63,29 @@ export const SunglassVariantSchema = z.object({
   frame_color: z.string().min(1, "Frame color is required"),
   temple_color: z.string().min(1, "Temple color is required"),
   lens_color: z.string().min(1, "Lens color is required"),
-  price: z.object({
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    shipping_price: z.object({
-      custom: z.boolean().default(false),
-      value: z.coerce.number().min(0).default(100),
-    }),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      shipping_price: z.object({
+        custom: z.boolean().default(false),
+        value: z.coerce.number().min(0).default(100),
+      }),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // If custom shipping is false, discounted price must be at least 100 rupees less than MRP
+        if (!data.shipping_price.custom) {
+          return data.mrp - data.base_price >= 100;
+        }
+        return true;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP when using default shipping",
+        path: ["base_price"],
+      }
+    ),
   stock: z.object({
     current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
     minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
@@ -110,11 +139,22 @@ export const AccessorySchema = z.object({
   mfg_date: z.string().optional(),
   exp: z.string().optional(),
   origin_country: z.string().optional(),
-  price: z.object({
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    total_price: z.coerce.number().positive("Total price must be positive").optional(),
-  }),
+  price: z
+    .object({
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      total_price: z.coerce.number().positive("Total price must be positive").optional(),
+    })
+    .refine(
+      (data) => {
+        // Discounted price must be at least 100 rupees less than MRP
+        return data.mrp - data.base_price >= 100;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP",
+        path: ["base_price"],
+      }
+    ),
   stock: z
     .object({
       current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
@@ -130,15 +170,29 @@ export const ReaderVariantSchema = z.object({
   temple_color: z.string().min(1, "Temple color is required"),
   lens_color: z.string().min(1, "Lens color is required"),
   power: z.array(z.coerce.number().min(-10).max(10)).min(1, "At least one power value is required"),
-  price: z.object({
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    shipping_price: z.object({
-      custom: z.boolean().default(false),
-      value: z.coerce.number().min(0).default(100),
-    }),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      shipping_price: z.object({
+        custom: z.boolean().default(false),
+        value: z.coerce.number().min(0).default(100),
+      }),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // If custom shipping is false, discounted price must be at least 100 rupees less than MRP
+        if (!data.shipping_price.custom) {
+          return data.mrp - data.base_price >= 100;
+        }
+        return true;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP when using default shipping",
+        path: ["base_price"],
+      }
+    ),
   stock: z.object({
     current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
     minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").optional().default(5),
@@ -177,15 +231,26 @@ export const ContactLensVariantSchema = z.object({
   exp_date: z.coerce.date(),
   hsn_code: z.string().min(1, "HSN code is required"),
   pieces_per_box: z.coerce.number().min(1, "Pieces per box must be at least 1"),
-  price: z.object({
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    shipping_price: z.object({
-      custom: z.boolean().default(false),
-      value: z.coerce.number().min(0).default(0),
-    }),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      shipping_price: z.object({
+        custom: z.boolean().default(false),
+        value: z.coerce.number().min(0).default(0),
+      }),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // Discounted price must be at least 100 rupees less than MRP
+        return data.mrp - data.base_price >= 100;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP",
+        path: ["base_price"],
+      }
+    ),
   stock: z.object({
     current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
     minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").default(5),
@@ -235,15 +300,26 @@ export const ColorContactLensVariantSchema = z.object({
   hsn_code: z.string().min(1, "HSN code is required"),
   pieces_per_box: z.coerce.number().min(1, "Pieces per box must be at least 1"),
   color: z.string().min(1, "Color is required"),
-  price: z.object({
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    shipping_price: z.object({
-      custom: z.boolean().default(false),
-      value: z.coerce.number().min(0).default(100),
-    }),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      shipping_price: z.object({
+        custom: z.boolean().default(false),
+        value: z.coerce.number().min(0).default(100),
+      }),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // Discounted price must be at least 100 rupees less than MRP
+        return data.mrp - data.base_price >= 100;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP",
+        path: ["base_price"],
+      }
+    ),
   stock: z.object({
     current: z.coerce.number().min(0, "Current stock cannot be negative").default(0),
     minimum: z.coerce.number().min(0, "Minimum stock cannot be negative").default(5),
@@ -279,11 +355,22 @@ export const FrameLensPackageSchema = z.object({
   display_name: z.string().optional(),
   brand_name: z.string().optional(),
   index: z.string().min(1, "Index is required"),
-  price: z.object({
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // Discounted price must be at least 100 rupees less than MRP
+        return data.mrp - data.base_price >= 100;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP",
+        path: ["base_price"],
+      }
+    ),
   duration: z.coerce.number().positive("Duration must be positive"),
   images: z
     .array(z.object({ url: z.string() }))
@@ -302,11 +389,22 @@ export const SunglassLensPackageSchema = z.object({
   display_name: z.string().optional(),
   brand_name: z.string().optional(),
   index: z.string().min(1, "Index is required"),
-  price: z.object({
-    mrp: z.coerce.number().positive("MRP must be positive"),
-    base_price: z.coerce.number().positive("Base price must be positive"),
-    total_price: z.coerce.number().positive("Total price must be positive"),
-  }),
+  price: z
+    .object({
+      mrp: z.coerce.number().positive("MRP must be positive"),
+      base_price: z.coerce.number().positive("Discounted price must be positive"),
+      total_price: z.coerce.number().positive("Total price must be positive"),
+    })
+    .refine(
+      (data) => {
+        // Discounted price must be at least 100 rupees less than MRP
+        return data.mrp - data.base_price >= 100;
+      },
+      {
+        message: "Discounted price must be at least ₹100 less than MRP",
+        path: ["base_price"],
+      }
+    ),
   duration: z.coerce.number().positive("Duration must be positive"),
   images: z
     .array(z.object({ url: z.string() }))

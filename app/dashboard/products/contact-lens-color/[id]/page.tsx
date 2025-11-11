@@ -177,7 +177,7 @@ export default async function ColorContactLensDetailPage({
                 <h4 className="font-semibold mb-3">Pricing</h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <span className="text-sm text-muted-foreground">Base Price</span>
+                    <span className="text-sm text-muted-foreground">Discounted Price</span>
                     <p className="font-medium">₹{variant.price?.base_price || 0}</p>
                   </div>
                   <div>

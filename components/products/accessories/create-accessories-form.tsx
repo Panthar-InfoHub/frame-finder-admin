@@ -60,12 +60,27 @@ export default function AddAccessoriesForm() {
   const [customShipping, setCustomShipping] = useState<boolean>(false);
   const [shippingPrice, setShippingPrice] = useState<number>(100);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [priceError, setPriceError] = useState<string>("");
 
   // Auto calculate total price
   React.useEffect(() => {
     const shipping = customShipping ? shippingPrice : 100;
-    setTotalPrice(mrp + shipping);
-  }, [mrp, customShipping, shippingPrice]);
+    setTotalPrice(basePrice + shipping);
+  }, [basePrice, customShipping, shippingPrice]);
+
+  // Validate price difference
+  React.useEffect(() => {
+    if (basePrice > 0 && mrp > 0) {
+      const difference = mrp - basePrice;
+      if (difference < 100) {
+        setPriceError(`Price difference must be at least ₹100 (Current: ₹${difference})`);
+      } else {
+        setPriceError("");
+      }
+    } else {
+      setPriceError("");
+    }
+  }, [basePrice, mrp]);
 
   const handleImageChange = (imageUrls: string[]) => {
     setImages(imageUrls);
@@ -108,8 +123,16 @@ export default function AddAccessoriesForm() {
     const result = AccessorySchema.safeParse(completeData);
     if (!result.success) {
       console.error("Validation errors:", result.error.flatten());
-      const firstError = Object.values(result.error.flatten().fieldErrors)[0]?.[0];
-      toast.error(firstError || "Please fix the form errors");
+      const errors = result.error.flatten();
+
+      // Check for nested price validation errors
+      const priceErrors = errors.fieldErrors?.price as string[] | undefined;
+      const firstError =
+        priceErrors?.[0] ||
+        Object.values(errors.fieldErrors)[0]?.[0] ||
+        "Please fix the form errors";
+
+      toast.error(firstError);
       return;
     }
 
@@ -242,22 +265,27 @@ export default function AddAccessoriesForm() {
             <h3 className="text-lg font-semibold">Pricing</h3>
           </CardHeader>
           <CardContent className="space-y-4">
+            {priceError && (
+              <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md border border-destructive/20">
+                {priceError}
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="base_price" className="text-xs">
-                  Base Price (₹)
+                  Discounted Price (₹)
                 </Label>
                 <Input
                   id="base_price"
                   name="base_price"
                   type="number"
                   step="0.01"
-                  placeholder="Enter base price"
+                  placeholder="Enter discounted price"
                   required
                   disabled={isPending}
                   value={basePrice || ""}
                   onChange={(e) => setBasePrice(parseFloat(e.target.value) || 0)}
-                  className="mt-1"
+                  className={`mt-1 ${priceError ? "border-destructive" : ""}`}
                 />
               </div>
 
@@ -275,8 +303,14 @@ export default function AddAccessoriesForm() {
                   disabled={isPending}
                   value={mrp || ""}
                   onChange={(e) => setMrp(parseFloat(e.target.value) || 0)}
-                  className="mt-1"
+                  className={`mt-1 ${priceError ? "border-destructive" : ""}`}
                 />
+                {priceError && (
+                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                    {priceError}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -336,12 +370,8 @@ export default function AddAccessoriesForm() {
                           </div>
                           <div className="space-y-1.5 text-popover-foreground">
                             <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground">Base Price:</span>
+                              <span className="text-muted-foreground">Discounted Price:</span>
                               <span className="font-medium">₹{basePrice || 0}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground">MRP:</span>
-                              <span className="font-medium">₹{mrp || 0}</span>
                             </div>
                             <div className="flex justify-between items-center">
                               <span className="text-muted-foreground">Shipping:</span>
@@ -363,6 +393,13 @@ export default function AddAccessoriesForm() {
                                   ₹{totalPrice || 0}
                                 </span>
                               </div>
+                            </div>
+                            <div className="text-xs text-muted-foreground italic mt-2 pt-2 border-t border-border">
+                              Formula: Discounted Price + Shipping
+                            </div>
+                            <div className="flex justify-between items-center text-xs text-muted-foreground">
+                              <span>MRP (for reference):</span>
+                              <span>₹{mrp || 0}</span>
                             </div>
                           </div>
                         </div>
@@ -455,7 +492,7 @@ export default function AddAccessoriesForm() {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending || !!priceError}>
             {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Create Accessory
           </Button>

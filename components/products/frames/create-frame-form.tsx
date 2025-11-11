@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { FrameSchema, FrameVariantType } from "@/lib/validations";
 import FramesVariantManager from "@/components/products/frames/FramesVariantManager";
 import { BackButton } from "@/components/ui/back-button";
+import { Switch } from "@/components/ui/switch";
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
   const { success, failed } = await uploadFilesToCloud({
@@ -37,6 +38,7 @@ const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
 export default function AddFrameForm() {
   const genders = ["male", "female", "kids", "unisex"];
   const sizes = ["S", "M", "L", "XL"];
+  const [isPower, setIsPower] = useState(false);
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -94,6 +96,7 @@ export default function AddFrameForm() {
     const completeData = {
       ...basicData,
       dimension,
+      is_power: isPower,
       variants: variants,
     };
 
@@ -272,6 +275,16 @@ export default function AddFrameForm() {
               <div>
                 <Label htmlFor="hsnSacCode">HSN/SAC Code</Label>
                 <Input id="hsnSacCode" name="hsn_code" required placeholder="Enter HSN/SAC code" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="isPower"
+                  checked={isPower}
+                  onCheckedChange={(checked) => setIsPower(checked as boolean)}
+                />
+                <Label htmlFor="isPower" className="cursor-pointer">
+                  Power Frame (Supports Power Lenses)
+                </Label>
               </div>
             </div>
           </CardContent>

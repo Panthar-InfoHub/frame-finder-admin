@@ -306,7 +306,7 @@ const SunglassLensPackageEditForm = ({ id, initialData }: SunglassLensPackageEdi
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="base_price">Base Price (₹) *</Label>
+                <Label htmlFor="base_price">Discounted Price (₹) *</Label>
                 <Input
                   id="base_price"
                   type="number"

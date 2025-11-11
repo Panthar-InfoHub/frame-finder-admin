@@ -103,6 +103,24 @@ export default function ReadersVariantManager({
   onVariantsChange,
   uploadFunction,
 }: VariantManagerProps) {
+  const [priceErrors, setPriceErrors] = React.useState<Record<number, string>>({});
+
+  // Validate price difference for all variants
+  React.useEffect(() => {
+    const newErrors: Record<number, string> = {};
+    variants.forEach((variant, index) => {
+      const basePrice = Number(variant.price?.base_price) || 0;
+      const mrp = Number(variant.price?.mrp) || 0;
+
+      if (basePrice > 0 && mrp > 0) {
+        const difference = mrp - basePrice;
+        if (difference < 100) {
+          newErrors[index] = `Price difference must be at least ₹100 (Current: ₹${difference})`;
+        }
+      }
+    });
+    setPriceErrors(newErrors);
+  }, [variants]);
 
   const addVariant = () => {
     const newVariant: Variant = {
@@ -276,26 +294,38 @@ export default function ReadersVariantManager({
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor={`base-price-${index}`} className="text-xs">
-                      Base Price (₹)
+                    <Label htmlFor={`discounted-price-${index}`} className="text-xs">
+                      Discounted Price (₹)
                     </Label>
                     <Input
-                      id={`base-price-${index}`}
+                      id={`discounted-price-${index}`}
                       type="number"
                       value={variant.price.base_price || ""}
                       onChange={(e) => {
                         const basePrice = parseFloat(e.target.value) || 0;
-                        updateVariant(index, "price", {
+                        const shippingValue = variant.price.shipping_price.custom
+                          ? variant.price.shipping_price.value
+                          : 100;
+                        const newPrice = {
                           ...variant.price,
                           base_price: basePrice,
-                        });
+                        };
+                        // Auto calculate total price
+                        newPrice.total_price = basePrice + shippingValue;
+                        updateVariant(index, "price", newPrice);
                       }}
-                      placeholder="Enter base price"
+                      placeholder="Enter discounted price"
                       required
                       min="0"
                       step="0.01"
-                      className="mt-1"
+                      className={`mt-1 ${priceErrors[index] ? "border-destructive" : ""}`}
                     />
+                    {priceErrors[index] && (
+                      <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                        <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                        {priceErrors[index]}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -308,23 +338,24 @@ export default function ReadersVariantManager({
                       value={variant.price.mrp || ""}
                       onChange={(e) => {
                         const mrp = parseFloat(e.target.value) || 0;
-                        const shippingValue = variant.price.shipping_price.custom
-                          ? variant.price.shipping_price.value
-                          : 100;
                         const newPrice = {
                           ...variant.price,
                           mrp,
                         };
-                        // Auto calculate total price
-                        newPrice.total_price = mrp + shippingValue;
                         updateVariant(index, "price", newPrice);
                       }}
                       placeholder="Enter MRP"
                       required
                       min="0"
                       step="0.01"
-                      className="mt-1"
+                      className={`mt-1 ${priceErrors[index] ? "border-destructive" : ""}`}
                     />
+                    {priceErrors[index] && (
+                      <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                        <span className="inline-block w-1 h-1 rounded-full bg-destructive"></span>
+                        {priceErrors[index]}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -354,7 +385,7 @@ export default function ReadersVariantManager({
                             const shippingValue = checked
                               ? variant.price.shipping_price.value
                               : 100;
-                            newPrice.total_price = variant.price.mrp + shippingValue;
+                            newPrice.total_price = variant.price.base_price + shippingValue;
                             updateVariant(index, "price", newPrice);
                           }}
                         />
@@ -379,7 +410,7 @@ export default function ReadersVariantManager({
                             },
                           };
                           // Auto calculate total price
-                          newPrice.total_price = newPrice.mrp + shippingValue;
+                          newPrice.total_price = newPrice.base_price + shippingValue;
                           updateVariant(index, "price", newPrice);
                         }
                       }}
@@ -391,10 +422,11 @@ export default function ReadersVariantManager({
                       min="0"
                       step="0.01"
                       disabled={!variant.price.shipping_price.custom}
-                      className={`mt-1 ${!variant.price.shipping_price.custom
-                        ? "bg-muted text-muted-foreground cursor-not-allowed"
-                        : ""
-                        }`}
+                      className={`mt-1 ${
+                        !variant.price.shipping_price.custom
+                          ? "bg-muted text-muted-foreground cursor-not-allowed"
+                          : ""
+                      }`}
                     />
                   </div>
 
@@ -419,14 +451,10 @@ export default function ReadersVariantManager({
                               </div>
                               <div className="space-y-1.5 text-popover-foreground">
                                 <div className="flex justify-between items-center">
-                                  <span className="text-muted-foreground">Base Price:</span>
+                                  <span className="text-muted-foreground">Discounted Price:</span>
                                   <span className="font-medium">
                                     ₹{variant.price.base_price || 0}
                                   </span>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                  <span className="text-muted-foreground">MRP:</span>
-                                  <span className="font-medium">₹{variant.price.mrp || 0}</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                   <span className="text-muted-foreground">Shipping:</span>
@@ -451,6 +479,13 @@ export default function ReadersVariantManager({
                                       ₹{variant.price.total_price || 0}
                                     </span>
                                   </div>
+                                </div>
+                                <div className="text-xs text-muted-foreground italic mt-2 pt-2 border-t border-border">
+                                  Formula: Discounted Price + Shipping
+                                </div>
+                                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                                  <span>MRP (for reference):</span>
+                                  <span>₹{variant.price.mrp || 0}</span>
                                 </div>
                               </div>
                             </div>
