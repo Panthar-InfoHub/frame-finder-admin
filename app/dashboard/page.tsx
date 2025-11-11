@@ -72,15 +72,15 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-8 pb-8">
       {/* Modern Page Header */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 via-primary/10 to-background border border-border/50">
-        <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,transparent,black)]" />
+      <div className="relative overflow-hidden rounded-xl bg-linear-to-br from-primary/5 via-primary/10 to-background border border-border/50">
+        <div className="absolute inset-0 bg-grid-white/5 mask-[linear-gradient(0deg,transparent,black)]" />
         <BusinessHeader resp={resp?.data} />
       </div>
 
       {/* Stats Overview - Moved Up */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="relative overflow-hidden border-border/50 hover:shadow-lg transition-all duration-300">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-blue-500/10 to-transparent rounded-full -mr-16 -mt-16" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">All Time Sales</CardTitle>
             <div className="p-2 bg-blue-500/10 rounded-lg">
@@ -99,7 +99,7 @@ export default async function AdminDashboard() {
         </Card>
 
         <Card className="relative overflow-hidden border-border/50 hover:shadow-lg transition-all duration-300">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-purple-500/10 to-transparent rounded-full -mr-16 -mt-16" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
             <div className="p-2 bg-purple-500/10 rounded-lg">
@@ -118,7 +118,7 @@ export default async function AdminDashboard() {
         </Card>
 
         <Card className="relative overflow-hidden border-border/50 hover:shadow-lg transition-all duration-300">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-500/10 to-transparent rounded-full -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-amber-500/10 to-transparent rounded-full -mr-16 -mt-16" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
             <div className="p-2 bg-amber-500/10 rounded-lg">
@@ -146,7 +146,7 @@ export default async function AdminDashboard() {
         </Card>
 
         <Card className="relative overflow-hidden border-border/50 hover:shadow-lg transition-all duration-300">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-full -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-emerald-500/10 to-transparent rounded-full -mr-16 -mt-16" />
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Items Sold</CardTitle>
             <div className="p-2 bg-emerald-500/10 rounded-lg">
@@ -201,7 +201,7 @@ export default async function AdminDashboard() {
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
             ))}
           </div>

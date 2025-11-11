@@ -428,10 +428,6 @@ export default function EditLensSolutionForm({ lensSolution }: EditLensSolutionF
                                   <span className="font-medium">₹{variant.price.base_price}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-foreground">MRP:</span>
-                                  <span className="font-medium">₹{variant.price.mrp}</span>
-                                </div>
-                                <div className="flex justify-between">
                                   <span className="text-foreground">Shipping:</span>
                                   <span className="font-medium">
                                     ₹
@@ -447,6 +443,13 @@ export default function EditLensSolutionForm({ lensSolution }: EditLensSolutionF
                                       ₹{variant.price.total_price}
                                     </span>
                                   </div>
+                                </div>
+                                <div className="text-xs text-muted-foreground italic mt-1 pt-1.5 border-t">
+                                  Formula: Discounted Price + Shipping
+                                </div>
+                                <div className="flex justify-between text-xs text-muted-foreground">
+                                  <span>MRP (for reference):</span>
+                                  <span>₹{variant.price.mrp}</span>
                                 </div>
                               </div>
                             </div>

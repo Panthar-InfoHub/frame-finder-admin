@@ -358,8 +358,12 @@ export default function ColorContactLensVariantManager({
                           <span>Total Price:</span>
                           <span>₹{variant.price.total_price.toFixed(2)}</span>
                         </div>
+                        <div className="text-xs text-muted-foreground italic mt-1">
+                          Formula: Discounted Price + Shipping
+                        </div>
+                        <Separator className="my-1" />
                         <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>MRP:</span>
+                          <span>MRP (for reference):</span>
                           <span>₹{variant.price.mrp.toFixed(2)}</span>
                         </div>
                       </div>

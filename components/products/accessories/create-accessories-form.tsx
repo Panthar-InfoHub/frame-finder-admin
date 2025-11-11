@@ -370,10 +370,6 @@ export default function AddAccessoriesForm() {
                               <span className="font-medium">₹{basePrice || 0}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                              <span className="text-muted-foreground">MRP:</span>
-                              <span className="font-medium">₹{mrp || 0}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
                               <span className="text-muted-foreground">Shipping:</span>
                               <span className="font-medium">
                                 ₹{customShipping ? shippingPrice : 100}
@@ -393,6 +389,13 @@ export default function AddAccessoriesForm() {
                                   ₹{totalPrice || 0}
                                 </span>
                               </div>
+                            </div>
+                            <div className="text-xs text-muted-foreground italic mt-2 pt-2 border-t border-border">
+                              Formula: Discounted Price + Shipping
+                            </div>
+                            <div className="flex justify-between items-center text-xs text-muted-foreground">
+                              <span>MRP (for reference):</span>
+                              <span>₹{mrp || 0}</span>
                             </div>
                           </div>
                         </div>

@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 const AdminRoutes = ["/dashboard"];
 const AuthRoutes = ["/login", "/register", "/login-vendor", "/register-vendor"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   const isLoggedIn = !!token;
   const isAuthRoute = AuthRoutes.includes(request.nextUrl.pathname);

@@ -12,13 +12,20 @@ export default async function BusinessHeader({ resp }: { resp: any }) {
         {/* Business Info */}
         <div className="flex items-start gap-4">
           <div className="relative">
-            <div className="w-16 h-16 bg-gradient-to-br overflow-hidden from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
-              <Image src={logo} alt="Logo" width={100} height={100} className="w-full h-full object-cover" />
+            <div className="w-16 h-16 bg-linear-to-br overflow-hidden from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
+              <Image
+                src={logo}
+                alt="Logo"
+                width={100}
+                height={100}
+                className="w-full h-full object-cover"
+              />
               <Building2 className="w-8 h-8 text-primary-foreground" />
             </div>
             <div
-              className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-background flex items-center justify-center ${resp.isActive ? "bg-green-500" : "bg-red-500"
-                }`}
+              className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-background flex items-center justify-center ${
+                resp.isActive ? "bg-green-500" : "bg-red-500"
+              }`}
             >
               {resp.isActive ? (
                 <CheckCircle className="w-3 h-3 text-white" />
@@ -46,15 +53,15 @@ export default async function BusinessHeader({ resp }: { resp: any }) {
         {/* Quick Contact Info */}
         <div className="flex flex-col gap-2 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <Mail className="w-4 h-4 flex-shrink-0" />
+            <Mail className="w-4 h-4 shrink-0" />
             <span className="truncate max-w-[200px]">{resp.email}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <Phone className="w-4 h-4 flex-shrink-0" />
+            <Phone className="w-4 h-4 shrink-0" />
             <span>{resp.phone}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-            <MapPin className="w-4 h-4 flex-shrink-0" />
+            <MapPin className="w-4 h-4 shrink-0" />
             <span className="truncate max-w-[200px]">
               {resp.address.city}, {resp.address.state}
             </span>
