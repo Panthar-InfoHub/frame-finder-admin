@@ -388,8 +388,8 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      [...options.shape, ...formData.shape].map((shape) => (
-                        <MultiSelectItem key={shape} value={shape}>
+                      [...options.shape, ...formData.shape].map((shape,i) => (
+                        <MultiSelectItem key={`shape-${i}`} value={shape}>
                           {shape}
                         </MultiSelectItem>
                       ))}
@@ -542,6 +542,7 @@ export default function EditSunglassForm({ sunglassId }: EditSunglassFormProps) 
           variants={variants}
           onVariantsChange={setVariants}
           uploadFunction={ImageUploadFunction}
+          isCreate={false}
         />
 
         <div className="flex justify-end mt-6">

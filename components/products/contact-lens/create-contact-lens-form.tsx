@@ -240,6 +240,7 @@ export default function CreateContactLensForm() {
               variants={variants}
               onVariantsChange={setVariants}
               uploadFunction={ImageUploadFunction}
+              isCreate
             />
           </CardContent>
         </Card>

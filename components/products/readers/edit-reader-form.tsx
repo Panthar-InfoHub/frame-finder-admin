@@ -288,8 +288,8 @@ export default function EditReaderForm({ readerId }: EditReaderFormProps) {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      options?.shape?.map((shape) => (
-                        <MultiSelectItem key={shape} value={shape}>
+                      options?.shape?.map((shape, i) => (
+                        <MultiSelectItem key={`shape-${i}`} value={shape}>
                           {shape}
                         </MultiSelectItem>
                       ))}
@@ -434,6 +434,7 @@ export default function EditReaderForm({ readerId }: EditReaderFormProps) {
           variants={variants}
           onVariantsChange={setVariants}
           uploadFunction={ImageUploadFunction}
+          isCreate={false}
         />
 
         {/* Submit Button */}

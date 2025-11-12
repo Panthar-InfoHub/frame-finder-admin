@@ -260,6 +260,7 @@ export default function EditColorContactLensForm({
               variants={variants}
               onVariantsChange={setVariants}
               uploadFunction={ImageUploadFunction}
+              isCreate={false}
             />
           </CardContent>
         </Card>

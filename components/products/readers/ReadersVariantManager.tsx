@@ -96,12 +96,14 @@ interface VariantManagerProps {
   variants: Variant[];
   onVariantsChange: (variants: Variant[]) => void;
   uploadFunction: (files: File[]) => Promise<string[]>;
+  isCreate?: boolean;
 }
 
 export default function ReadersVariantManager({
   variants,
   onVariantsChange,
   uploadFunction,
+  isCreate = true,
 }: VariantManagerProps) {
   const [priceErrors, setPriceErrors] = React.useState<Record<number, string>>({});
 
@@ -422,11 +424,10 @@ export default function ReadersVariantManager({
                       min="0"
                       step="0.01"
                       disabled={!variant.price.shipping_price.custom}
-                      className={`mt-1 ${
-                        !variant.price.shipping_price.custom
+                      className={`mt-1 ${!variant.price.shipping_price.custom
                           ? "bg-muted text-muted-foreground cursor-not-allowed"
                           : ""
-                      }`}
+                        }`}
                     />
                   </div>
 
@@ -506,7 +507,7 @@ export default function ReadersVariantManager({
               </div>
 
               {/* Stock Management */}
-              {/* <div className="space-y-4">
+              {isCreate && <div className="space-y-4">
                 <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
                   Stock Management
                 </h4>
@@ -552,7 +553,7 @@ export default function ReadersVariantManager({
                     />
                   </div>
                 </div>
-              </div> */}
+              </div>}
 
               {/* Images Section */}
               <div className="space-y-4">

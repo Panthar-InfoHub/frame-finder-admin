@@ -226,8 +226,8 @@ export default function AddFrameForm() {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      options?.shape?.map((shape) => (
-                        <MultiSelectItem key={shape} value={shape}>
+                      options?.shape?.map((shape ,i) => (
+                        <MultiSelectItem key={`-${i}`} value={shape}>
                           {shape}
                         </MultiSelectItem>
                       ))}
@@ -361,6 +361,7 @@ export default function AddFrameForm() {
           variants={variants}
           onVariantsChange={setVariants}
           uploadFunction={ImageUploadFunction}
+          isCreate
         />
 
         <div className="flex justify-end mt-6">

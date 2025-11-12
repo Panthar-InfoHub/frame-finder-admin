@@ -26,6 +26,7 @@ interface ContactLensVariantManagerProps {
   variants: ContactLensVariantType[];
   onVariantsChange: (variants: ContactLensVariantType[]) => void;
   uploadFunction: (files: File[]) => Promise<string[]>;
+  isCreate?: boolean;
 }
 
 export default function ContactLensVariantManager({
@@ -33,6 +34,7 @@ export default function ContactLensVariantManager({
   variants,
   onVariantsChange,
   uploadFunction,
+  isCreate = false,
 }: ContactLensVariantManagerProps) {
   const [openIndexes, setOpenIndexes] = useState<number[]>([0]);
   const [priceErrors, setPriceErrors] = useState<Record<number, string>>({});
@@ -432,37 +434,39 @@ export default function ContactLensVariantManager({
 
                   <Separator />
 
-                  {/* Stock Section */}
-                  {/* <div className="space-y-4">
-                    <h4 className="font-semibold">Stock</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor={`current-stock-${index}`}>Current Stock</Label>
-                        <Input
-                          id={`current-stock-${index}`}
-                          type="number"
-                          value={variant.stock.current}
-                          onChange={(e) =>
-                            updateNestedField(index, ["stock", "current"], Number(e.target.value))
-                          }
-                          placeholder="Enter current stock"
-                        />
-                      </div>
+                  {/* Stock Section (only on create forms) */}
+                  {isCreate && (
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">Stock</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor={`current-stock-${index}`}>Current Stock</Label>
+                          <Input
+                            id={`current-stock-${index}`}
+                            type="number"
+                            value={variant.stock.current}
+                            onChange={(e) =>
+                              updateNestedField(index, ["stock", "current"], Number(e.target.value))
+                            }
+                            placeholder="Enter current stock"
+                          />
+                        </div>
 
-                      <div>
-                        <Label htmlFor={`minimum-stock-${index}`}>Minimum Stock</Label>
-                        <Input
-                          id={`minimum-stock-${index}`}
-                          type="number"
-                          value={variant.stock.minimum}
-                          onChange={(e) =>
-                            updateNestedField(index, ["stock", "minimum"], Number(e.target.value))
-                          }
-                          placeholder="Enter minimum stock"
-                        />
+                        <div>
+                          <Label htmlFor={`minimum-stock-${index}`}>Minimum Stock</Label>
+                          <Input
+                            id={`minimum-stock-${index}`}
+                            type="number"
+                            value={variant.stock.minimum}
+                            onChange={(e) =>
+                              updateNestedField(index, ["stock", "minimum"], Number(e.target.value))
+                            }
+                            placeholder="Enter minimum stock"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div> */}
+                  )}
 
                   <Separator />
 

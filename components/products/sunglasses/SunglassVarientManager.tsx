@@ -36,12 +36,14 @@ interface SunglassVariantManagerProps {
   variants: SunglassVariant[];
   onVariantsChange: (variants: SunglassVariant[]) => void;
   uploadFunction: (files: File[]) => Promise<string[]>;
+  isCreate?: boolean;
 }
 
 export default function SunglassVariantManager({
   variants,
   onVariantsChange,
   uploadFunction,
+  isCreate = false,
 }: SunglassVariantManagerProps) {
   const [priceErrors, setPriceErrors] = React.useState<Record<number, string>>({});
 
@@ -377,49 +379,51 @@ export default function SunglassVariantManager({
               </div>
             </div>
 
-            {/* Stock Management */}
-            {/* <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <div className="h-5 w-1 bg-orange-500 rounded-full"></div>
-                <Label className="text-base font-semibold text-foreground">Stock Management</Label>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor={`current-stock-${index}`} className="text-xs">
-                    Current Stock
-                  </Label>
-                  <Input
-                    id={`current-stock-${index}`}
-                    type="number"
-                    value={variant.stock.current || ""}
-                    onChange={(e) => {
-                      const stock = { ...variant.stock, current: parseInt(e.target.value) || 0 };
-                      updateVariant(index, "stock", stock);
-                    }}
-                    placeholder="Enter current stock"
-                    min="0"
-                    className="mt-1"
-                  />
+            {/* Stock Management (only shown on create forms) */}
+            {isCreate && (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <div className="h-5 w-1 bg-orange-500 rounded-full"></div>
+                  <Label className="text-base font-semibold text-foreground">Stock Management</Label>
                 </div>
-                <div>
-                  <Label htmlFor={`minimum-stock-${index}`} className="text-xs">
-                    Minimum Stock
-                  </Label>
-                  <Input
-                    id={`minimum-stock-${index}`}
-                    type="number"
-                    value={variant.stock.minimum || ""}
-                    onChange={(e) => {
-                      const stock = { ...variant.stock, minimum: parseInt(e.target.value) || 5 };
-                      updateVariant(index, "stock", stock);
-                    }}
-                    placeholder="Enter minimum stock"
-                    min="0"
-                    className="mt-1"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor={`current-stock-${index}`} className="text-xs">
+                      Current Stock
+                    </Label>
+                    <Input
+                      id={`current-stock-${index}`}
+                      type="number"
+                      value={variant.stock.current || ""}
+                      onChange={(e) => {
+                        const stock = { ...variant.stock, current: parseInt(e.target.value) || 0 };
+                        updateVariant(index, "stock", stock);
+                      }}
+                      placeholder="Enter current stock"
+                      min="0"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor={`minimum-stock-${index}`} className="text-xs">
+                      Minimum Stock
+                    </Label>
+                    <Input
+                      id={`minimum-stock-${index}`}
+                      type="number"
+                      value={variant.stock.minimum || ""}
+                      onChange={(e) => {
+                        const stock = { ...variant.stock, minimum: parseInt(e.target.value) || 5 };
+                        updateVariant(index, "stock", stock);
+                      }}
+                      placeholder="Enter minimum stock"
+                      min="0"
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
               </div>
-            </div> */}
+            )}
 
             {/* Images */}
             <div>

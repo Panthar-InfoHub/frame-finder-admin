@@ -529,6 +529,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
           variants={variants}
           onVariantsChange={setVariants}
           uploadFunction={ImageUploadFunction}
+          isCreate={false}
         />
 
         <div className="flex justify-end mt-6">

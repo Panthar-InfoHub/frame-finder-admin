@@ -217,8 +217,8 @@ export default function AddReaderForm() {
                   </MultiSelectTrigger>
                   <MultiSelectContent search={false}>
                     {options?.shape?.length > 0 &&
-                      options?.shape?.map((shape) => (
-                        <MultiSelectItem key={shape} value={shape}>
+                      options?.shape?.map((shape, i) => (
+                        <MultiSelectItem key={`shape-${i}`} value={shape}>
                           {shape}
                         </MultiSelectItem>
                       ))}

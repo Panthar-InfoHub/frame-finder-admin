@@ -35,12 +35,14 @@ interface VariantManagerProps {
   variants: Variant[];
   onVariantsChange: (variants: Variant[]) => void;
   uploadFunction: (files: File[]) => Promise<string[]>;
+  isCreate?: boolean;
 }
 
 export default function FramesVariantManager({
   variants,
   onVariantsChange,
   uploadFunction,
+  isCreate = true,
 }: VariantManagerProps) {
   const [priceErrors, setPriceErrors] = React.useState<Record<number, string>>({});
 
@@ -286,11 +288,10 @@ export default function FramesVariantManager({
                       min="0"
                       step="0.01"
                       disabled={!variant.price.shipping_price.custom}
-                      className={`mt-1 ${
-                        !variant.price.shipping_price.custom
-                          ? "bg-muted text-muted-foreground cursor-not-allowed"
-                          : ""
-                      }`}
+                      className={`mt-1 ${!variant.price.shipping_price.custom
+                        ? "bg-muted text-muted-foreground cursor-not-allowed"
+                        : ""
+                        }`}
                     />
                   </div>
                 </div>
@@ -371,7 +372,7 @@ export default function FramesVariantManager({
             </div>
 
             {/* Stock Management */}
-            {/* <div className="space-y-4">
+            {isCreate && <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="h-5 w-1 bg-orange-500 rounded-full"></div>
                 <Label className="text-base font-semibold text-foreground">Stock Management</Label>
@@ -412,7 +413,7 @@ export default function FramesVariantManager({
                   />
                 </div>
               </div>
-            </div> */}
+            </div>}
 
             {/* Images */}
             <div>
