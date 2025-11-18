@@ -4,38 +4,16 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen grid lg:grid-cols-2">
-      {/* Left side with illustration (hidden on mobile) */}
-      <div className="relative hidden lg:flex flex-col items-center justify-center p-8 bg-[#B5CCBE] text-white">
-        <div className="max-w-md mx-auto text-center space-y-6">
-          <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E5%89%8D%E9%9D%A2%204.%20Lovebirds%20Website%20Login%20Design.jpg-1paoL13xn74ze0DJ424BHsfCXvnvkO.jpeg"
-            alt="Decorative bird illustration"
-            width={300}
-            height={300}
-            className="mx-auto"
-          />
-          <h2 className="text-2xl font-medium">Maecenas mattis egestas</h2>
-          <p className="text-sm text-white/80">
-            Eidum et malesuada fames ac ante ipsum primis in faucibus suspendisse porta
-          </p>
-
-          {/* Dots navigation */}
-          <div className="flex justify-center gap-2 pt-4">
-            <div className="w-2 h-2 rounded-full bg-white"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40"></div>
-            <div className="w-2 h-2 rounded-full bg-white/40"></div>
-          </div>
-        </div>
+    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 relative">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+          <source src="/elegant-glasses-background-video.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-white/20" />
       </div>
-
-      {/* Right side */}
-      <div className=" h-screen overflow-hidden flex p-8">
-        {/* Scrollable container */}
-        <div className="flex-1 overflow-y-auto h-full items-center flex flex-col justify-center">
-          {children}
-        </div>
+      <div className="flex w-full max-w-sm flex-col gap-6 z-50">
+        {children}
       </div>
     </div>
   );

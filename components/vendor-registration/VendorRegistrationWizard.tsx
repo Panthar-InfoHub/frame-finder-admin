@@ -67,49 +67,47 @@ export default function VendorRegistrationWizard() {
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Vendor Registration</CardTitle>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>
-                Step {currentStep + 1} of {steps.length}
-              </span>
-              <span>{Math.round(progress)}% Complete</span>
-            </div>
-            <Progress value={progress} className="h-2" />
-            <div className="text-center">
-              <h3 className="font-semibold">{steps[currentStep].title}</h3>
-              <p className="text-sm text-muted-foreground">{steps[currentStep].description}</p>
-            </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">Vendor Registration</CardTitle>
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>
+              Step {currentStep + 1} of {steps.length}
+            </span>
+            <span>{Math.round(progress)}% Complete</span>
           </div>
-        </CardHeader>
-        <CardContent>
-          {currentStep === 0 && (
-            <PersonalDetailsStep
-              onComplete={handlePersonalDetailsComplete}
-              initialData={registrationData.personalDetails}
-            />
-          )}
-          {currentStep === 1 && (
-            <BusinessDetailsStep
-              onComplete={handleBusinessDetailsComplete}
-              onBack={handleGoBack}
-              initialData={registrationData.businessDetails}
-              phoneNumber={registrationData.personalDetails?.phone || ""}
-            />
-          )}
-          {currentStep === 2 && (
-            <BankDetailsStep
-              onComplete={handleBankDetailsComplete}
-              onBack={handleGoBack}
-              initialData={registrationData.bankDetails}
-              registrationData={registrationData}
-            />
-          )}
-        </CardContent>
-      </Card>
-    </div>
+          <Progress value={progress} className="h-2" />
+          <div className="text-center">
+            <h3 className="font-semibold">{steps[currentStep].title}</h3>
+            <p className="text-sm text-muted-foreground">{steps[currentStep].description}</p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {currentStep === 0 && (
+          <PersonalDetailsStep
+            onComplete={handlePersonalDetailsComplete}
+            initialData={registrationData.personalDetails}
+          />
+        )}
+        {currentStep === 1 && (
+          <BusinessDetailsStep
+            onComplete={handleBusinessDetailsComplete}
+            onBack={handleGoBack}
+            initialData={registrationData.businessDetails}
+            phoneNumber={registrationData.personalDetails?.phone || ""}
+          />
+        )}
+        {currentStep === 2 && (
+          <BankDetailsStep
+            onComplete={handleBankDetailsComplete}
+            onBack={handleGoBack}
+            initialData={registrationData.bankDetails}
+            registrationData={registrationData}
+          />
+        )}
+      </CardContent>
+    </Card>
   );
 }

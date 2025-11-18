@@ -1,12 +1,17 @@
 import VendorRegistrationWizard from "@/components/vendor-registration/VendorRegistrationWizard";
+import { GalleryVerticalEnd } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="w-full overflow-auto py-4 px-1 h-full ">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-script mb-6">Frame Finder</h1>
-        <h2 className="text-xl text-gray-600">Vendor Registration</h2>
-        <p className="text-sm text-gray-500 mt-2">Join our platform and grow your business</p>
+    <div className="max-w-md space-y-8">
+      <div className="text-center mb-8 flex flex-col items-center gap-4">
+        <Link href="/" className="flex items-center gap-2 self-center font-medium">
+          <div className="bg-emerald-600 text-white font-bold flex w-8 h-8 p-2 items-center justify-center rounded-md">
+            <GalleryVerticalEnd className="size-6" />
+          </div>
+          Frame Finder.co
+        </Link>
       </div>
       <VendorRegistrationWizard />
     </div>

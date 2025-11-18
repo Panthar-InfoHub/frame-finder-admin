@@ -1,19 +1,20 @@
 import { getSession } from "@/actions/session";
 import LogoutButton from "@/components/dashboard/LogoutButton";
-import Link from "next/link";
-import React, { Suspense } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Lenis from "lenis";
 import {
   ArrowRight,
   AtSign,
   CheckCircle,
   CodeXml,
-  CreditCard,
   Eye,
-  Globe,
   Heart,
   IndianRupee,
   Instagram,
@@ -21,70 +22,67 @@ import {
   MapPin,
   Package,
   Settings,
-  Shield,
   Smartphone,
   Store,
-  TrendingUp,
-  User,
-  Zap,
+  TrendingUp
 } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import Image from "next/image";
+import Link from "next/link";
 
 const page = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="  px-4 lg:px-6 h-16 flex items-center border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60 sticky top-0 z-50">
+      <header className="  px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60 sticky top-0 z-50">
         <Link href="/" className="flex items-center justify-center gap-3">
           <div className="bg-green-600 px-3 py-2 rounded-md">
             <span className="text-white font-bold text-lg">FrameFinder</span>
           </div>
           <span className="text-sm text-gray-600 font-medium p-1">An eyewear hub</span>
         </Link>
-        <Link
-          href="/login-vendor"
-          className="inline-block bg-green-600 ml-180 px-3 py-2 rounded-md text-white font-bold text-lg"
-        >
-          login
-        </Link>
-        <nav className="ml-auto hidden sm:flex gap-4 sm:gap-6">
+        <div className="flex-1 flex items-center justify-end gap-4" >
+
           <Link
-            href="#about"
-            className="text-sm font-medium hover:text-green-600 transition-colors"
+            href="/login-vendor"
+            className="bg-green-600 px-3 py-2 rounded-md text-white font-bold capitalize"
           >
-            About
+            login
           </Link>
-          <Link
-            href="#mission"
-            className="text-sm font-medium hover:text-green-600 transition-colors"
-          >
-            Mission
-          </Link>
-          <Link
-            href="#features"
-            className="text-sm font-medium hover:text-green-600 transition-colors"
-          >
-            Features
-          </Link>
-          <Link
-            href="#how-it-works"
-            className="text-sm font-medium hover:text-green-600 transition-colors"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm font-medium hover:text-green-600 transition-colors"
-          >
-            Contact
-          </Link>
-        </nav>
+
+          <nav className=" hidden sm:flex gap-4 sm:gap-6">
+
+            <Link
+              href="#about"
+              className="text-sm font-medium hover:text-green-600 transition-colors"
+            >
+              About
+            </Link>
+            <Link
+              href="#mission"
+              className="text-sm font-medium hover:text-green-600 transition-colors"
+            >
+              Mission
+            </Link>
+            <Link
+              href="#features"
+              className="text-sm font-medium hover:text-green-600 transition-colors"
+            >
+              Features
+            </Link>
+            <Link
+              href="#how-it-works"
+              className="text-sm font-medium hover:text-green-600 transition-colors"
+            >
+              How It Works
+            </Link>
+            <Link
+              href="#contact"
+              className="text-sm font-medium hover:text-green-600 transition-colors"
+            >
+              Contact
+            </Link>
+          </nav>
+        </div>
       </header>
 
       <main className="flex-1">
@@ -110,8 +108,8 @@ const page = () => {
                     </p>
                   </div>
                   <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                    <Button size="lg" className="bg-green-600 hover:bg-green-700">
-                      <Link href="/onboarding">Join as Vendor</Link>
+                    <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
+                      <Link href="/login-vendor">Join as Vendor</Link>
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="lg" className="text-black">
