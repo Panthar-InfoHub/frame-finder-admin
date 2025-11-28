@@ -10,11 +10,12 @@ import {
   VendorCompleteRegistrationSchema,
 } from "@/lib/validations";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ArrowLeft, CreditCard, CheckCircle2 } from "lucide-react";
+import { Loader2, ArrowLeft, CreditCard, CheckCircle2, Tags } from "lucide-react";
 import { toast } from "sonner";
 import { RegistrationData } from "./VendorRegistrationWizard";
 import { useRouter } from "next/navigation";
 import { completeVendorRegistration } from "@/actions/vendors/complete-registration";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface BankDetailsStepProps {
   onComplete: (data: VendorBankDetailsType) => void;
@@ -22,6 +23,18 @@ interface BankDetailsStepProps {
   initialData: VendorBankDetailsType | null;
   registrationData: RegistrationData;
 }
+
+const CategoryOptions = [
+  { value: "LensPackage", label: "Frames & Powered Lens" },
+  { value: "Product", label: "Only Frames" },
+  { value: "Reader", label: "Reader Glasses" },
+  { value: "ColorContactLens", label: "Color Contact Lens" },
+  { value: "ContactLens", label: "Contact Lens" },
+  { value: "Sunglasses", label: "Sunglasses" },
+  { value: "SunglassLensPackage", label: "Powered Sunglasses" },
+  { value: "LensSolution", label: "Lens Solution" },
+  { value: "Accessories", label: "Accessories" },
+];
 
 export default function BankDetailsStep({
   onComplete,
@@ -37,6 +50,7 @@ export default function BankDetailsStep({
       account_number: initialData?.bank_details?.account_number || "",
       ifsc_code: initialData?.bank_details?.ifsc_code || "",
     },
+    categories: registrationData.businessDetails?.categories || [],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -53,6 +67,20 @@ export default function BankDetailsStep({
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+
+  const handleCategoryChange = (categoryValue: string) => {
+    setFormData((prev) => {
+      const categories = prev.categories.includes(categoryValue)
+        ? prev.categories.filter((item: string) => item !== categoryValue)
+        : [...prev.categories, categoryValue];
+      return { ...prev, categories };
+    });
+
+    // Clear error when user selects a category
+    if (errors["categories"]) {
+      setErrors((prev) => ({ ...prev, categories: "" }));
     }
   };
 
@@ -77,6 +105,7 @@ export default function BankDetailsStep({
       ...registrationData.personalDetails,
       ...registrationData.businessDetails,
       ...bankResult.data,
+      categories: formData.categories,
     };
 
     // Validate complete data
@@ -199,6 +228,59 @@ export default function BankDetailsStep({
                 <li>• Ensure all bank details are accurate for seamless transactions</li>
                 <li>• Account holder name should match your business registration</li>
                 <li>• IFSC code should be valid for your bank branch</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Categories Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Tags className="h-5 w-5" />
+              Product Categories
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Select the categories of products you will be selling
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="categories">Choose Categories *</Label>
+              <div className="flex flex-wrap gap-3">
+                {CategoryOptions.map((category) => {
+                  const isChecked = formData.categories.includes(category.value);
+                  return (
+                    <Label
+                      key={category.value}
+                      htmlFor={category.value}
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${isChecked
+                        ? "border-primary bg-primary/10"
+                        : "border-gray-200 hover:border-gray-300 bg-white"
+                        }`}
+                    >
+                      <Checkbox
+                        id={category.value}
+                        checked={isChecked}
+                        onCheckedChange={() => handleCategoryChange(category.value)}
+                      />
+                      <span className="font-medium text-muted-foreground">
+                        {category.label}
+                      </span>
+                    </Label>
+                  );
+                })}
+              </div>
+              {errors["categories"] && (
+                <p className="text-sm text-red-500">{errors["categories"]}</p>
+              )}
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-medium text-blue-900 mb-2">Category Guidelines</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Select all categories that apply to your business</li>
+                <li>• You can update these categories later from your profile</li>
               </ul>
             </div>
           </CardContent>

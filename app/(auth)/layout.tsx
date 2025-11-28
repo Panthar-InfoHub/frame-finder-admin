@@ -12,7 +12,7 @@ export default function AuthLayout({
         </video>
         <div className="absolute inset-0 bg-white/20" />
       </div>
-      <div className="flex w-full max-w-sm flex-col gap-6 z-50">
+      <div className="flex w-full flex-col gap-6 z-50 justify-center items-center">
         {children}
       </div>
     </div>

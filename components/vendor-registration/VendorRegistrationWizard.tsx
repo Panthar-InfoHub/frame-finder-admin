@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import PersonalDetailsStep from "./PersonalDetailsStep";
-import BusinessDetailsStep from "./BusinessDetailsStep";
-import BankDetailsStep from "./BankDetailsStep";
 import {
-  VendorPersonalDetailsType,
-  VendorBusinessDetailsType,
   VendorBankDetailsType,
+  VendorBusinessDetailsType,
+  VendorPersonalDetailsType,
 } from "@/lib/validations";
+import { useState } from "react";
+import BankDetailsStep from "./BankDetailsStep";
+import BusinessDetailsStep from "./BusinessDetailsStep";
+import PersonalDetailsStep from "./PersonalDetailsStep";
 
 export interface RegistrationData {
   personalDetails: VendorPersonalDetailsType | null;
