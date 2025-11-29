@@ -14,7 +14,7 @@ export default async function BusinessHeader({ resp }: { resp: any }) {
           <div className="relative">
             <div className="w-16 h-16 bg-linear-to-br overflow-hidden from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
               <Image
-                src={logo}
+                src={logo.trim() !== "" ? logo : "/default-logo.png"}
                 alt="Logo"
                 width={100}
                 height={100}

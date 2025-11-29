@@ -13,7 +13,6 @@ export default async function VendorSettingsPage() {
     const res = await getVendorById(user?.id);
     const vendor = res?.data;
 
-    // console.debug("Vendor Settings Page - Vendor Data:", vendor);
 
     return (
         <div className="min-h-screen p-6">

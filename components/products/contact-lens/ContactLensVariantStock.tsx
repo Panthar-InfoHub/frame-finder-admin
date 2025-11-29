@@ -33,7 +33,6 @@ export function ContactLensVariantStock({ children, product }) {
   const [quantity, setQuantity] = useState("");
   const router = useRouter();
 
-  console.log("Product in variant stockkkkk ==> ", product);
 
 
   const OPTIONS = [

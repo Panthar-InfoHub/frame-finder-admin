@@ -45,7 +45,6 @@ const LensSolutionDetails = async ({ id }: { id: string }) => {
     ),
   };
 
-  console.log("Lens Solution Details:", resp);
 
   if (!resp) {
     return <div className="p-4">No product data available</div>;

@@ -115,7 +115,6 @@ export async function searchCoupons(params: SearchCouponsParams) {
       cache: "no-store",
     });
 
-    console.log("Coupons fetched:", response);
     const data = await response.json();
 
     if (!response.ok) {

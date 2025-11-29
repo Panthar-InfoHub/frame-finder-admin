@@ -46,7 +46,6 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
   const router = useRouter();
   const { refreshCategories } = useVendorCategories();
   const [formData, setFormData] = useState(vendor);
-  console.log("Vendor Data:", vendor);
 
   // Sync formData with vendor prop when it changes (after router.refresh())
   useEffect(() => {
