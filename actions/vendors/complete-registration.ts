@@ -32,10 +32,10 @@ export async function completeVendorRegistration(data: VendorCompleteRegistratio
     if (!response.ok || !result.success) {
       throw new Error(result.message || "Registration failed");
     }
-
+    
     // If backend returns access token, create session
-    if (result?.data?.accessToken) {
-      await createSession(result.data.accessToken);
+    if (result?.data?.token?.accessToken) {
+      await createSession(result.data.token.accessToken);
     }
 
     return {

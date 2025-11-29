@@ -18,7 +18,6 @@ import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { normalizeObject } from "@/utils/helpers";
-import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
 import { useRouter } from "next/navigation";
 import { FrameSchema, FrameVariantType } from "@/lib/validations";
@@ -211,9 +210,7 @@ export default function AddFrameForm() {
                           {material}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog type="material" onValueAdded={fetchOptions} />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -231,9 +228,7 @@ export default function AddFrameForm() {
                           {shape}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog type="shape" onValueAdded={fetchOptions} />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -250,9 +245,7 @@ export default function AddFrameForm() {
                         {style}
                       </MultiSelectItem>
                     ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog type="style" onValueAdded={fetchOptions} />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>

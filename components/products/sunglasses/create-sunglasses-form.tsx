@@ -16,7 +16,6 @@ import { uploadFilesToCloud } from "@/lib/cloud-storage";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { normalizeObject } from "@/utils/helpers";
-import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
@@ -214,9 +213,7 @@ export default function AddSunglassesForm() {
                           {material}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog type="material" onValueAdded={fetchOptions} />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -234,9 +231,7 @@ export default function AddSunglassesForm() {
                           {shape}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog type="shape" onValueAdded={fetchOptions} />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -253,9 +248,7 @@ export default function AddSunglassesForm() {
                         {style}
                       </MultiSelectItem>
                     ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog type="style" onValueAdded={fetchOptions} />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>

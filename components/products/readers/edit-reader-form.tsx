@@ -17,7 +17,6 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { normalizeObject } from "@/utils/helpers";
-import AddValueDialog from "@/components/products/addValueDialog";
 import { getFrameFormData } from "@/actions/vendors/form-data";
 import { useRouter } from "next/navigation";
 import { ReaderSchema, ReaderVariantType } from "@/lib/validations";
@@ -263,19 +262,7 @@ export default function EditReaderForm({ readerId }: EditReaderFormProps) {
                           {material}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog
-                        type="material"
-                        onValueAdded={async () => {
-                          const resp = await getFrameFormData();
-                          const formatted: Record<string, string[]> = {};
-                          resp.data.forEach((item: { type: string; values: string[] }) => {
-                            formatted[item.type] = item.values;
-                          });
-                          setOptions(formatted);
-                        }}
-                      />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -293,19 +280,7 @@ export default function EditReaderForm({ readerId }: EditReaderFormProps) {
                           {shape}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog
-                        type="shape"
-                        onValueAdded={async () => {
-                          const resp = await getFrameFormData();
-                          const formatted: Record<string, string[]> = {};
-                          resp.data.forEach((item: { type: string; values: string[] }) => {
-                            formatted[item.type] = item.values;
-                          });
-                          setOptions(formatted);
-                        }}
-                      />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -323,19 +298,7 @@ export default function EditReaderForm({ readerId }: EditReaderFormProps) {
                           {style}
                         </MultiSelectItem>
                       ))}
-                    <div className="p-2 border-t">
-                      <AddValueDialog
-                        type="style"
-                        onValueAdded={async () => {
-                          const resp = await getFrameFormData();
-                          const formatted: Record<string, string[]> = {};
-                          resp.data.forEach((item: { type: string; values: string[] }) => {
-                            formatted[item.type] = item.values;
-                          });
-                          setOptions(formatted);
-                        }}
-                      />
-                    </div>
+                    
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
