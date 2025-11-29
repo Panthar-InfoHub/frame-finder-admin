@@ -1,6 +1,7 @@
 import ProductsTable from "@/components/products/productsTable";
 import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
+import { CategoryGuard } from "@/components/guards/CategoryGuard";
 
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
@@ -22,7 +23,6 @@ const ContactLensTable = async ({ searchParams }: ContactLensTableProps) => {
     searchParams.search || ""
   );
 
-
   return <ProductsTable products={resp?.data?.products || []} type="contact-lens" />;
 };
 
@@ -37,16 +37,18 @@ const page = async ({
   const suspenseKey = `${searchP.search || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
 
   return (
-    <div className="flex flex-col gap-6">
-      <SectionHeader title="Contact Lenses" link={`add?type=contact-lens`} />
-      <SearchAndFilter
-        initialSearchTerm={searchP.search || ""}
-        placeholder="Search contact lenses..."
-      />
-      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
-        <ContactLensTable searchParams={searchP} />
-      </Suspense>
-    </div>
+    <CategoryGuard requiredCategories={["ContactLens"]} featureName="Contact Lenses">
+      <div className="flex flex-col gap-6">
+        <SectionHeader title="Contact Lenses" link={`add?type=contact-lens`} />
+        <SearchAndFilter
+          initialSearchTerm={searchP.search || ""}
+          placeholder="Search contact lenses..."
+        />
+        <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
+          <ContactLensTable searchParams={searchP} />
+        </Suspense>
+      </div>
+    </CategoryGuard>
   );
 };
 

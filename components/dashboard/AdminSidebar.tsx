@@ -32,6 +32,7 @@ import { Role } from "@/utils/permissions";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { SidebarSkeleton } from "../ui/custom/Skeleton-loading";
 import { NavUser } from "./sidebarfooter";
+import { useVendorCategories } from "@/context/vendor-context";
 
 export type NavItem =
   | {
@@ -40,6 +41,7 @@ export type NavItem =
       url: string;
       badge?: string;
       children?: never;
+      requiredCategory?: string[];
     }
   | {
       title: string;
@@ -47,6 +49,7 @@ export type NavItem =
       children?: NavItem[];
       badge?: string;
       url?: never;
+      requiredCategory?: string[];
     };
 
 const BaseLinks: NavItem[] = [
@@ -66,50 +69,60 @@ const VendorLinks: NavItem[] = [
   },
   {
     title: "Products",
-    // url: "/dashboard/products",
     icon: Package,
+    requiredCategory: ["Product", "Sunglasses", "Accessories", "Reader", "LensSolution"],
     children: [
       {
         title: "Frames",
         url: "/dashboard/products/frames",
+        requiredCategory: ["Product"],
       },
       {
         title: "Sunglasses",
         url: "/dashboard/products/sunglasses",
+        requiredCategory: ["Sunglasses"],
       },
       {
         title: "Accessories",
         url: "/dashboard/products/accessories",
+        requiredCategory: ["Accessories"],
       },
       {
         title: "Readers",
         url: "/dashboard/products/readers",
+        requiredCategory: ["Reader"],
       },
       {
         title: "Contact Lens",
         url: "/dashboard/products/contact-lens",
+        requiredCategory: ["ContactLens"],
       },
       {
         title: "Color Contact Lens",
         url: "/dashboard/products/contact-lens-color",
+        requiredCategory: ["ColorContactLens"],
       },
       {
         title: "Lens Solution",
         url: "/dashboard/products/lens-solution",
+        requiredCategory: ["LensSolution"],
       },
     ],
   },
   {
     title: "Prescription Lens",
     icon: PackagePlus,
+    requiredCategory: ["LensPackage", "SunglassLensPackage"],
     children: [
       {
         title: "Frames",
         url: "/dashboard/lens-packages/frames",
+        requiredCategory: ["LensPackage"],
       },
       {
         title: "Sunglasses",
         url: "/dashboard/lens-packages/sunglasses",
+        requiredCategory: ["SunglassLensPackage"],
       },
     ],
   },
@@ -162,13 +175,37 @@ const AdminLinks: NavItem[] = [
   },
 ];
 
-function getSidebarLinks(userRole: Role): NavItem[] {
+function filterLinksByCategories(links: NavItem[], categories: string[]): NavItem[] {
+  if (categories.length === 0) return links;
+
+  return links
+    .map((link) => {
+      // If link has requiredCategory, check if user has any of those categories
+      if (link.requiredCategory) {
+        const hasAccess = link.requiredCategory.some((cat) => categories.includes(cat));
+        if (!hasAccess) return null;
+      }
+
+      // If link has children, filter them recursively
+      if (link.children) {
+        const filteredChildren = filterLinksByCategories(link.children, categories);
+        // If no children remain after filtering, hide the parent
+        if (filteredChildren.length === 0) return null;
+        return { ...link, children: filteredChildren };
+      }
+
+      return link;
+    })
+    .filter((link): link is NavItem => link !== null);
+}
+
+function getSidebarLinks(userRole: Role, categories: string[] = []): NavItem[] {
   switch (userRole) {
     case "ADMIN":
     case "SUPER_ADMIN":
       return AdminLinks;
     case "VENDOR":
-      return VendorLinks;
+      return filterLinksByCategories(VendorLinks, categories);
     case "USER":
       return BaseLinks;
     default:
@@ -194,9 +231,10 @@ const isActive = (item: NavItem, pathname: string): boolean => {
 export function AppSidebar() {
   const pathname = usePathname();
   const { user, loading } = useSession();
-  const navItems = getSidebarLinks(user?.role!);
+  const { categories, loading: categoriesLoading } = useVendorCategories();
+  const navItems = getSidebarLinks(user?.role!, categories);
 
-  if (loading) {
+  if (loading || categoriesLoading) {
     return <SidebarSkeleton />;
   }
   const userDetail = {

@@ -2,6 +2,7 @@ import { getAllLensSolutions } from "@/actions/vendors/products";
 import ProductsTable from "@/components/products/productsTable";
 import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
+import { CategoryGuard } from "@/components/guards/CategoryGuard";
 
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
@@ -36,16 +37,18 @@ const page = async ({
   const suspenseKey = `${searchP.search || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
 
   return (
-    <div className="flex flex-col gap-6">
-      <SectionHeader title="Lens Solution" link={`add?type=lens-solution`} />
-      <SearchAndFilter
-        initialSearchTerm={searchP.search || ""}
-        placeholder="Search lens solutions..."
-      />
-      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
-        <LensSolutionTable searchParams={searchP} />
-      </Suspense>
-    </div>
+    <CategoryGuard requiredCategories={["LensSolution"]} featureName="Lens Solution">
+      <div className="flex flex-col gap-6">
+        <SectionHeader title="Lens Solution" link={`add?type=lens-solution`} />
+        <SearchAndFilter
+          initialSearchTerm={searchP.search || ""}
+          placeholder="Search lens solutions..."
+        />
+        <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
+          <LensSolutionTable searchParams={searchP} />
+        </Suspense>
+      </div>
+    </CategoryGuard>
   );
 };
 

@@ -2,6 +2,7 @@ import { getAllFrames } from "@/actions/vendors/products";
 import ProductsTable from "@/components/products/productsTable";
 import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
+import { CategoryGuard } from "@/components/guards/CategoryGuard";
 
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
@@ -36,13 +37,15 @@ const page = async ({
   const suspenseKey = `${searchP.search || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
 
   return (
-    <div className="flex flex-col gap-6">
-      <SectionHeader title="Frames" link={`add?type=frames`} />
-      <SearchAndFilter initialSearchTerm={searchP.search || ""} placeholder="Search frames..." />
-      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
-        <FramesTable searchParams={searchP} />
-      </Suspense>
-    </div>
+    <CategoryGuard requiredCategories={["Product"]} featureName="Frames">
+      <div className="flex flex-col gap-6">
+        <SectionHeader title="Frames" link={`add?type=frames`} />
+        <SearchAndFilter initialSearchTerm={searchP.search || ""} placeholder="Search frames..." />
+        <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
+          <FramesTable searchParams={searchP} />
+        </Suspense>
+      </div>
+    </CategoryGuard>
   );
 };
 

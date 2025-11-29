@@ -1,23 +1,24 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Save, Loader2, ImageIcon } from "lucide-react"
-import { useActionState } from "react"
-import { toast } from "sonner"
-import { updateVendor } from "@/actions/vendors/vendors"
-import { ImageUploader } from "@/components/ui/custom/ImageUploader"
-import { uploadFilesToCloud } from "@/lib/cloud-storage"
-import { ImageSection } from "@/components/ui/custom/ImageSection"
-import { getSignedViewUrl } from "@/actions/cloud-storage"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Save, Loader2, ImageIcon } from "lucide-react";
+import { useActionState } from "react";
+import { toast } from "sonner";
+import { updateVendor } from "@/actions/vendors/vendors";
+import { ImageUploader } from "@/components/ui/custom/ImageUploader";
+import { uploadFilesToCloud } from "@/lib/cloud-storage";
+import { ImageSection } from "@/components/ui/custom/ImageSection";
+import { getSignedViewUrl } from "@/actions/cloud-storage";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useVendorCategories } from "@/context/vendor-context";
 
 interface ProfileSectionProps {
-  vendor: any
+  vendor: any;
 }
 
 const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
@@ -41,10 +42,10 @@ const CategoryOptions = [
   { value: "Accessories", label: "Accessories" },
 ];
 
-
 export default function ProfileSection({ vendor }: ProfileSectionProps) {
-  const router = useRouter()
-  const [formData, setFormData] = useState(vendor)
+  const router = useRouter();
+  const { refreshCategories } = useVendorCategories();
+  const [formData, setFormData] = useState(vendor);
   console.log("Vendor Data:", vendor);
 
   // Sync formData with vendor prop when it changes (after router.refresh())
@@ -62,14 +63,13 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
           : [...prev.categories, value];
         return { ...prev, categories };
       });
-
     } else {
       setFormData((prev: any) => ({
         ...prev,
         [field]: value,
-      }))
+      }));
     }
-  }
+  };
 
   const handleNestedChange = (parent: string, field: string, value: any) => {
     setFormData((prev: any) => ({
@@ -78,32 +78,34 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
         ...prev[parent],
         [field]: value,
       },
-    }))
-  }
+    }));
+  };
 
   const handleSave = async (prevState: any, formDataObj: FormData) => {
     try {
-      const result = await updateVendor(vendor._id, formData)
+      const result = await updateVendor(vendor._id, formData);
       if (result.success) {
-        router.refresh()
-        toast.success("Profile updated successfully!")
-        return { success: true }
+        // Refresh categories in context to update sidebar
+        await refreshCategories();
+        router.refresh();
+        toast.success("Profile updated successfully!");
+        return { success: true };
       } else {
-        toast.error("Failed to update profile")
-        return { success: false }
+        toast.error("Failed to update profile");
+        return { success: false };
       }
     } catch (error) {
-      console.error("Error updating profile:", error)
-      toast.error("An error occurred")
-      return { success: false }
+      console.error("Error updating profile:", error);
+      toast.error("An error occurred");
+      return { success: false };
     }
-  }
+  };
 
   const handleImageSectionChange = (field: string, newImageUrls: string[]) => {
     handleInputChange(field, newImageUrls);
   };
 
-  const [state, formAction, isPending] = useActionState(handleSave, {})
+  const [state, formAction, isPending] = useActionState(handleSave, {});
 
   return (
     <Card>
@@ -114,7 +116,6 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
       <CardContent className="space-y-6">
         <form action={formAction} className="space-y-6">
           <div className="grid grid-cols-2 gap-6">
-
             {/* LOGO */}
             <div className="space-y-2">
               <Label htmlFor="logo">Logo</Label>
@@ -271,26 +272,24 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
           <div className="space-y-2">
             <Label htmlFor="categories">Choose Categories</Label>
             <div className="flex flex-wrap gap-2">
-
               {CategoryOptions.map((category) => {
                 const isChecked = formData.categories.includes(category.value);
                 return (
                   <Label
                     key={category.value}
                     htmlFor={category.value}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${isChecked
-                      ? "border-primary bg-primary/10"
-                      : "border-gray-200 hover:border-gray-300 bg-muted"
-                      }`}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${
+                      isChecked
+                        ? "border-primary bg-primary/10"
+                        : "border-gray-200 hover:border-gray-300 bg-muted"
+                    }`}
                   >
                     <Checkbox
                       id={category.value}
                       checked={isChecked}
                       onCheckedChange={(checked) => handleInputChange("categories", category.value)}
                     />
-                    <span className="font-medium text-muted-foreground">
-                      {category.label}
-                    </span>
+                    <span className="font-medium text-muted-foreground">{category.label}</span>
                   </Label>
                 );
               })}
@@ -313,5 +312,5 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

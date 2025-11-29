@@ -1,6 +1,7 @@
 import ProductsTable from "@/components/products/productsTable";
 import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
+import { CategoryGuard } from "@/components/guards/CategoryGuard";
 
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 
@@ -36,16 +37,18 @@ const page = async ({
   const suspenseKey = `${searchP.search || "all"}-${searchP.page || "1"}-${searchP.limit || "10"}`;
 
   return (
-    <div className="flex flex-col gap-6">
-      <SectionHeader title="Color Contact Lenses" link={`add?type=contact-lens-color`} />
-      <SearchAndFilter
-        initialSearchTerm={searchP.search || ""}
-        placeholder="Search color contact lenses..."
-      />
-      <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
-        <ColorContactLensTable searchParams={searchP} />
-      </Suspense>
-    </div>
+    <CategoryGuard requiredCategories={["ColorContactLens"]} featureName="Color Contact Lenses">
+      <div className="flex flex-col gap-6">
+        <SectionHeader title="Color Contact Lenses" link={`add?type=contact-lens-color`} />
+        <SearchAndFilter
+          initialSearchTerm={searchP.search || ""}
+          placeholder="Search color contact lenses..."
+        />
+        <Suspense key={suspenseKey} fallback={<DashboardSkeleton />}>
+          <ColorContactLensTable searchParams={searchP} />
+        </Suspense>
+      </div>
+    </CategoryGuard>
   );
 };
 
