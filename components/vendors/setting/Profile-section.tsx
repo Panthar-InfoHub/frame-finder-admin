@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -30,19 +30,29 @@ const ImageUploadFunction = async (files: File[]): Promise<string[]> => {
 };
 
 const CategoryOptions = [
-  { value: "Product", label: "Frames" },
-  { value: "ContactLens", label: "Contact Lens" },
-  { value: "ColorContactLens", label: "Color Contact Lens" },
+  { value: "LensPackage", label: "Frames & Powered Lens" },
+  { value: "Product", label: "Only Frames" },
   { value: "Reader", label: "Reader Glasses" },
+  { value: "ColorContactLens", label: "Color Contact Lens" },
+  { value: "ContactLens", label: "Contact Lens" },
   { value: "Sunglasses", label: "Sunglasses" },
+  { value: "SunglassLensPackage", label: "Powered Sunglasses" },
   { value: "LensSolution", label: "Lens Solution" },
   { value: "Accessories", label: "Accessories" },
 ];
+
 
 export default function ProfileSection({ vendor }: ProfileSectionProps) {
   const router = useRouter()
   const [formData, setFormData] = useState(vendor)
   console.log("Vendor Data:", vendor);
+
+  // Sync formData with vendor prop when it changes (after router.refresh())
+  useEffect(() => {
+    if (vendor) {
+      setFormData(vendor);
+    }
+  }, [vendor]);
 
   const handleInputChange = (field: string, value: any) => {
     if (field === "categories") {
@@ -261,14 +271,28 @@ export default function ProfileSection({ vendor }: ProfileSectionProps) {
           <div className="space-y-2">
             <Label htmlFor="categories">Choose Categories</Label>
             <div className="flex flex-wrap gap-2">
+
               {CategoryOptions.map((category) => {
-                const isChecked = formData.categories.includes(category.value)
+                const isChecked = formData.categories.includes(category.value);
                 return (
-                  <div key={category.value} className="flex items-center space-x-2 ">
-                    <Checkbox id={category.value} name="categories" value={category.value} checked={isChecked} onCheckedChange={(checked) => handleInputChange("categories", category.value)} />
-                    <Label htmlFor={category.value} >{category.value}</Label>
-                  </div>
-                )
+                  <Label
+                    key={category.value}
+                    htmlFor={category.value}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg border-2 transition-all cursor-pointer hover:shadow-md ${isChecked
+                      ? "border-primary bg-primary/10"
+                      : "border-gray-200 hover:border-gray-300 bg-muted"
+                      }`}
+                  >
+                    <Checkbox
+                      id={category.value}
+                      checked={isChecked}
+                      onCheckedChange={(checked) => handleInputChange("categories", category.value)}
+                    />
+                    <span className="font-medium text-muted-foreground">
+                      {category.label}
+                    </span>
+                  </Label>
+                );
               })}
             </div>
           </div>

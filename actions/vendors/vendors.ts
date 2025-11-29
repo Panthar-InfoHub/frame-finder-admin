@@ -199,6 +199,7 @@ export async function updateVendor(id: string, updateData: UpdateVendorData) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+    revalidatePath(`/dashboard/setting`);
     revalidatePath(`/admin/vendors/${id}`);
 
     return {

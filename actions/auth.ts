@@ -31,6 +31,7 @@ export async function loginAction(formData: FormData) {
     }
     return { success: true, message: data.message || "Login successful" };
   } catch (err) {
+    console.error("Login error:", err);
     return {
       success: false,
       message: "Something went wrong. Please try again.",
