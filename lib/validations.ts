@@ -45,7 +45,7 @@ export const FrameSchema = z.object({
   hsn_code: z.string().min(1, "HSN/SAC code is required"),
   sizes: z.array(z.string()).min(1, "Select at least one size"),
   gender: z.array(z.string()).min(1, "Select at least one gender"),
-  is_power: z.boolean().optional().default(false),
+  is_Power: z.boolean().optional().default(false),
   dimension: z.object({
     lens_width: z.coerce.number().positive("Lens width must be positive"),
     bridge_width: z.coerce.number().positive("Bridge width must be positive"),

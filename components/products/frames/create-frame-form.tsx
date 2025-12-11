@@ -95,7 +95,7 @@ export default function AddFrameForm() {
     const completeData = {
       ...basicData,
       dimension,
-      is_power: isPower,
+      is_Power: isPower,
       variants: variants,
     };
 

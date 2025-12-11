@@ -41,7 +41,6 @@ interface EditFrameFormProps {
 export default function EditFrameForm({ frameId }: EditFrameFormProps) {
   const genders = ["male", "female", "kids", "unisex"];
   const sizes = ["S", "M", "L", "XL"];
-  const [isPower, setIsPower] = useState(false);
 
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
@@ -78,6 +77,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     hsn_code: "",
     sizes: [] as string[],
     gender: [] as string[],
+    is_Power: false,
     dimension: {
       lens_width: "",
       bridge_width: "",
@@ -118,7 +118,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
     const completeData = {
       ...basicData,
       dimension,
-      is_power: isPower,
+      is_Power: formData.is_Power,
       variants: variants,
     };
 
@@ -169,7 +169,6 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
         router.push("/dashboard/products/frames");
         return;
       }
-
       const frameData = resp.data;
 
       // Set form data
@@ -188,10 +187,9 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
           temple_length: frameData.dimension?.temple_length || "",
           lens_height: frameData.dimension?.lens_height || "",
         },
+        is_Power: frameData.is_Power || false,
       });
 
-      // Set is_power state
-      setIsPower(frameData.is_power || false);
 
       // Set variants data
       if (frameData.variants && frameData.variants.length > 0) {
@@ -208,9 +206,9 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
             total_price:
               variant.price?.total_price ||
               (variant.price?.mrp || 0) +
-                (variant.price?.shipping_price?.custom
-                  ? variant.price?.shipping_price?.value || 0
-                  : 100),
+              (variant.price?.shipping_price?.custom
+                ? variant.price?.shipping_price?.value || 0
+                : 100),
           },
           stock: {
             current: variant.stock?.current || 0,
@@ -364,7 +362,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                           {material}
                         </MultiSelectItem>
                       ))}
-                    
+
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -384,7 +382,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                           </MultiSelectItem>
                         )
                       )}
-                   
+
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -403,7 +401,7 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
                         </MultiSelectItem>
                       )
                     )}
-                   
+
                   </MultiSelectContent>
                 </MultiSelect>
               </div>
@@ -436,8 +434,8 @@ export default function EditFrameForm({ frameId }: EditFrameFormProps) {
               <div className="flex items-center space-x-2">
                 <Switch
                   id="isPower"
-                  checked={isPower}
-                  onCheckedChange={(checked) => setIsPower(checked as boolean)}
+                  checked={formData.is_Power}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_Power: checked as boolean })}
                 />
                 <Label htmlFor="isPower" className="cursor-pointer">
                   Power Frame (Supports Power Lenses)
