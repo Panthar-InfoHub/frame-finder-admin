@@ -10,6 +10,7 @@ import {
   IndianRupee,
   Settings2,
   Ticket,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -58,15 +59,16 @@ const BaseLinks: NavItem[] = [
     url: "/dashboard",
     icon: Home,
   },
-];
-
-const VendorLinks: NavItem[] = [
-  ...BaseLinks,
   {
     title: "Orders",
     url: "/dashboard/orders",
     icon: ShoppingCart,
   },
+];
+
+const VendorLinks: NavItem[] = [
+  ...BaseLinks,
+
   {
     title: "Products",
     icon: Package,
@@ -171,7 +173,17 @@ const AdminLinks: NavItem[] = [
     title: "Vendors",
     url: "/dashboard/vendors",
     icon: Store,
-    badge: "5",
+    // badge: "5",
+  },
+  {
+    title: "Users",
+    url: "/dashboard/users",
+    icon: Users,
+  },
+  {
+    title: "Coupons",
+    url: "/dashboard/coupons",
+    icon: Ticket,
   },
 ];
 

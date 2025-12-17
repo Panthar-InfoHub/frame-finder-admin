@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { createCoupon, updateCoupon } from "@/actions/coupons";
 import { Coupon, CreateCouponPayload } from "@/types/coupon";
 import { Loader2 } from "lucide-react";
-import { Role } from "@/utils/permissions";
+import { isAdminRole, Role } from "@/utils/permissions";
 
 interface CouponFormProps {
   initialData?: Coupon;
@@ -30,7 +30,7 @@ export function CouponForm({ initialData, mode, userRole = "VENDOR" }: CouponFor
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isAdmin = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
+  const isAdmin = isAdminRole(userRole);
 
   // Set initial scope based on user role and initialData
   const getInitialScope = (): "vendor" | "global" => {

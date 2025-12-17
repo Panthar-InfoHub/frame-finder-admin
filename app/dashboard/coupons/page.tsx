@@ -4,6 +4,7 @@ import SearchAndFilter from "@/components/products/SearchAndFilter";
 import SectionHeader from "@/components/dashboard/SectionHeader";
 import { DashboardSkeleton } from "@/components/ui/custom/Skeleton-loading";
 import { Suspense } from "react";
+import { getSession } from "@/actions/session";
 
 interface CouponsPageProps {
   searchParams: {
@@ -14,10 +15,12 @@ interface CouponsPageProps {
 }
 
 const CouponsTable = async ({ searchParams }: CouponsPageProps) => {
+  const {user} = await getSession();
   const resp = await searchCoupons({
     page: parseInt(searchParams.page || "1"),
     limit: parseInt(searchParams.limit || "10"),
     search: searchParams.search || "",
+    vendorId: user?.vendorId || "",
   });
 
   if (!resp?.success) {
