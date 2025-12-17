@@ -21,7 +21,10 @@ export interface VendorRegisterData {
 export interface Vendor extends VendorRegisterData {
   _id: string;
   rating: number;
+  total_reviews?: number;
   isActive: boolean;
+  premium_member?: boolean;
+  role?: string;
   createdAt: string;
   updatedAt: string;
 }

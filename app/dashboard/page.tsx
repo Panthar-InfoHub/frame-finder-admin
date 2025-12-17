@@ -27,10 +27,25 @@ import {
   Activity,
 } from "lucide-react";
 import Link from "next/link";
+import { isAdminRole } from "@/utils/permissions";
 
 export default async function AdminDashboard() {
   const { user } = await getSession();
+
+  const isAdmin = isAdminRole(user?.role);
+  if (isAdmin) {
+    return (
+      <Card className=" w-full">
+        <CardHeader className="text-center">
+          <CardTitle>Admin Dashboard </CardTitle>
+          <CardDescription>Under development</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   const resp = await getVendorById(user?.id);
+  console.log("Vendor Response:", user);
   const actions = [
     {
       label: "View Orders",
