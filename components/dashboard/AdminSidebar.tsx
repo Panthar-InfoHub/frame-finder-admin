@@ -11,6 +11,7 @@ import {
   Settings2,
   Ticket,
   Users,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -184,6 +185,11 @@ const AdminLinks: NavItem[] = [
     title: "Coupons",
     url: "/dashboard/coupons",
     icon: Ticket,
+  },
+  {
+    title: "CMS",
+    url: "/dashboard/cms",
+    icon: FileText,
   },
 ];
 
